@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>78224c93d6654408a3ce8e5518a973ca</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_78224c93d6654408a3ce8e5518a973ca</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() { var c = this; };
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.ibar-kpi-value { font-size: 32px; font-weight: 700; line-height: 1.2; }
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_audit_summary</id>
+    <internal>false</internal>
+    <link><![CDATA[function link(scope, element, attrs, controller) {}
+]]></link>
+    <name>IBAR Audit Summary</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() { data.summary = { total: 0, info: 0, warning: 0, critical: 0 }; try { var gr = new GlideRecord("x_1433041_identi_0_audit_event"); gr.setLimit(200); gr.query(); while (gr.next()) { data.summary.total++; var sev = gr.getValue("severity"); if (sev === "warning") data.summary.warning++; else if (sev === "critical") data.summary.critical++; else data.summary.info++; } } catch (e) { gs.error("IBAR Audit Summary widget error: " + e.message); } })();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-eye-open"></span> Audit Summary</h3></div><div class="panel-body"><div class="row">
+  <div class="col-sm-3 col-xs-6 text-center"><div class="ibar-kpi-value">{{c.data.summary.total}}</div><div class="text-muted">Total</div></div>
+  <div class="col-sm-3 col-xs-6 text-center"><div class="ibar-kpi-value text-info">{{c.data.summary.info}}</div><div class="text-muted">Info</div></div>
+  <div class="col-sm-3 col-xs-6 text-center"><div class="ibar-kpi-value text-warning">{{c.data.summary.warning}}</div><div class="text-muted">Warnings</div></div>
+  <div class="col-sm-3 col-xs-6 text-center"><div class="ibar-kpi-value text-danger">{{c.data.summary.critical}}</div><div class="text-muted">Critical</div></div>
+</div></div></div>
+]]></template>
+  </sp_widget>
+</record_update>

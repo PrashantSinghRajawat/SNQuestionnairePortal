@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>50fe521125444dfcaa817945889ac23e</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_50fe521125444dfcaa817945889ac23e</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() { var c = this; c.templateName = ""; c.create = function() { if (!c.templateName) return; c.server.get({ action: "create", name: c.templateName }).then(function(r) { c.data.msg = r.data.msg; c.templateName = ""; }); }; };
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[/* minimal */
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_template_create</id>
+    <internal>false</internal>
+    <link><![CDATA[function link(scope, element, attrs, controller) {}
+]]></link>
+    <name>IBAR Template Create</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() { data.msg = ""; if (input && input.action === "create") { var gr = new GlideRecord("x_1433041_identi_0_template"); gr.initialize(); gr.setValue("name", input.name || "New Template"); gr.setValue("status", "draft"); gr.setValue("version", "1.0"); gr.insert(); data.msg = "Template created successfully."; } })();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-plus"></span> Create Template</h3></div><div class="panel-body">
+  <div class="alert alert-success" ng-if="c.data.msg"><span class="glyphicon glyphicon-ok-sign"></span> {{c.data.msg}}</div>
+  <div class="form-group"><label>Template Name</label><input type="text" class="form-control" ng-model="c.templateName" placeholder="Enter template name"></div>
+  <button class="btn btn-primary" ng-click="c.create()" ng-disabled="!c.templateName"><span class="glyphicon glyphicon-plus"></span> Create</button></div></div>
+]]></template>
+  </sp_widget>
+</record_update>

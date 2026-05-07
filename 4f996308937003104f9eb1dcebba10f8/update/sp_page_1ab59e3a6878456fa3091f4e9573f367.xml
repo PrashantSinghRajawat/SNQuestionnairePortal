@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_page">
+  <sp_page action="INSERT_OR_UPDATE">
+    <sys_id>1ab59e3a6878456fa3091f4e9573f367</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_page_1ab59e3a6878456fa3091f4e9573f367</sys_update_name>
+    <category>custom</category>
+    <css/>
+    <draft>false</draft>
+    <dynamic_title_structure/>
+    <human_readable_url_structure/>
+    <id>appready_version_history</id>
+    <internal>false</internal>
+    <omit_watcher>false</omit_watcher>
+    <public>false</public>
+    <roles/>
+    <seo_script/>
+    <short_description/>
+    <title>Version History</title>
+    <use_seo_script>false</use_seo_script>
+  </sp_page>
+</record_update>

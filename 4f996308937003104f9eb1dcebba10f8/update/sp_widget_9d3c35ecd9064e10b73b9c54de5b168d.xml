@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>9d3c35ecd9064e10b73b9c54de5b168d</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_9d3c35ecd9064e10b73b9c54de5b168d</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() { var c = this; };
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[/* minimal */
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_section_review</id>
+    <internal>false</internal>
+    <link><![CDATA[function link(scope, element, attrs, controller) {}
+]]></link>
+    <name>IBAR Section Review</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() { data.sections = []; data.applicationId = $sp.getParameter("app_id") || ""; try { if (!data.applicationId) return; var respGr = new GlideRecord("x_1433041_identi_0_response"); respGr.addQuery("application", data.applicationId); respGr.orderBy("section"); respGr.setLimit(200); respGr.query(); var sMap = {}; while (respGr.next()) { var sId = respGr.getValue("section"); if (!sMap[sId]) sMap[sId] = { name: respGr.getDisplayValue("section"), responses: [] }; sMap[sId].responses.push({ question: respGr.getDisplayValue("question"), value: respGr.getValue("value") || "(Not answered)", sys_id: respGr.getValue("sys_id") }); } for (var k in sMap) { sMap[k].sys_id = k; data.sections.push(sMap[k]); } } catch (e) { gs.error("IBAR Section Review widget error: " + e.message); } })();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-th-list"></span> Section Review</h3></div>
+  <div class="panel-body" ng-if="c.data.sections.length > 0"><div class="panel panel-default" ng-repeat="section in c.data.sections track by section.sys_id"><div class="panel-heading"><h4 class="panel-title">{{section.name}} <span class="badge">{{section.responses.length}}</span></h4></div><div class="panel-body"><table class="table table-striped"><thead><tr><th>Question</th><th>Response</th></tr></thead><tbody><tr ng-repeat="r in section.responses track by r.sys_id"><td>{{r.question}}</td><td>{{r.value}}</td></tr></tbody></table></div></div></div>
+  <div class="panel-body text-center" ng-if="c.data.sections.length === 0"><p class="text-muted">No responses to review.</p></div></div>
+]]></template>
+  </sp_widget>
+</record_update>
