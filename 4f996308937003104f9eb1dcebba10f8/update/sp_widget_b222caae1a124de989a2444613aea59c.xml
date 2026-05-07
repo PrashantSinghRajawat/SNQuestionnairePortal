@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>b222caae1a124de989a2444613aea59c</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_b222caae1a124de989a2444613aea59c</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() { var c = this; c.qText = ""; c.qType = "text"; c.qMandatory = false;
+  c.addQuestion = function() { if (!c.qText) return; c.server.get({ action: "add_question", text: c.qText, question_type: c.qType, mandatory: c.qMandatory, order_num: (c.data.questions.length + 1) * 10 }).then(function(r) { c.data.questions = r.data.questions; c.qText = ""; c.qMandatory = false; }); }; };
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.list-group { margin-bottom: 0; } hr { border-color: #ddd; }
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_question_form</id>
+    <internal>false</internal>
+    <link><![CDATA[function link(scope, element, attrs, controller) {}
+]]></link>
+    <name>IBAR Question Form</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() { data.questions = []; data.sectionId = $sp.getParameter("section_id") || "";
+  try { if (!data.sectionId) return;
+    if (input && input.action === "add_question") { var qGr = new GlideRecord("x_1433041_identi_0_question"); qGr.initialize(); qGr.setValue("section", data.sectionId); qGr.setValue("text", input.text); qGr.setValue("question_type", input.question_type || "text"); qGr.setValue("mandatory", input.mandatory || false); qGr.setValue("order", input.order_num || 100); qGr.insert(); }
+    var gr = new GlideRecord("x_1433041_identi_0_question"); gr.addQuery("section", data.sectionId); gr.orderBy("order"); gr.setLimit(100); gr.query();
+    while (gr.next()) { data.questions.push({ sys_id: gr.getValue("sys_id"), text: gr.getValue("text"), question_type: gr.getDisplayValue("question_type"), mandatory: gr.getValue("mandatory") === "1", order: gr.getValue("order") }); }
+  } catch (e) { gs.error("IBAR Question Form widget error: " + e.message); }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-question-sign"></span> Question Builder</h3></div><div class="panel-body">
+  <div class="alert alert-info" ng-if="!c.data.sectionId"><span class="glyphicon glyphicon-info-sign"></span> Select a section to add questions.</div>
+  <div ng-if="c.data.sectionId">
+    <form ng-submit="c.addQuestion()">
+      <div class="form-group"><label>Question Text</label><input type="text" class="form-control" ng-model="c.qText" required placeholder="Enter question"></div>
+      <div class="row"><div class="col-sm-6"><div class="form-group"><label>Type</label><select class="form-control" ng-model="c.qType"><option value="text">Text</option><option value="textarea">Multi-line Text</option><option value="dropdown">Dropdown</option><option value="checkbox">Checkbox</option><option value="radio">Radio</option><option value="date">Date</option><option value="number">Number</option></select></div></div>
+      <div class="col-sm-6"><div class="checkbox"><label><input type="checkbox" ng-model="c.qMandatory"> Mandatory</label></div></div></div>
+      <button type="submit" class="btn btn-primary" ng-disabled="!c.qText"><span class="glyphicon glyphicon-plus"></span> Add Question</button>
+    </form>
+    <hr>
+    <h4>Questions in Section <span class="badge">{{c.data.questions.length}}</span></h4>
+    <div class="list-group"><div class="list-group-item" ng-repeat="q in c.data.questions track by q.sys_id">
+      <span class="label label-default">{{q.question_type}}</span> {{q.text}} <span class="label label-danger" ng-if="q.mandatory">Required</span>
+    </div></div>
+  </div></div></div>
+]]></template>
+  </sp_widget>
+</record_update>

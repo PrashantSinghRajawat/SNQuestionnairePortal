@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>070ea4482e7f46daa8b64f6049747a2f</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_070ea4482e7f46daa8b64f6049747a2f</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() { var c = this; c.newSection = ""; c.addSection = function() { if (!c.newSection) return; c.server.get({ action: "add_section", section_name: c.newSection, section_order: (c.data.sections.length + 1) * 10 }).then(function(r) { c.data.sections = r.data.sections; c.newSection = ""; }); }; };
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.list-group { margin-bottom: 0; } hr { border-color: #ddd; }
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_section_builder</id>
+    <internal>false</internal>
+    <link><![CDATA[function link(scope, element, attrs, controller) {}
+]]></link>
+    <name>IBAR Section Builder</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() { data.sections = []; data.templateId = $sp.getParameter("template_id") || "";
+  try { if (!data.templateId) return;
+    if (input && input.action === "add_section") { var sGr = new GlideRecord("x_1433041_identi_0_section"); sGr.initialize(); sGr.setValue("template", data.templateId); sGr.setValue("name", input.section_name); sGr.setValue("order", input.section_order || 100); sGr.insert(); }
+    var gr = new GlideRecord("x_1433041_identi_0_section"); gr.addQuery("template", data.templateId); gr.orderBy("order"); gr.setLimit(50); gr.query();
+    while (gr.next()) { data.sections.push({ sys_id: gr.getValue("sys_id"), name: gr.getValue("name"), order: gr.getValue("order") }); }
+  } catch (e) { gs.error("IBAR Section Builder widget error: " + e.message); }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-list"></span> Sections <span class="badge">{{c.data.sections.length}}</span></h3></div><div class="panel-body">
+  <div class="list-group" ng-if="c.data.sections.length > 0"><div class="list-group-item" ng-repeat="s in c.data.sections track by s.sys_id"><span class="badge">{{s.order}}</span> {{s.name}}</div></div>
+  <hr><div class="form-inline"><input type="text" class="form-control" ng-model="c.newSection" placeholder="Section name"><button class="btn btn-default" ng-click="c.addSection()" ng-disabled="!c.newSection"><span class="glyphicon glyphicon-plus"></span></button></div>
+</div></div>
+]]></template>
+  </sp_widget>
+</record_update>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>e712736461584741b10f8309332b5bac</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_e712736461584741b10f8309332b5bac</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() { var c = this; c.name = c.data.templateData.name || ""; c.description = c.data.templateData.description || ""; c.category = c.data.templateData.category || "";
+  c.save = function() { c.server.get({ action: "save", name: c.name, description: c.description, category: c.category }).then(function(r) { c.data.saved = r.data.saved; c.data.templateId = r.data.templateId; }); }; };
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[/* minimal */
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_template_form</id>
+    <internal>false</internal>
+    <link><![CDATA[function link(scope, element, attrs, controller) {}
+]]></link>
+    <name>IBAR Template Form</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() { data.templateId = $sp.getParameter("template_id") || ""; data.templateData = {}; data.sections = [];
+  try { if (data.templateId) { var gr = new GlideRecord("x_1433041_identi_0_template"); if (gr.get(data.templateId)) { data.templateData = { name: gr.getValue("name"), description: gr.getValue("description"), category: gr.getValue("category"), status: gr.getDisplayValue("status") }; } }
+    if (input && input.action === "save") { var tGr = data.templateId ? new GlideRecord("x_1433041_identi_0_template") : null; if (data.templateId && tGr.get(data.templateId)) { tGr.setValue("name", input.name); tGr.setValue("description", input.description || ""); tGr.setValue("category", input.category || ""); tGr.update(); data.saved = true; } else { var nGr = new GlideRecord("x_1433041_identi_0_template"); nGr.initialize(); nGr.setValue("name", input.name); nGr.setValue("description", input.description || ""); nGr.setValue("category", input.category || ""); nGr.setValue("status", "draft"); data.templateId = nGr.insert(); data.saved = true; } }
+  } catch (e) { gs.error("IBAR Template Form widget error: " + e.message); }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-edit"></span> {{c.data.templateId ? 'Edit Template' : 'New Template'}}</h3></div><div class="panel-body">
+  <div class="alert alert-success" ng-if="c.data.saved"><span class="glyphicon glyphicon-ok-sign"></span> Template saved!</div>
+  <form ng-submit="c.save()">
+    <div class="form-group"><label>Template Name</label><input type="text" class="form-control" ng-model="c.name" required placeholder="Enter template name"></div>
+    <div class="form-group"><label>Description</label><textarea class="form-control" ng-model="c.description" rows="3" placeholder="Describe the template purpose"></textarea></div>
+    <div class="form-group"><label>Category</label><select class="form-control" ng-model="c.category"><option value="">— Select —</option><option value="security">Security</option><option value="compliance">Compliance</option><option value="integration">Integration</option><option value="general">General</option></select></div>
+    <button type="submit" class="btn btn-primary" ng-disabled="!c.name"><span class="glyphicon glyphicon-floppy-disk"></span> Save Template</button>
+  </form></div></div>
+]]></template>
+  </sp_widget>
+</record_update>

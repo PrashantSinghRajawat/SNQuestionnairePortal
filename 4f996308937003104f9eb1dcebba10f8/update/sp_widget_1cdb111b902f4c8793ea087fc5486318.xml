@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>1cdb111b902f4c8793ea087fc5486318</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_1cdb111b902f4c8793ea087fc5486318</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() { var c = this; };
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.list-group { margin-bottom: 0; }
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_template_categories</id>
+    <internal>false</internal>
+    <link><![CDATA[function link(scope, element, attrs, controller) {}
+]]></link>
+    <name>IBAR Template Categories</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() { data.categories = [];
+  try { var catMap = {}; var gr = new GlideRecord("x_1433041_identi_0_template"); gr.addQuery("active", true); gr.setLimit(200); gr.query();
+    while (gr.next()) { var cat = gr.getValue("category") || "Uncategorized"; catMap[cat] = (catMap[cat] || 0) + 1; }
+    for (var k in catMap) data.categories.push({ name: k, count: catMap[k] });
+  } catch (e) { gs.error("IBAR Template Categories widget error: " + e.message); }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-tags"></span> Categories</h3></div><div class="panel-body">
+  <div class="list-group" ng-if="c.data.categories.length > 0"><div class="list-group-item" ng-repeat="cat in c.data.categories track by $index"><span class="badge">{{cat.count}}</span> {{cat.name}}</div></div>
+  <p class="text-muted text-center" ng-if="c.data.categories.length === 0">No categories defined.</p></div></div>
+]]></template>
+  </sp_widget>
+</record_update>

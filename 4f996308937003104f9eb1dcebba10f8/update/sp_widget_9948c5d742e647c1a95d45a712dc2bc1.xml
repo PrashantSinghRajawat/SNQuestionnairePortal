@@ -4,10 +4,10 @@
     <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
     <sys_update_name>sp_widget_9948c5d742e647c1a95d45a712dc2bc1</sys_update_name>
     <category>custom</category>
-    <client_script><![CDATA[api.controller = function() { var c = this; c.doAction = function(action) { alert("Action: " + action + " (implementation pending)"); }; };
+    <client_script><![CDATA[api.controller = function() { var c = this; };
 ]]></client_script>
     <controller_as>c</controller_as>
-    <css><![CDATA[.list-group { margin-bottom: 0; }
+    <css><![CDATA[/* minimal */
 ]]></css>
     <data_table>sp_instance</data_table>
     <demo_data/>
@@ -23,11 +23,15 @@
     <option_schema/>
     <public>false</public>
     <roles/>
-    <script><![CDATA[(function() { data.actions = ["Create New Version", "Publish Template", "Archive Template", "Clone Template"]; })();
+    <script><![CDATA[(function() { data.ready = true; })();
 ]]></script>
     <servicenow>false</servicenow>
     <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-cog"></span> Template Actions</h3></div><div class="panel-body">
-  <div class="list-group"><a class="list-group-item" ng-repeat="action in c.data.actions track by $index" ng-click="c.doAction(action)"><span class="glyphicon glyphicon-chevron-right"></span> {{action}}</a></div></div></div>
+  <a class="btn btn-primary btn-block" href="?id=appready_template_builder"><span class="glyphicon glyphicon-plus"></span> Create New Template</a>
+  <a class="btn btn-default btn-block" href="?id=appready_question_builder"><span class="glyphicon glyphicon-pencil"></span> Question Builder</a>
+  <a class="btn btn-default btn-block" href="?id=appready_dependency_builder"><span class="glyphicon glyphicon-random"></span> Dependency Builder</a>
+  <a class="btn btn-default btn-block" href="?id=appready_version_history"><span class="glyphicon glyphicon-time"></span> Version History</a>
+</div></div>
 ]]></template>
   </sp_widget>
 </record_update>
