@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+  <sys_choice_set field="compliance_type" table="x_1433041_identi_0_template_assignment_rule">
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>0d425d939d5446dc80a0200f4b31bf1e</sys_id>
+      <name>x_1433041_identi_0_template_assignment_rule</name>
+      <element>compliance_type</element>
+      <label>SOX</label>
+      <value>sox</value>
+      <sequence>0</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>380fca00ccb74378ba94f26939c16d42</sys_id>
+      <name>x_1433041_identi_0_template_assignment_rule</name>
+      <element>compliance_type</element>
+      <label>HIPAA</label>
+      <value>hipaa</value>
+      <sequence>1</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>4da559ad3f764ef9a5d576564c6072a1</sys_id>
+      <name>x_1433041_identi_0_template_assignment_rule</name>
+      <element>compliance_type</element>
+      <label>GDPR</label>
+      <value>gdpr</value>
+      <sequence>2</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>6062996221244e8784f42a518a6ec84e</sys_id>
+      <name>x_1433041_identi_0_template_assignment_rule</name>
+      <element>compliance_type</element>
+      <label>PCI</label>
+      <value>pci</value>
+      <sequence>3</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>4a24ca313aad4c8aae62b14372303f98</sys_id>
+      <name>x_1433041_identi_0_template_assignment_rule</name>
+      <element>compliance_type</element>
+      <label>None</label>
+      <value>none</value>
+      <sequence>4</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice_set action="INSERT_OR_UPDATE">
+      <sys_id>ea5ab75772674c808d495d6d7bba42f1</sys_id>
+      <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+      <name>x_1433041_identi_0_template_assignment_rule</name>
+      <element>compliance_type</element>
+    </sys_choice_set>
+  </sys_choice_set>
+</record_update>

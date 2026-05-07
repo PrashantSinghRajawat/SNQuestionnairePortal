@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+  <sys_script_include action="INSERT_OR_UPDATE">
+    <sys_id>1e1726c7b1c143e98baf5b0aa1032e11</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_script_include_1e1726c7b1c143e98baf5b0aa1032e11</sys_update_name>
+    <access>package_private</access>
+    <active>true</active>
+    <api_name>x_1433041_identi_0.AppReadyTemplateService</api_name>
+    <caller_access/>
+    <client_callable>true</client_callable>
+    <description>Service for managing questionnaire templates - resolving, cloning, publishing, and querying template metadata</description>
+    <mobile_callable>false</mobile_callable>
+    <name>AppReadyTemplateService</name>
+    <sandbox_callable>false</sandbox_callable>
+    <script><![CDATA[var AppReadyTemplateService = Class.create();
+AppReadyTemplateService.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+    initialize: function() {},
+
+    getTemplate: function() {
+        var templateId = this.getParameter('sysparm_template_id');
+        var gr = new GlideRecord('x_1433041_identi_0_questionnaire_template');
+        if (gr.get(templateId)) {
+            return JSON.stringify({
+                success: true,
+                template: {
+                    sys_id: gr.getUniqueValue(),
+                    name: gr.getValue('name'),
+                    template_key: gr.getValue('template_key'),
+                    version: gr.getValue('version'),
+                    status: gr.getValue('status'),
+                    active: gr.getValue('active'),
+                    is_default: gr.getValue('is_default'),
+                    description: gr.getValue('description')
+                }
+            });
+        }
+        return JSON.stringify({ success: false, message: 'Template not found' });
+    },
+
+    resolveTemplate: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var appGr = new GlideRecord('x_1433041_identi_0_application');
+        if (!appGr.get(applicationId)) {
+            return JSON.stringify({ success: false, message: 'Application not found' });
+        }
+        var templateField = appGr.getValue('questionnaire_template');
+        if (templateField) {
+            return JSON.stringify({ success: true, template_id: templateField, resolution: 'application_assigned' });
+        }
+        var clientId = appGr.getValue('client');
+        if (clientId) {
+            var ruleGr = new GlideRecord('x_1433041_identi_0_template_assignment_rule');
+            ruleGr.addQuery('client', clientId);
+            ruleGr.addQuery('active', true);
+            ruleGr.orderBy('priority');
+            ruleGr.setLimit(1);
+            ruleGr.query();
+            if (ruleGr.next()) {
+                return JSON.stringify({ success: true, template_id: ruleGr.getValue('template'), resolution: 'client_rule' });
+            }
+        }
+        var defaultGr = new GlideRecord('x_1433041_identi_0_questionnaire_template');
+        defaultGr.addQuery('is_default', true);
+        defaultGr.addQuery('active', true);
+        defaultGr.addQuery('status', 'published');
+        defaultGr.setLimit(1);
+        defaultGr.query();
+        if (defaultGr.next()) {
+            return JSON.stringify({ success: true, template_id: defaultGr.getUniqueValue(), resolution: 'default' });
+        }
+        return JSON.stringify({ success: false, message: 'No template could be resolved' });
+    },
+
+    cloneTemplate: function() {
+        var sourceId = this.getParameter('sysparm_source_template_id');
+        var sourceGr = new GlideRecord('x_1433041_identi_0_questionnaire_template');
+        if (!sourceGr.get(sourceId)) {
+            return JSON.stringify({ success: false, message: 'Source template not found' });
+        }
+        var newGr = new GlideRecord('x_1433041_identi_0_questionnaire_template');
+        newGr.initialize();
+        newGr.setValue('name', sourceGr.getValue('name') + ' (v' + (parseInt(sourceGr.getValue('version')) + 1) + ')');
+        newGr.setValue('template_key', sourceGr.getValue('template_key'));
+        newGr.setValue('version', parseInt(sourceGr.getValue('version')) + 1);
+        newGr.setValue('status', 'draft');
+        newGr.setValue('active', true);
+        newGr.setValue('parent_template', sourceId);
+        newGr.setValue('client', sourceGr.getValue('client'));
+        newGr.setValue('application_type', sourceGr.getValue('application_type'));
+        newGr.setValue('description', sourceGr.getValue('description'));
+        var newId = newGr.insert();
+        var secGr = new GlideRecord('x_1433041_identi_0_template_section');
+        secGr.addQuery('template', sourceId);
+        secGr.addQuery('active', true);
+        secGr.query();
+        while (secGr.next()) {
+            var newSec = new GlideRecord('x_1433041_identi_0_template_section');
+            newSec.initialize();
+            newSec.setValue('template', newId);
+            newSec.setValue('section', secGr.getValue('section'));
+            newSec.setValue('order', secGr.getValue('order'));
+            newSec.setValue('active', true);
+            newSec.setValue('collapsible', secGr.getValue('collapsible'));
+            newSec.insert();
+        }
+        return JSON.stringify({ success: true, template_id: newId });
+    },
+
+    publishTemplate: function() {
+        var templateId = this.getParameter('sysparm_template_id');
+        var gr = new GlideRecord('x_1433041_identi_0_questionnaire_template');
+        if (!gr.get(templateId)) {
+            return JSON.stringify({ success: false, message: 'Template not found' });
+        }
+        if (gr.getValue('status') !== 'draft') {
+            return JSON.stringify({ success: false, message: 'Only draft templates can be published' });
+        }
+        gr.setValue('status', 'published');
+        gr.setValue('published_by', gs.getUserID());
+        gr.setValue('published_at', new GlideDateTime().getDisplayValue());
+        gr.update();
+        return JSON.stringify({ success: true, message: 'Template published successfully' });
+    },
+
+    getTemplateSections: function() {
+        var templateId = this.getParameter('sysparm_template_id');
+        var sections = [];
+        var gr = new GlideRecord('x_1433041_identi_0_template_section');
+        gr.addQuery('template', templateId);
+        gr.addQuery('active', true);
+        gr.orderBy('order');
+        gr.query();
+        while (gr.next()) {
+            var secGr = new GlideRecord('x_1433041_identi_0_section');
+            if (secGr.get(gr.getValue('section'))) {
+                sections.push({
+                    mapping_id: gr.getUniqueValue(),
+                    section_id: secGr.getUniqueValue(),
+                    name: secGr.getValue('name'),
+                    section_key: secGr.getValue('section_key'),
+                    order: gr.getValue('order'),
+                    collapsible: gr.getValue('collapsible')
+                });
+            }
+        }
+        return JSON.stringify({ success: true, sections: sections });
+    },
+
+    type: 'AppReadyTemplateService'
+});]]></script>
+    <sys_policy/>
+  </sys_script_include>
+</record_update>

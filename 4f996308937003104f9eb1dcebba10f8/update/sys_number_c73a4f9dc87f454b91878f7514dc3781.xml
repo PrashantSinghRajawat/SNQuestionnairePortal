@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_number">
+  <sys_number action="INSERT_OR_UPDATE">
+    <sys_id>c73a4f9dc87f454b91878f7514dc3781</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_number_c73a4f9dc87f454b91878f7514dc3781</sys_update_name>
+    <category>x_1433041_identi_0_notification_event</category>
+    <maximum_digits>7</maximum_digits>
+    <number>1000</number>
+    <prefix>NTF</prefix>
+  </sys_number>
+</record_update>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+  <sys_choice_set field="operator" table="x_1433041_identi_0_question_dependency">
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>7216cd75df234d98a11fe5c2915d9e85</sys_id>
+      <name>x_1433041_identi_0_question_dependency</name>
+      <element>operator</element>
+      <label>Equals</label>
+      <value>equals</value>
+      <sequence>0</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>5e2b38f1062f40388152979b0ea875cc</sys_id>
+      <name>x_1433041_identi_0_question_dependency</name>
+      <element>operator</element>
+      <label>Not Equals</label>
+      <value>not_equals</value>
+      <sequence>1</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>5c05ae4a78424b07b343df9e556afa64</sys_id>
+      <name>x_1433041_identi_0_question_dependency</name>
+      <element>operator</element>
+      <label>Contains</label>
+      <value>contains</value>
+      <sequence>2</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>eaf7ad2525ce486789057c477d231392</sys_id>
+      <name>x_1433041_identi_0_question_dependency</name>
+      <element>operator</element>
+      <label>Greater Than</label>
+      <value>greater_than</value>
+      <sequence>3</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>bfb3b7a00aba47e8b2944051763eb38b</sys_id>
+      <name>x_1433041_identi_0_question_dependency</name>
+      <element>operator</element>
+      <label>Less Than</label>
+      <value>less_than</value>
+      <sequence>4</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>30fd2fe477ee46b5ba440d99a89811b4</sys_id>
+      <name>x_1433041_identi_0_question_dependency</name>
+      <element>operator</element>
+      <label>In</label>
+      <value>in</value>
+      <sequence>5</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>f10a51d53f04470195f2348402591ef9</sys_id>
+      <name>x_1433041_identi_0_question_dependency</name>
+      <element>operator</element>
+      <label>Not In</label>
+      <value>not_in</value>
+      <sequence>6</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice_set action="INSERT_OR_UPDATE">
+      <sys_id>0ee066c860654a8793cd0b79eb0d2a1d</sys_id>
+      <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+      <name>x_1433041_identi_0_question_dependency</name>
+      <element>operator</element>
+    </sys_choice_set>
+  </sys_choice_set>
+</record_update>

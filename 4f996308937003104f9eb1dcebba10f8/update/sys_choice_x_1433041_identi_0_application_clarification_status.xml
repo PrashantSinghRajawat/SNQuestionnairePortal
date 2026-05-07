@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+  <sys_choice_set field="clarification_status" table="x_1433041_identi_0_application">
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>7dab9227f6ec4330a238c49779a463dd</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>clarification_status</element>
+      <label>None</label>
+      <value>none</value>
+      <sequence>0</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>775942d665e84ff98ff95b4f7bec74e6</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>clarification_status</element>
+      <label>Pending</label>
+      <value>pending</value>
+      <sequence>1</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>ff16a6dddf684fd79da099bb27c48850</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>clarification_status</element>
+      <label>Responded</label>
+      <value>responded</value>
+      <sequence>2</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>8d855b5468d045638acc0973f3d24d31</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>clarification_status</element>
+      <label>Resolved</label>
+      <value>resolved</value>
+      <sequence>3</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice_set action="INSERT_OR_UPDATE">
+      <sys_id>8bc1a6ac2eb1487d9436bea02ac8a4c9</sys_id>
+      <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+      <name>x_1433041_identi_0_application</name>
+      <element>clarification_status</element>
+    </sys_choice_set>
+  </sys_choice_set>
+</record_update>

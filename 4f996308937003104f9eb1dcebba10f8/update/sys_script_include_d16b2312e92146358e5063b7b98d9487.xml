@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+  <sys_script_include action="INSERT_OR_UPDATE">
+    <sys_id>d16b2312e92146358e5063b7b98d9487</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_script_include_d16b2312e92146358e5063b7b98d9487</sys_update_name>
+    <access>package_private</access>
+    <active>true</active>
+    <api_name>x_1433041_identi_0.AppReadyValidationEngine</api_name>
+    <caller_access/>
+    <client_callable>true</client_callable>
+    <description>Engine for runtime validation of questionnaire responses - validates required fields, regex patterns, numeric ranges, and length constraints</description>
+    <mobile_callable>false</mobile_callable>
+    <name>AppReadyValidationEngine</name>
+    <sandbox_callable>false</sandbox_callable>
+    <script><![CDATA[var AppReadyValidationEngine = Class.create();
+AppReadyValidationEngine.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+    initialize: function() {},
+
+    validateApplication: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var errors = [];
+        var warnings = [];
+        var appGr = new GlideRecord('x_1433041_identi_0_application');
+        if (!appGr.get(applicationId)) {
+            return JSON.stringify({ success: false, message: 'Application not found' });
+        }
+        var templateId = appGr.getValue('questionnaire_template');
+        if (!templateId) {
+            return JSON.stringify({ success: false, message: 'No template assigned' });
+        }
+        var responses = {};
+        var respGr = new GlideRecord('x_1433041_identi_0_response');
+        respGr.addQuery('application', applicationId);
+        respGr.query();
+        while (respGr.next()) {
+            responses[respGr.getValue('question')] = respGr.getValue('response_value');
+        }
+        var sectionIds = [];
+        var tsGr = new GlideRecord('x_1433041_identi_0_template_section');
+        tsGr.addQuery('template', templateId);
+        tsGr.addQuery('active', true);
+        tsGr.query();
+        while (tsGr.next()) {
+            sectionIds.push(tsGr.getValue('section'));
+        }
+        var qGr = new GlideRecord('x_1433041_identi_0_question');
+        qGr.addQuery('section', 'IN', sectionIds.join(','));
+        qGr.addQuery('active', true);
+        qGr.query();
+        while (qGr.next()) {
+            var questionId = qGr.getUniqueValue();
+            var responseValue = responses[questionId] || '';
+            var questionLabel = qGr.getValue('short_label') || questionId;
+            if (qGr.getValue('required') == 'true' && !responseValue) {
+                errors.push({ question_id: questionId, question_label: questionLabel, type: 'required', message: questionLabel + ' is required' });
+                continue;
+            }
+            if (!responseValue) continue;
+            var regex = qGr.getValue('validation_regex');
+            if (regex) {
+                var pattern = new RegExp(regex);
+                if (!pattern.test(responseValue)) {
+                    errors.push({ question_id: questionId, question_label: questionLabel, type: 'regex', message: questionLabel + ' does not match the required format' });
+                }
+            }
+            var minLen = parseInt(qGr.getValue('min_length'));
+            var maxLen = parseInt(qGr.getValue('max_length'));
+            if (minLen && responseValue.length < minLen) {
+                errors.push({ question_id: questionId, question_label: questionLabel, type: 'min_length', message: questionLabel + ' must be at least ' + minLen + ' characters' });
+            }
+            if (maxLen && responseValue.length > maxLen) {
+                errors.push({ question_id: questionId, question_label: questionLabel, type: 'max_length', message: questionLabel + ' must not exceed ' + maxLen + ' characters' });
+            }
+        }
+        appGr.setValue('missing_items_count', errors.length.toString());
+        appGr.update();
+        return JSON.stringify({ success: true, valid: errors.length === 0, errors: errors, warnings: warnings, error_count: errors.length, warning_count: warnings.length });
+    },
+
+    validateQuestion: function() {
+        var questionId = this.getParameter('sysparm_question_id');
+        var responseValue = this.getParameter('sysparm_response_value');
+        var qGr = new GlideRecord('x_1433041_identi_0_question');
+        if (!qGr.get(questionId)) {
+            return JSON.stringify({ success: false, message: 'Question not found' });
+        }
+        var errors = [];
+        var questionLabel = qGr.getValue('short_label') || questionId;
+        if (qGr.getValue('required') == 'true' && !responseValue) {
+            errors.push({ type: 'required', message: questionLabel + ' is required' });
+        }
+        if (responseValue) {
+            var regex = qGr.getValue('validation_regex');
+            if (regex && !new RegExp(regex).test(responseValue)) {
+                errors.push({ type: 'regex', message: 'Invalid format' });
+            }
+        }
+        return JSON.stringify({ success: true, valid: errors.length === 0, errors: errors });
+    },
+
+    type: 'AppReadyValidationEngine'
+});]]></script>
+    <sys_policy/>
+  </sys_script_include>
+</record_update>

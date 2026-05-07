@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+  <sys_choice_set field="display_style" table="x_1433041_identi_0_question">
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>57be409d3a2e4256b3af7279bcdcb158</sys_id>
+      <name>x_1433041_identi_0_question</name>
+      <element>display_style</element>
+      <label>Standard</label>
+      <value>standard</value>
+      <sequence>0</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>3f4fccbab11d46d69c5cbedb84a462e4</sys_id>
+      <name>x_1433041_identi_0_question</name>
+      <element>display_style</element>
+      <label>Compact</label>
+      <value>compact</value>
+      <sequence>1</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>041ef4e3d47f45308229e1df7bfa250f</sys_id>
+      <name>x_1433041_identi_0_question</name>
+      <element>display_style</element>
+      <label>Card</label>
+      <value>card</value>
+      <sequence>2</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice_set action="INSERT_OR_UPDATE">
+      <sys_id>c8e3379377ec40b0924358b368a8c63b</sys_id>
+      <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+      <name>x_1433041_identi_0_question</name>
+      <element>display_style</element>
+    </sys_choice_set>
+  </sys_choice_set>
+</record_update>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+  <sys_script_include action="INSERT_OR_UPDATE">
+    <sys_id>76f0a034db4c4669805e011edde0eea9</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_script_include_76f0a034db4c4669805e011edde0eea9</sys_update_name>
+    <access>package_private</access>
+    <active>true</active>
+    <api_name>x_1433041_identi_0.AppReadyResponseService</api_name>
+    <caller_access/>
+    <client_callable>true</client_callable>
+    <description>Service for saving and loading questionnaire responses - handles auto-save, batch saves, and response retrieval</description>
+    <mobile_callable>false</mobile_callable>
+    <name>AppReadyResponseService</name>
+    <sandbox_callable>false</sandbox_callable>
+    <script><![CDATA[var AppReadyResponseService = Class.create();
+AppReadyResponseService.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+    initialize: function() {},
+
+    saveResponse: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var questionId = this.getParameter('sysparm_question_id');
+        var responseValue = this.getParameter('sysparm_response_value');
+        var responseJson = this.getParameter('sysparm_response_json');
+        var gr = new GlideRecord('x_1433041_identi_0_response');
+        gr.addQuery('application', applicationId);
+        gr.addQuery('question', questionId);
+        gr.query();
+        if (gr.next()) {
+            gr.setValue('response_value', responseValue || '');
+            if (responseJson) { gr.setValue('response_json', responseJson); }
+            gr.setValue('answered_by', gs.getUserID());
+            gr.setValue('answered_at', new GlideDateTime().getDisplayValue());
+            gr.update();
+        } else {
+            gr.initialize();
+            gr.setValue('application', applicationId);
+            gr.setValue('question', questionId);
+            gr.setValue('response_value', responseValue || '');
+            if (responseJson) { gr.setValue('response_json', responseJson); }
+            gr.setValue('answered_by', gs.getUserID());
+            gr.setValue('answered_at', new GlideDateTime().getDisplayValue());
+            gr.insert();
+        }
+        var appGr = new GlideRecord('x_1433041_identi_0_application');
+        if (appGr.get(applicationId)) {
+            appGr.setValue('last_saved_at', new GlideDateTime().getDisplayValue());
+            appGr.setValue('last_activity_by', gs.getUserID());
+            appGr.update();
+        }
+        return JSON.stringify({ success: true, message: 'Response saved' });
+    },
+
+    saveBatchResponses: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var responsesJson = this.getParameter('sysparm_responses');
+        var responses = JSON.parse(responsesJson);
+        var savedCount = 0;
+        for (var i = 0; i < responses.length; i++) {
+            var resp = responses[i];
+            var gr = new GlideRecord('x_1433041_identi_0_response');
+            gr.addQuery('application', applicationId);
+            gr.addQuery('question', resp.question_id);
+            gr.query();
+            if (gr.next()) {
+                gr.setValue('response_value', resp.value || '');
+                if (resp.json) { gr.setValue('response_json', resp.json); }
+                gr.setValue('answered_by', gs.getUserID());
+                gr.setValue('answered_at', new GlideDateTime().getDisplayValue());
+                gr.update();
+            } else {
+                gr.initialize();
+                gr.setValue('application', applicationId);
+                gr.setValue('question', resp.question_id);
+                gr.setValue('response_value', resp.value || '');
+                if (resp.json) { gr.setValue('response_json', resp.json); }
+                gr.setValue('answered_by', gs.getUserID());
+                gr.setValue('answered_at', new GlideDateTime().getDisplayValue());
+                gr.insert();
+            }
+            savedCount++;
+        }
+        var appGr = new GlideRecord('x_1433041_identi_0_application');
+        if (appGr.get(applicationId)) {
+            appGr.setValue('last_saved_at', new GlideDateTime().getDisplayValue());
+            appGr.setValue('last_activity_by', gs.getUserID());
+            appGr.update();
+        }
+        return JSON.stringify({ success: true, saved_count: savedCount });
+    },
+
+    loadResponses: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var responses = [];
+        var gr = new GlideRecord('x_1433041_identi_0_response');
+        gr.addQuery('application', applicationId);
+        gr.query();
+        while (gr.next()) {
+            responses.push({
+                sys_id: gr.getUniqueValue(),
+                question: gr.getValue('question'),
+                response_value: gr.getValue('response_value'),
+                response_json: gr.getValue('response_json'),
+                answered_by: gr.getValue('answered_by'),
+                answered_at: gr.getValue('answered_at')
+            });
+        }
+        return JSON.stringify({ success: true, responses: responses });
+    },
+
+    type: 'AppReadyResponseService'
+});]]></script>
+    <sys_policy/>
+  </sys_script_include>
+</record_update>

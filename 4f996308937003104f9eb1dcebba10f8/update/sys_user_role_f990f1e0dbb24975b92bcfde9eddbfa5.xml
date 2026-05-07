@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_user_role">
+  <sys_user_role action="INSERT_OR_UPDATE">
+    <sys_id>f990f1e0dbb24975b92bcfde9eddbfa5</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_user_role_f990f1e0dbb24975b92bcfde9eddbfa5</sys_update_name>
+    <assignable_by/>
+    <can_delegate>true</can_delegate>
+    <description>Reviews onboarding submissions, manages clarifications, and approves build-ready status</description>
+    <elevated_privilege>false</elevated_privilege>
+    <grantable>true</grantable>
+    <name>x_1433041_identi_0.admin</name>
+    <scoped_admin>false</scoped_admin>
+    <suffix>admin</suffix>
+  </sys_user_role>
+</record_update>

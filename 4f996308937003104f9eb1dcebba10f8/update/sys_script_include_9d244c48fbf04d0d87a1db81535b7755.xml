@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+  <sys_script_include action="INSERT_OR_UPDATE">
+    <sys_id>9d244c48fbf04d0d87a1db81535b7755</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_script_include_9d244c48fbf04d0d87a1db81535b7755</sys_update_name>
+    <access>package_private</access>
+    <active>true</active>
+    <api_name>x_1433041_identi_0.AppReadyProgressService</api_name>
+    <caller_access/>
+    <client_callable>true</client_callable>
+    <description>Service for calculating questionnaire completion progress - tracks required question completion and section-level breakdowns</description>
+    <mobile_callable>false</mobile_callable>
+    <name>AppReadyProgressService</name>
+    <sandbox_callable>false</sandbox_callable>
+    <script><![CDATA[var AppReadyProgressService = Class.create();
+AppReadyProgressService.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+    initialize: function() {},
+
+    calculateProgress: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var appGr = new GlideRecord('x_1433041_identi_0_application');
+        if (!appGr.get(applicationId)) {
+            return JSON.stringify({ success: false, message: 'Application not found' });
+        }
+        var templateId = appGr.getValue('questionnaire_template');
+        if (!templateId) {
+            return JSON.stringify({ success: false, message: 'No template assigned' });
+        }
+        var sectionIds = [];
+        var tsGr = new GlideRecord('x_1433041_identi_0_template_section');
+        tsGr.addQuery('template', templateId);
+        tsGr.addQuery('active', true);
+        tsGr.query();
+        while (tsGr.next()) {
+            sectionIds.push(tsGr.getValue('section'));
+        }
+        if (sectionIds.length === 0) {
+            return JSON.stringify({ success: true, completion_percent: 0, total_required: 0, completed_required: 0 });
+        }
+        var totalRequired = 0;
+        var requiredQuestionIds = [];
+        var qGr = new GlideRecord('x_1433041_identi_0_question');
+        qGr.addQuery('section', 'IN', sectionIds.join(','));
+        qGr.addQuery('active', true);
+        qGr.addQuery('required', true);
+        qGr.query();
+        while (qGr.next()) {
+            totalRequired++;
+            requiredQuestionIds.push(qGr.getUniqueValue());
+        }
+        if (totalRequired === 0) {
+            appGr.setValue('completion_percent', '0');
+            appGr.update();
+            return JSON.stringify({ success: true, completion_percent: 0, total_required: 0, completed_required: 0 });
+        }
+        var completedRequired = 0;
+        var respGr = new GlideRecord('x_1433041_identi_0_response');
+        respGr.addQuery('application', applicationId);
+        respGr.addQuery('question', 'IN', requiredQuestionIds.join(','));
+        respGr.addNotNullQuery('response_value');
+        respGr.query();
+        completedRequired = respGr.getRowCount();
+        var completionPercent = Math.round((completedRequired / totalRequired) * 100);
+        appGr.setValue('completion_percent', completionPercent.toString());
+        appGr.update();
+        return JSON.stringify({ success: true, completion_percent: completionPercent, total_required: totalRequired, completed_required: completedRequired });
+    },
+
+    getSectionProgress: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var templateId = this.getParameter('sysparm_template_id');
+        var sectionProgress = [];
+        var tsGr = new GlideRecord('x_1433041_identi_0_template_section');
+        tsGr.addQuery('template', templateId);
+        tsGr.addQuery('active', true);
+        tsGr.orderBy('order');
+        tsGr.query();
+        while (tsGr.next()) {
+            var sectionId = tsGr.getValue('section');
+            var secGr = new GlideRecord('x_1433041_identi_0_section');
+            secGr.get(sectionId);
+            var questionIds = [];
+            var qGr = new GlideRecord('x_1433041_identi_0_question');
+            qGr.addQuery('section', sectionId);
+            qGr.addQuery('active', true);
+            qGr.addQuery('required', true);
+            qGr.query();
+            var totalInSection = qGr.getRowCount();
+            while (qGr.next()) {
+                questionIds.push(qGr.getUniqueValue());
+            }
+            var answeredInSection = 0;
+            if (questionIds.length > 0) {
+                var respGr = new GlideRecord('x_1433041_identi_0_response');
+                respGr.addQuery('application', applicationId);
+                respGr.addQuery('question', 'IN', questionIds.join(','));
+                respGr.addNotNullQuery('response_value');
+                respGr.query();
+                answeredInSection = respGr.getRowCount();
+            }
+            var sectionPercent = totalInSection > 0 ? Math.round((answeredInSection / totalInSection) * 100) : 100;
+            sectionProgress.push({
+                section_id: sectionId,
+                section_name: secGr.getValue('name'),
+                total_required: totalInSection,
+                completed: answeredInSection,
+                percent: sectionPercent,
+                status: sectionPercent === 100 ? 'complete' : (answeredInSection > 0 ? 'in_progress' : 'not_started')
+            });
+        }
+        return JSON.stringify({ success: true, sections: sectionProgress });
+    },
+
+    type: 'AppReadyProgressService'
+});]]></script>
+    <sys_policy/>
+  </sys_script_include>
+</record_update>

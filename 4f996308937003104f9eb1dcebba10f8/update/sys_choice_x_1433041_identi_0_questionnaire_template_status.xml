@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+  <sys_choice_set field="status" table="x_1433041_identi_0_questionnaire_template">
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>aaf875a4132e46679b6e453707092fde</sys_id>
+      <name>x_1433041_identi_0_questionnaire_template</name>
+      <element>status</element>
+      <label>Draft</label>
+      <value>draft</value>
+      <sequence>0</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>a93b6193aecd4e0281694c4cd4f4ef9c</sys_id>
+      <name>x_1433041_identi_0_questionnaire_template</name>
+      <element>status</element>
+      <label>Published</label>
+      <value>published</value>
+      <sequence>1</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>79fea4a517734e67abfbf35d475ecc58</sys_id>
+      <name>x_1433041_identi_0_questionnaire_template</name>
+      <element>status</element>
+      <label>Archived</label>
+      <value>archived</value>
+      <sequence>2</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice_set action="INSERT_OR_UPDATE">
+      <sys_id>7e0d65c6c7e54db8900701c88a60d92e</sys_id>
+      <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+      <name>x_1433041_identi_0_questionnaire_template</name>
+      <element>status</element>
+    </sys_choice_set>
+  </sys_choice_set>
+</record_update>

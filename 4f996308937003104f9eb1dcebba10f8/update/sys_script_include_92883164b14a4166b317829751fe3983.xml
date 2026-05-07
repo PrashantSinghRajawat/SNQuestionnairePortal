@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+  <sys_script_include action="INSERT_OR_UPDATE">
+    <sys_id>92883164b14a4166b317829751fe3983</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_script_include_92883164b14a4166b317829751fe3983</sys_update_name>
+    <access>package_private</access>
+    <active>true</active>
+    <api_name>x_1433041_identi_0.AppReadyDependencyEngine</api_name>
+    <caller_access/>
+    <client_callable>true</client_callable>
+    <description>Engine for evaluating conditional question dependencies - determines visibility, requirements, and enablement based on parent question responses</description>
+    <mobile_callable>false</mobile_callable>
+    <name>AppReadyDependencyEngine</name>
+    <sandbox_callable>false</sandbox_callable>
+    <script><![CDATA[var AppReadyDependencyEngine = Class.create();
+AppReadyDependencyEngine.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+    initialize: function() {},
+
+    evaluateDependencies: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var responses = {};
+        var respGr = new GlideRecord('x_1433041_identi_0_response');
+        respGr.addQuery('application', applicationId);
+        respGr.query();
+        while (respGr.next()) {
+            responses[respGr.getValue('question')] = respGr.getValue('response_value');
+        }
+        var dependencies = [];
+        var depGr = new GlideRecord('x_1433041_identi_0_question_dependency');
+        depGr.addQuery('active', true);
+        depGr.query();
+        while (depGr.next()) {
+            dependencies.push({
+                parent_question: depGr.getValue('parent_question'),
+                child_question: depGr.getValue('child_question'),
+                operator: depGr.getValue('operator'),
+                expected_value: depGr.getValue('expected_value'),
+                action: depGr.getValue('action')
+            });
+        }
+        var visibilityMap = {};
+        for (var i = 0; i < dependencies.length; i++) {
+            var dep = dependencies[i];
+            var parentValue = responses[dep.parent_question] || '';
+            var conditionMet = this._evaluateCondition(parentValue, dep.operator, dep.expected_value);
+            if (!visibilityMap[dep.child_question]) {
+                visibilityMap[dep.child_question] = { visible: true, required: false, disabled: false };
+            }
+            if (conditionMet) {
+                if (dep.action === 'show') visibilityMap[dep.child_question].visible = true;
+                else if (dep.action === 'hide') visibilityMap[dep.child_question].visible = false;
+                else if (dep.action === 'require') visibilityMap[dep.child_question].required = true;
+                else if (dep.action === 'disable') visibilityMap[dep.child_question].disabled = true;
+            } else {
+                if (dep.action === 'show') visibilityMap[dep.child_question].visible = false;
+            }
+        }
+        return JSON.stringify({ success: true, visibility: visibilityMap });
+    },
+
+    getQuestionDependencies: function() {
+        var questionId = this.getParameter('sysparm_question_id');
+        var deps = [];
+        var gr = new GlideRecord('x_1433041_identi_0_question_dependency');
+        gr.addQuery('parent_question', questionId);
+        gr.addQuery('active', true);
+        gr.query();
+        while (gr.next()) {
+            deps.push({
+                sys_id: gr.getUniqueValue(),
+                child_question: gr.getValue('child_question'),
+                operator: gr.getValue('operator'),
+                expected_value: gr.getValue('expected_value'),
+                action: gr.getValue('action')
+            });
+        }
+        return JSON.stringify({ success: true, dependencies: deps });
+    },
+
+    _evaluateCondition: function(actualValue, operator, expectedValue) {
+        if (operator === 'equals') return actualValue === expectedValue;
+        if (operator === 'not_equals') return actualValue !== expectedValue;
+        if (operator === 'contains') return actualValue.indexOf(expectedValue) !== -1;
+        if (operator === 'greater_than') return parseFloat(actualValue) > parseFloat(expectedValue);
+        if (operator === 'less_than') return parseFloat(actualValue) < parseFloat(expectedValue);
+        if (operator === 'in') return expectedValue.split(',').indexOf(actualValue) !== -1;
+        if (operator === 'not_in') return expectedValue.split(',').indexOf(actualValue) === -1;
+        return false;
+    },
+
+    type: 'AppReadyDependencyEngine'
+});]]></script>
+    <sys_policy/>
+  </sys_script_include>
+</record_update>

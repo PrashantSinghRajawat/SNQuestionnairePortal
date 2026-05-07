@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_number">
+  <sys_number action="INSERT_OR_UPDATE">
+    <sys_id>07990458c9074c2d9e7c998fd52e5f4e</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_number_07990458c9074c2d9e7c998fd52e5f4e</sys_update_name>
+    <category>x_1433041_identi_0_communication_thread</category>
+    <maximum_digits>7</maximum_digits>
+    <number>1000</number>
+    <prefix>THR</prefix>
+  </sys_number>
+</record_update>
