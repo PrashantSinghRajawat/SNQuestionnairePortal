@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>c987bfd163b5479094416a7bbc7a666b</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_c987bfd163b5479094416a7bbc7a666b</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() { var c = this; };
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.list-group { margin-bottom: 0; }
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_version_history</id>
+    <internal>false</internal>
+    <link><![CDATA[function link(scope, element, attrs, controller) {}
+]]></link>
+    <name>IBAR Version History</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() { data.versions = []; data.templateId = $sp.getParameter("template_id") || "";
+  try { if (!data.templateId) return; var gr = new GlideRecord("x_1433041_identi_0_audit_event"); gr.addQuery("application.template", data.templateId); gr.addQuery("event_type", "template_updated"); gr.orderByDesc("performed_at"); gr.setLimit(20); gr.query();
+    while (gr.next()) { data.versions.push({ sys_id: gr.getValue("sys_id"), description: gr.getValue("description"), performed_by: gr.getDisplayValue("performed_by"), performed_at: gr.getDisplayValue("performed_at") }); }
+  } catch (e) { gs.error("IBAR Version History widget error: " + e.message); }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-time"></span> Version History</h3></div><div class="panel-body">
+  <div class="list-group" ng-if="c.data.versions.length > 0"><div class="list-group-item" ng-repeat="v in c.data.versions track by v.sys_id"><strong>{{v.performed_by}}</strong> <small class="text-muted pull-right">{{v.performed_at}}</small><p class="text-muted">{{v.description}}</p></div></div>
+  <p class="text-muted text-center" ng-if="c.data.versions.length === 0">No version history available.</p></div></div>
+]]></template>
+  </sp_widget>
+</record_update>

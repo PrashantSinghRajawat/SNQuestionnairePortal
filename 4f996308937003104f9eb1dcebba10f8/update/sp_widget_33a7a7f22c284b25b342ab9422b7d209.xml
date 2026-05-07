@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>33a7a7f22c284b25b342ab9422b7d209</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_33a7a7f22c284b25b342ab9422b7d209</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() { var c = this; };
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.well { margin-bottom: 12px; }
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_template_preview</id>
+    <internal>false</internal>
+    <link><![CDATA[function link(scope, element, attrs, controller) {}
+]]></link>
+    <name>IBAR Template Preview</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() { data.preview = { sections: [] }; data.templateId = $sp.getParameter("template_id") || "";
+  try { if (!data.templateId) return; var tGr = new GlideRecord("x_1433041_identi_0_template"); if (tGr.get(data.templateId)) { data.preview.name = tGr.getValue("name"); data.preview.description = tGr.getValue("description"); }
+    var sGr = new GlideRecord("x_1433041_identi_0_section"); sGr.addQuery("template", data.templateId); sGr.orderBy("order"); sGr.setLimit(50); sGr.query();
+    while (sGr.next()) { var section = { name: sGr.getValue("name"), questions: [] }; var qGr = new GlideRecord("x_1433041_identi_0_question"); qGr.addQuery("section", sGr.getValue("sys_id")); qGr.orderBy("order"); qGr.setLimit(100); qGr.query();
+      while (qGr.next()) { section.questions.push({ text: qGr.getValue("text"), type: qGr.getDisplayValue("question_type"), mandatory: qGr.getValue("mandatory") === "1" }); } data.preview.sections.push(section); }
+  } catch (e) { gs.error("IBAR Template Preview widget error: " + e.message); }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-eye-open"></span> Template Preview: {{c.data.preview.name}}</h3></div><div class="panel-body">
+  <p class="text-muted" ng-if="c.data.preview.description">{{c.data.preview.description}}</p>
+  <div class="alert alert-info" ng-if="!c.data.templateId"><span class="glyphicon glyphicon-info-sign"></span> Select a template to preview.</div>
+  <div ng-repeat="section in c.data.preview.sections track by $index" class="well well-sm">
+    <h4>{{section.name}}</h4>
+    <div class="form-group" ng-repeat="q in section.questions track by $index">
+      <label>{{q.text}} <span class="label label-danger" ng-if="q.mandatory">*</span></label>
+      <input type="text" class="form-control" disabled ng-if="q.type === 'Text' || q.type === 'Number' || q.type === 'Date'" placeholder="{{q.type}} input">
+      <textarea class="form-control" disabled ng-if="q.type === 'Multi-line Text'" placeholder="Multi-line text"></textarea>
+      <select class="form-control" disabled ng-if="q.type === 'Dropdown'"><option>— Select —</option></select>
+    </div>
+  </div></div></div>
+]]></template>
+  </sp_widget>
+</record_update>
