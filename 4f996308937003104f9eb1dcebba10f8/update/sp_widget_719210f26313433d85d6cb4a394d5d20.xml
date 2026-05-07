@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>719210f26313433d85d6cb4a394d5d20</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_719210f26313433d85d6cb4a394d5d20</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() { var c = this; };
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.list-group { margin-bottom: 0; }
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_review_summary</id>
+    <internal>false</internal>
+    <link><![CDATA[function link(scope, element, attrs, controller) {}
+]]></link>
+    <name>IBAR Review Summary</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() {
+  data.sections = [];
+  data.applicationId = $sp.getParameter("app_id") || "";
+  data.applicationName = "";
+
+  try {
+    if (!data.applicationId) return;
+
+    var appGr = new GlideRecord("x_1433041_identi_0_application");
+    if (appGr.get(data.applicationId)) {
+      data.applicationName = appGr.getValue("name");
+    }
+
+    // Get responses grouped by section
+    var respGr = new GlideRecord("x_1433041_identi_0_response");
+    respGr.addQuery("application", data.applicationId);
+    respGr.orderBy("section");
+    respGr.setLimit(200);
+    respGr.query();
+
+    var sectionMap = {};
+    while (respGr.next()) {
+      var sectionId = respGr.getValue("section");
+      if (!sectionMap[sectionId]) {
+        sectionMap[sectionId] = { name: respGr.getDisplayValue("section"), answered: 0, total: 0 };
+      }
+      sectionMap[sectionId].total++;
+      if (respGr.getValue("value") && respGr.getValue("value") !== "") {
+        sectionMap[sectionId].answered++;
+      }
+    }
+
+    for (var key in sectionMap) {
+      var s = sectionMap[key];
+      s.sys_id = key;
+      s.complete = s.answered === s.total;
+      data.sections.push(s);
+    }
+  } catch (e) {
+    gs.error("IBAR Review Summary widget error: " + e.message);
+  }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title"><span class="glyphicon glyphicon-list-alt"></span> Questionnaire Review</h3>
+  </div>
+  <div class="panel-body">
+    <p class="text-muted" ng-if="c.data.applicationName">Reviewing: <strong>{{c.data.applicationName}}</strong></p>
+    <div class="list-group">
+      <div class="list-group-item" ng-repeat="section in c.data.sections track by section.sys_id">
+        <span class="glyphicon" ng-class="section.complete ? 'glyphicon-ok-sign text-success' : 'glyphicon-minus-sign text-warning'"></span>
+        <strong>{{section.name}}</strong>
+        <span class="pull-right">
+          <span class="badge">{{section.answered}}/{{section.total}}</span>
+        </span>
+      </div>
+    </div>
+    <div class="text-center text-muted" ng-if="c.data.sections.length === 0">
+      <p>No responses recorded yet.</p>
+    </div>
+  </div>
+</div>
+]]></template>
+  </sp_widget>
+</record_update>

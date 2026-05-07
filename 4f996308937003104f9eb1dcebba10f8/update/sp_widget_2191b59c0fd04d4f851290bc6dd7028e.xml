@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>2191b59c0fd04d4f851290bc6dd7028e</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_2191b59c0fd04d4f851290bc6dd7028e</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() { var c = this; };
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.list-group { margin-bottom: 0; }
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_document_validation</id>
+    <internal>false</internal>
+    <link><![CDATA[function link(scope, element, attrs, controller) {}
+]]></link>
+    <name>IBAR Document Validation</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() {
+  data.validations = [];
+  data.allValid = true;
+  data.applicationId = $sp.getParameter("app_id") || "";
+
+  try {
+    if (!data.applicationId) return;
+
+    // Check required document types
+    var requiredDocs = ["architecture", "security", "compliance"];
+    var attachGr = new GlideRecord("sys_attachment");
+    attachGr.addQuery("table_name", "x_1433041_identi_0_application");
+    attachGr.addQuery("table_sys_id", data.applicationId);
+    attachGr.setLimit(50);
+    attachGr.query();
+
+    var uploadedTypes = [];
+    while (attachGr.next()) {
+      uploadedTypes.push(attachGr.getValue("file_name"));
+    }
+
+    var docLabels = {
+      architecture: "Architecture Diagram",
+      security: "Security Assessment",
+      compliance: "Compliance Certificate"
+    };
+
+    for (var i = 0; i < requiredDocs.length; i++) {
+      var docType = requiredDocs[i];
+      var found = false;
+      for (var j = 0; j < uploadedTypes.length; j++) {
+        if (uploadedTypes[j].toLowerCase().indexOf(docType) !== -1) {
+          found = true;
+          break;
+        }
+      }
+      data.validations.push({
+        type: docType,
+        label: docLabels[docType],
+        valid: found,
+        message: found ? "Document uploaded" : "Required document missing"
+      });
+      if (!found) data.allValid = false;
+    }
+  } catch (e) {
+    gs.error("IBAR Document Validation widget error: " + e.message);
+  }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      <span class="glyphicon glyphicon-check"></span>
+      Document Validation
+      <span class="label label-success pull-right" ng-if="c.data.allValid">All Valid</span>
+      <span class="label label-warning pull-right" ng-if="!c.data.allValid">Missing Items</span>
+    </h3>
+  </div>
+  <div class="panel-body">
+    <div class="list-group">
+      <div class="list-group-item" ng-repeat="v in c.data.validations track by v.type"
+           ng-class="{'list-group-item-success': v.valid, 'list-group-item-danger': !v.valid}">
+        <span class="glyphicon" ng-class="v.valid ? 'glyphicon-ok-sign' : 'glyphicon-remove-sign'"></span>
+        <strong>{{v.label}}</strong>
+        <span class="pull-right text-muted">{{v.message}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+]]></template>
+  </sp_widget>
+</record_update>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>047249ec5b6149b7828d8e2d27d6b378</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_047249ec5b6149b7828d8e2d27d6b378</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function($scope) {
+    var c = this;
+    c.docType = "";
+    c.notes = "";
+    c.uploading = false;
+
+    c.upload = function() {
+        if (!c.docType) return;
+        c.uploading = true;
+        c.server.get({
+            action: "upload_complete",
+            app_id: c.data.applicationId,
+            doc_type: c.docType,
+            notes: c.notes
+        }).then(function(r) {
+            c.data.successMsg = r.data.successMsg;
+            c.docType = "";
+            c.notes = "";
+            c.uploading = false;
+            $scope.$broadcast("ibar.documents.refresh");
+        }, function() {
+            c.uploading = false;
+        });
+    };
+};
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[@keyframes sp-spin { to { transform: rotate(360deg); } }
+.sp-spin { animation: sp-spin 0.8s linear infinite; }
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_document_upload</id>
+    <internal>false</internal>
+    <link><![CDATA[function link(scope, element, attrs, controller) {
+}
+]]></link>
+    <name>IBAR Document Upload</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() {
+  data.documents = [];
+  data.uploadEnabled = true;
+  data.applicationId = "";
+  data.applicationName = "";
+
+  try {
+    data.applicationId = input ? input.app_id || $sp.getParameter("app_id") || "" : $sp.getParameter("app_id") || "";
+
+    if (!data.applicationId) {
+      data.uploadEnabled = false;
+      return;
+    }
+
+    var appGr = new GlideRecord("x_1433041_identi_0_application");
+    if (appGr.get(data.applicationId)) {
+      data.applicationName = appGr.getValue("name");
+    }
+
+    if (input && input.action === "upload_complete") {
+      data.successMsg = "Document uploaded successfully.";
+      return;
+    }
+  } catch (e) {
+    gs.error("IBAR Document Upload widget error: " + e.message);
+  }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      <span class="glyphicon glyphicon-cloud-upload"></span>
+      Upload Documents
+    </h3>
+  </div>
+  <div class="panel-body">
+    <div class="alert alert-success" ng-if="c.data.successMsg" role="alert">
+      <span class="glyphicon glyphicon-ok-sign"></span>
+      {{c.data.successMsg}}
+    </div>
+    <div class="alert alert-info" ng-if="!c.data.uploadEnabled" role="alert">
+      <span class="glyphicon glyphicon-info-sign"></span>
+      Please select an application to upload documents.
+    </div>
+    <div ng-if="c.data.uploadEnabled">
+      <p class="text-muted">Upload supporting documents for <strong>{{c.data.applicationName}}</strong>.</p>
+      <div class="form-group">
+        <label class="control-label" for="docType">Document Type</label>
+        <select class="form-control" id="docType" ng-model="c.docType">
+          <option value="">— Select Type —</option>
+          <option value="architecture">Architecture Diagram</option>
+          <option value="security">Security Assessment</option>
+          <option value="compliance">Compliance Certificate</option>
+          <option value="integration">Integration Specification</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="control-label" for="docFile">Select File</label>
+        <input type="file" id="docFile" class="form-control" ng-model="c.fileInput">
+      </div>
+      <div class="form-group">
+        <label class="control-label" for="docNotes">Notes (optional)</label>
+        <textarea class="form-control" id="docNotes" ng-model="c.notes" rows="3" placeholder="Add any notes about this document..."></textarea>
+      </div>
+      <button type="button" class="btn btn-primary" ng-click="c.upload()" ng-disabled="c.uploading || !c.docType">
+        <span class="glyphicon glyphicon-upload" ng-if="!c.uploading"></span>
+        <span class="glyphicon glyphicon-refresh sp-spin" ng-if="c.uploading"></span>
+        {{c.uploading ? 'Uploading...' : 'Upload Document'}}
+      </button>
+    </div>
+  </div>
+</div>
+]]></template>
+  </sp_widget>
+</record_update>
