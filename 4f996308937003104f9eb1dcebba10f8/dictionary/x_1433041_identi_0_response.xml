@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element active="false" audit="true" db_object_id="739c94d0070c4737a64f955d61766066" label="Response" name="x_1433041_identi_0_response" type="collection">
+        <element label="Answered At" max_length="40" name="answered_at" type="glide_date_time"/>
+        <element label="Application" mandatory="true" max_length="32" name="application" reference="x_1433041_identi_0_application" type="reference"/>
+        <element label="Answered By" max_length="32" name="answered_by" reference="sys_user" type="reference"/>
+        <element label="Response JSON" max_length="4000" name="response_json" type="json"/>
+        <element label="Question" mandatory="true" max_length="32" name="question" reference="x_1433041_identi_0_question" type="reference"/>
+        <element label="Response Value" max_length="4000" name="response_value" type="string"/>
+        <index name="index">
+            <element name="answered_by"/>
+        </index>
+        <index name="index2">
+            <element name="application"/>
+        </index>
+        <index name="index3">
+            <element name="question"/>
+        </index>
+    </element>
+</database>

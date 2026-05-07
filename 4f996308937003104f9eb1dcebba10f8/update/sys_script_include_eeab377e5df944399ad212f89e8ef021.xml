@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
-  <sys_script_include action="INSERT_OR_UPDATE">
-    <sys_id>eeab377e5df944399ad212f89e8ef021</sys_id>
-    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
-    <sys_update_name>sys_script_include_eeab377e5df944399ad212f89e8ef021</sys_update_name>
-    <access>package_private</access>
-    <active>true</active>
-    <api_name>x_1433041_identi_0.AppReadyAssignmentService</api_name>
-    <caller_access/>
-    <client_callable>true</client_callable>
-    <description>Service for managing user-role assignments on applications - handles creation, deactivation, and role-based recipient resolution</description>
-    <mobile_callable>false</mobile_callable>
-    <name>AppReadyAssignmentService</name>
-    <sandbox_callable>false</sandbox_callable>
-    <script><![CDATA[var AppReadyAssignmentService = Class.create();
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_1433041_identi_0.AppReadyAssignmentService</api_name>
+        <caller_access/>
+        <client_callable>true</client_callable>
+        <description>Service for managing user-role assignments on applications - handles creation, deactivation, and role-based recipient resolution</description>
+        <mobile_callable>false</mobile_callable>
+        <name>AppReadyAssignmentService</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var AppReadyAssignmentService = Class.create();
 AppReadyAssignmentService.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
     initialize: function() {},
 
@@ -153,6 +150,17 @@ AppReadyAssignmentService.prototype = Object.extendsObject(global.AbstractAjaxPr
 
     type: 'AppReadyAssignmentService'
 });]]></script>
-    <sys_policy/>
-  </sys_script_include>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 14:10:31</sys_created_on>
+        <sys_id>eeab377e5df944399ad212f89e8ef021</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>AppReadyAssignmentService</sys_name>
+        <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
+        <sys_update_name>sys_script_include_eeab377e5df944399ad212f89e8ef021</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 14:10:31</sys_updated_on>
+    </sys_script_include>
 </record_update>

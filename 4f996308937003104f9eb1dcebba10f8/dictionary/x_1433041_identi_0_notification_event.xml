@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element active="false" audit="true" db_object_id="b2409b0754614c3d88e66430766ac495" label="Notification Event" name="x_1433041_identi_0_notification_event" type="collection">
+        <element label="Notification Template" max_length="32" name="notification_template" reference="x_1433041_identi_0_notification_template" type="reference"/>
+        <element label="Sent At" max_length="40" name="sent_at" type="glide_date_time"/>
+        <element choice="1" label="Event Type" mandatory="true" max_length="40" name="event_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Completion Notification" sequence="7" value="completion_notification"/>
+                <element inactive_on_update="false" label="Reminder" sequence="0" value="reminder"/>
+                <element inactive_on_update="false" label="Build Ready" sequence="5" value="build_ready"/>
+                <element inactive_on_update="false" label="Overdue Escalation" sequence="3" value="overdue_escalation"/>
+                <element inactive_on_update="false" label="Submission Confirmation" sequence="4" value="submission_confirmation"/>
+                <element inactive_on_update="false" label="Missing Document" sequence="2" value="missing_document"/>
+                <element inactive_on_update="false" label="Rejected Submission" sequence="6" value="rejected_submission"/>
+                <element inactive_on_update="false" label="Clarification Request" sequence="1" value="clarification_request"/>
+            </choice>
+        </element>
+        <element choice="1" default="pending" label="Delivery Status" max_length="40" name="delivery_status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Delivered" sequence="2" value="delivered"/>
+                <element inactive_on_update="false" label="Failed" sequence="3" value="failed"/>
+                <element inactive_on_update="false" label="Sent" sequence="1" value="sent"/>
+                <element inactive_on_update="false" label="Pending" sequence="0" value="pending"/>
+            </choice>
+        </element>
+        <element label="Subject" max_length="255" name="subject" type="string"/>
+        <element label="Sent By" max_length="32" name="sent_by" reference="sys_user" type="reference"/>
+        <element label="Message" max_length="65536" name="message" type="html"/>
+        <element label="Recipient" mandatory="true" max_length="32" name="recipient" reference="sys_user" type="reference"/>
+        <element label="Requires Response" max_length="40" name="requires_response" type="boolean"/>
+        <element label="Response Received" max_length="40" name="response_received" type="boolean"/>
+        <element label="Application" max_length="32" name="application" reference="x_1433041_identi_0_application" type="reference"/>
+        <index name="index">
+            <element name="application"/>
+        </index>
+        <index name="index2">
+            <element name="notification_template"/>
+        </index>
+        <index name="index3">
+            <element name="recipient"/>
+        </index>
+        <index name="index4">
+            <element name="sent_by"/>
+        </index>
+    </element>
+</database>

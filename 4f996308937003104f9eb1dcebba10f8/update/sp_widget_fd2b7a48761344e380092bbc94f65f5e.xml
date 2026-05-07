@@ -1,41 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
-  <sp_widget action="INSERT_OR_UPDATE">
-    <sys_id>fd2b7a48761344e380092bbc94f65f5e</sys_id>
-    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
-    <sys_update_name>sp_widget_fd2b7a48761344e380092bbc94f65f5e</sys_update_name>
-    <category>custom</category>
-    <client_script><![CDATA[api.controller = function() { var c = this; };
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() { var c = this; };
 ]]></client_script>
-    <controller_as>c</controller_as>
-    <css><![CDATA[.ibar-score-circle { width: 100px; height: 100px; border-radius: 50%; border: 4px solid $brand-success; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+        <controller_as>c</controller_as>
+        <css>.ibar-score-circle { width: 100px; height: 100px; border-radius: 50%; border: 4px solid $brand-success; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
 .ibar-score-value { font-size: 26px; font-weight: 700; color: $brand-success; }
-]]></css>
-    <data_table>sp_instance</data_table>
-    <demo_data/>
-    <description/>
-    <docs/>
-    <field_list/>
-    <has_preview>false</has_preview>
-    <id>ibar_compliance_report</id>
-    <internal>false</internal>
-    <link><![CDATA[function link(scope, element, attrs, controller) {}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ibar_compliance_report</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {}
 ]]></link>
-    <name>IBAR Compliance Report</name>
-    <option_schema/>
-    <public>false</public>
-    <roles/>
-    <script><![CDATA[(function() { data.compliance = { total: 0, compliant: 0, non_compliant: 0, rate: 0 };
+        <name>IBAR Compliance Report</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() { data.compliance = { total: 0, compliant: 0, non_compliant: 0, rate: 0 };
   try { var gr = new GlideRecord("x_1433041_identi_0_application"); gr.addQuery("active", true); gr.setLimit(200); gr.query();
     while (gr.next()) { data.compliance.total++; var comp = parseInt(gr.getValue("completion_percent") || "0", 10); if (comp >= 80) data.compliance.compliant++; else data.compliance.non_compliant++; }
     if (data.compliance.total > 0) data.compliance.rate = Math.round((data.compliance.compliant / data.compliance.total) * 100);
   } catch (e) { gs.error("IBAR Compliance Report widget error: " + e.message); }
 })();
 ]]></script>
-    <servicenow>false</servicenow>
-    <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-ok-circle"></span> Compliance Metrics</h3></div><div class="panel-body">
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 16:35:13</sys_created_on>
+        <sys_id>fd2b7a48761344e380092bbc94f65f5e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>IBAR Compliance Report</sys_name>
+        <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
+        <sys_update_name>sp_widget_fd2b7a48761344e380092bbc94f65f5e</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 16:35:13</sys_updated_on>
+        <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-ok-circle"></span> Compliance Metrics</h3></div><div class="panel-body">
   <div class="text-center"><div class="ibar-score-circle"><span class="ibar-score-value">{{c.data.compliance.rate}}%</span></div><p class="text-muted">Compliance Rate (≥80% completion)</p></div>
   <div class="row"><div class="col-xs-6 text-center"><strong class="text-success">{{c.data.compliance.compliant}}</strong><br><small class="text-muted">Compliant</small></div><div class="col-xs-6 text-center"><strong class="text-danger">{{c.data.compliance.non_compliant}}</strong><br><small class="text-muted">Non-Compliant</small></div></div>
 </div></div>
 ]]></template>
-  </sp_widget>
+    </sp_widget>
 </record_update>

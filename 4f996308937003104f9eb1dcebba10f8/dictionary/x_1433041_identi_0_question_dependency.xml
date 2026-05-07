@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element active="false" audit="true" db_object_id="58f6ea8700184449b9381055871fc163" label="Question Dependency" name="x_1433041_identi_0_question_dependency" type="collection">
+        <element choice="1" label="Action" mandatory="true" max_length="40" name="action" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Disable" sequence="3" value="disable"/>
+                <element inactive_on_update="false" label="Require" sequence="2" value="require"/>
+                <element inactive_on_update="false" label="Hide" sequence="1" value="hide"/>
+                <element inactive_on_update="false" label="Show" sequence="0" value="show"/>
+            </choice>
+        </element>
+        <element label="Child Question" mandatory="true" max_length="32" name="child_question" reference="x_1433041_identi_0_question" type="reference"/>
+        <element default="true" label="Active" max_length="40" name="active" type="boolean"/>
+        <element choice="1" label="Operator" mandatory="true" max_length="40" name="operator" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="In" sequence="5" value="in"/>
+                <element inactive_on_update="false" label="Contains" sequence="2" value="contains"/>
+                <element inactive_on_update="false" label="Not Equals" sequence="1" value="not_equals"/>
+                <element inactive_on_update="false" label="Equals" sequence="0" value="equals"/>
+                <element inactive_on_update="false" label="Less Than" sequence="4" value="less_than"/>
+                <element inactive_on_update="false" label="Greater Than" sequence="3" value="greater_than"/>
+                <element inactive_on_update="false" label="Not In" sequence="6" value="not_in"/>
+            </choice>
+        </element>
+        <element label="Expected Value" mandatory="true" max_length="500" name="expected_value" type="string"/>
+        <element label="Parent Question" mandatory="true" max_length="32" name="parent_question" reference="x_1433041_identi_0_question" type="reference"/>
+        <index name="index">
+            <element name="child_question"/>
+        </index>
+        <index name="index2">
+            <element name="parent_question"/>
+        </index>
+    </element>
+</database>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element active="false" audit="true" db_object_id="8e9a808a2b3e40cfa18006650f812519" label="Communication Thread" name="x_1433041_identi_0_communication_thread" type="collection">
+        <element choice="1" label="Thread Type" max_length="40" name="thread_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="General" sequence="3" value="general"/>
+                <element inactive_on_update="false" label="Escalation" sequence="2" value="escalation"/>
+                <element inactive_on_update="false" label="Clarification" sequence="0" value="clarification"/>
+                <element inactive_on_update="false" label="Reminder" sequence="1" value="reminder"/>
+            </choice>
+        </element>
+        <element label="Created At" max_length="40" name="created_at" type="glide_date_time"/>
+        <element label="Assigned To" max_length="32" name="assigned_to" reference="sys_user" type="reference"/>
+        <element label="Created By" max_length="32" name="created_by" reference="sys_user" type="reference"/>
+        <element label="Application" mandatory="true" max_length="32" name="application" reference="x_1433041_identi_0_application" type="reference"/>
+        <element choice="1" default="open" label="Status" max_length="40" name="status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Pending" sequence="1" value="pending"/>
+                <element inactive_on_update="false" label="Closed" sequence="3" value="closed"/>
+                <element inactive_on_update="false" label="Open" sequence="0" value="open"/>
+                <element inactive_on_update="false" label="Resolved" sequence="2" value="resolved"/>
+            </choice>
+        </element>
+        <element label="Last Activity At" max_length="40" name="last_activity_at" type="glide_date_time"/>
+        <element display="true" label="Subject" max_length="255" name="subject" type="string"/>
+        <element label="Latest Message" max_length="65536" name="latest_message" type="html"/>
+        <index name="index">
+            <element name="application"/>
+        </index>
+        <index name="index2">
+            <element name="assigned_to"/>
+        </index>
+        <index name="index3">
+            <element name="created_by"/>
+        </index>
+    </element>
+</database>

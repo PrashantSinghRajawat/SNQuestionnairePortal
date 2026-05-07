@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element active="false" audit="true" db_object_id="651cd7158d874ec58b18c4c72091ff78" label="Audit Event" name="x_1433041_identi_0_audit_event" type="collection">
+        <element label="Performed By" max_length="32" name="performed_by" reference="sys_user" type="reference"/>
+        <element label="Target Table" max_length="100" name="target_table" type="string"/>
+        <element choice="1" default="info" label="Severity" max_length="40" name="severity" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Info" sequence="0" value="info"/>
+                <element inactive_on_update="false" label="Critical" sequence="2" value="critical"/>
+                <element inactive_on_update="false" label="Warning" sequence="1" value="warning"/>
+            </choice>
+        </element>
+        <element label="Performed At" max_length="40" name="performed_at" type="glide_date_time"/>
+        <element label="Description" max_length="1000" name="description" type="string"/>
+        <element label="Previous Value" max_length="1000" name="previous_value" type="string"/>
+        <element label="Target Record" max_length="32" name="target_record" type="string"/>
+        <element label="Application" max_length="32" name="application" reference="x_1433041_identi_0_application" type="reference"/>
+        <element choice="1" display="true" label="Event Type" mandatory="true" max_length="40" name="event_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Build Ready" sequence="11" value="build_ready"/>
+                <element inactive_on_update="false" label="Reminder Sent" sequence="4" value="reminder_sent"/>
+                <element inactive_on_update="false" label="Assignment Created" sequence="1" value="assignment_created"/>
+                <element inactive_on_update="false" label="Status Changed" sequence="6" value="status_changed"/>
+                <element inactive_on_update="false" label="Response Submitted" sequence="7" value="response_submitted"/>
+                <element inactive_on_update="false" label="Submission Completed" sequence="10" value="submission_completed"/>
+                <element inactive_on_update="false" label="Escalation Triggered" sequence="5" value="escalation_triggered"/>
+                <element inactive_on_update="false" label="Notification Sent" sequence="3" value="notification_sent"/>
+                <element inactive_on_update="false" label="Clarification Requested" sequence="8" value="clarification_requested"/>
+                <element inactive_on_update="false" label="Template Assigned" sequence="2" value="template_assigned"/>
+                <element inactive_on_update="false" label="Application Created" sequence="0" value="application_created"/>
+                <element inactive_on_update="false" label="Clarification Resolved" sequence="9" value="clarification_resolved"/>
+            </choice>
+        </element>
+        <element label="New Value" max_length="1000" name="new_value" type="string"/>
+        <index name="index">
+            <element name="application"/>
+        </index>
+        <index name="index2">
+            <element name="performed_by"/>
+        </index>
+    </element>
+</database>

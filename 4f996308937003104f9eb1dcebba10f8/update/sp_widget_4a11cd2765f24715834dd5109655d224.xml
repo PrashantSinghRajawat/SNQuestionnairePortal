@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
-  <sp_widget action="INSERT_OR_UPDATE">
-    <sys_id>4a11cd2765f24715834dd5109655d224</sys_id>
-    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
-    <sys_update_name>sp_widget_4a11cd2765f24715834dd5109655d224</sys_update_name>
-    <category>custom</category>
-    <client_script><![CDATA[api.controller = function() { var c = this; };
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() { var c = this; };
 ]]></client_script>
-    <controller_as>c</controller_as>
-    <css><![CDATA[.sp-empty-icon { font-size: 48px; margin-bottom: 16px; display: block; opacity: 0.35; color: $text-muted; }
-]]></css>
-    <data_table>sp_instance</data_table>
-    <demo_data/>
-    <description/>
-    <docs/>
-    <field_list/>
-    <has_preview>false</has_preview>
-    <id>ibar_upload_history</id>
-    <internal>false</internal>
-    <link><![CDATA[function link(scope, element, attrs, controller) {}
+        <controller_as>c</controller_as>
+        <css>.sp-empty-icon { font-size: 48px; margin-bottom: 16px; display: block; opacity: 0.35; color: $text-muted; }
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ibar_upload_history</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {}
 ]]></link>
-    <name>IBAR Upload History</name>
-    <option_schema/>
-    <public>false</public>
-    <roles/>
-    <script><![CDATA[(function() {
+        <name>IBAR Upload History</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
   data.documents = [];
   data.applicationId = "";
 
@@ -53,8 +50,20 @@
   }
 })();
 ]]></script>
-    <servicenow>false</servicenow>
-    <template><![CDATA[<div class="panel panel-default">
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 16:28:22</sys_created_on>
+        <sys_id>4a11cd2765f24715834dd5109655d224</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>IBAR Upload History</sys_name>
+        <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
+        <sys_update_name>sp_widget_4a11cd2765f24715834dd5109655d224</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 16:28:22</sys_updated_on>
+        <template><![CDATA[<div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">
       <span class="glyphicon glyphicon-folder-open"></span>
@@ -88,5 +97,5 @@
   </div>
 </div>
 ]]></template>
-  </sp_widget>
+    </sp_widget>
 </record_update>

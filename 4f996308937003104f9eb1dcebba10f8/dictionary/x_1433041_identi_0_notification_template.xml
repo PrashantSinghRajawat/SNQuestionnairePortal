@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element active="false" audit="true" db_object_id="34bcd5aa13d3424dbf6d291fea363543" label="Notification Template" name="x_1433041_identi_0_notification_template" type="collection">
+        <element default="true" label="Active" max_length="40" name="active" type="boolean"/>
+        <element label="Body Template" max_length="65536" name="body_template" type="html"/>
+        <element display="true" label="Name" mandatory="true" max_length="200" name="name" type="string"/>
+        <element label="Template Key" mandatory="true" max_length="100" name="template_key" type="string"/>
+        <element choice="1" label="Notification Type" max_length="40" name="notification_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Build Ready" sequence="4" value="build_ready"/>
+                <element inactive_on_update="false" label="Escalation" sequence="2" value="escalation"/>
+                <element inactive_on_update="false" label="Clarification" sequence="1" value="clarification"/>
+                <element inactive_on_update="false" label="Rejection" sequence="5" value="rejection"/>
+                <element inactive_on_update="false" label="Completion" sequence="6" value="completion"/>
+                <element inactive_on_update="false" label="Submission" sequence="3" value="submission"/>
+                <element inactive_on_update="false" label="Reminder" sequence="0" value="reminder"/>
+            </choice>
+        </element>
+        <element label="Subject Template" max_length="500" name="subject_template" type="string"/>
+    </element>
+</database>

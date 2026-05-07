@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
-  <sp_widget action="INSERT_OR_UPDATE">
-    <sys_id>b222caae1a124de989a2444613aea59c</sys_id>
-    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
-    <sys_update_name>sp_widget_b222caae1a124de989a2444613aea59c</sys_update_name>
-    <category>custom</category>
-    <client_script><![CDATA[api.controller = function() { var c = this; c.qText = ""; c.qType = "text"; c.qMandatory = false;
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() { var c = this; c.qText = ""; c.qType = "text"; c.qMandatory = false;
   c.addQuestion = function() { if (!c.qText) return; c.server.get({ action: "add_question", text: c.qText, question_type: c.qType, mandatory: c.qMandatory, order_num: (c.data.questions.length + 1) * 10 }).then(function(r) { c.data.questions = r.data.questions; c.qText = ""; c.qMandatory = false; }); }; };
 ]]></client_script>
-    <controller_as>c</controller_as>
-    <css><![CDATA[.list-group { margin-bottom: 0; } hr { border-color: #ddd; }
-]]></css>
-    <data_table>sp_instance</data_table>
-    <demo_data/>
-    <description/>
-    <docs/>
-    <field_list/>
-    <has_preview>false</has_preview>
-    <id>ibar_question_form</id>
-    <internal>false</internal>
-    <link><![CDATA[function link(scope, element, attrs, controller) {}
+        <controller_as>c</controller_as>
+        <css>.list-group { margin-bottom: 0; } hr { border-color: #ddd; }
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ibar_question_form</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {}
 ]]></link>
-    <name>IBAR Question Form</name>
-    <option_schema/>
-    <public>false</public>
-    <roles/>
-    <script><![CDATA[(function() { data.questions = []; data.sectionId = $sp.getParameter("section_id") || "";
+        <name>IBAR Question Form</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() { data.questions = []; data.sectionId = $sp.getParameter("section_id") || "";
   try { if (!data.sectionId) return;
     if (input && input.action === "add_question") { var qGr = new GlideRecord("x_1433041_identi_0_question"); qGr.initialize(); qGr.setValue("section", data.sectionId); qGr.setValue("text", input.text); qGr.setValue("question_type", input.question_type || "text"); qGr.setValue("mandatory", input.mandatory || false); qGr.setValue("order", input.order_num || 100); qGr.insert(); }
     var gr = new GlideRecord("x_1433041_identi_0_question"); gr.addQuery("section", data.sectionId); gr.orderBy("order"); gr.setLimit(100); gr.query();
@@ -32,8 +29,20 @@
   } catch (e) { gs.error("IBAR Question Form widget error: " + e.message); }
 })();
 ]]></script>
-    <servicenow>false</servicenow>
-    <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-question-sign"></span> Question Builder</h3></div><div class="panel-body">
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 17:17:58</sys_created_on>
+        <sys_id>b222caae1a124de989a2444613aea59c</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>IBAR Question Form</sys_name>
+        <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
+        <sys_update_name>sp_widget_b222caae1a124de989a2444613aea59c</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 17:17:58</sys_updated_on>
+        <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-question-sign"></span> Question Builder</h3></div><div class="panel-body">
   <div class="alert alert-info" ng-if="!c.data.sectionId"><span class="glyphicon glyphicon-info-sign"></span> Select a section to add questions.</div>
   <div ng-if="c.data.sectionId">
     <form ng-submit="c.addQuestion()">
@@ -49,5 +58,5 @@
     </div></div>
   </div></div></div>
 ]]></template>
-  </sp_widget>
+    </sp_widget>
 </record_update>

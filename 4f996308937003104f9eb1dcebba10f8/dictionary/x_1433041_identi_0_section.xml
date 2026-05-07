@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element active="false" audit="true" db_object_id="b287e38cd52a4f95a89120f1d62791f1" label="Section" name="x_1433041_identi_0_section" type="collection">
+        <element default="true" label="Active" max_length="40" name="active" type="boolean"/>
+        <element label="Description" max_length="65536" name="description" type="html"/>
+        <element display="true" label="Section Name" mandatory="true" max_length="200" name="name" type="string"/>
+        <element label="Scoring Weight" max_length="20" name="scoring_weight" type="decimal"/>
+        <element label="Section Key" mandatory="true" max_length="100" name="section_key" type="string"/>
+        <element label="Icon" max_length="100" name="icon" type="string"/>
+        <element label="Help Text" max_length="65536" name="help_text" type="html"/>
+        <element label="Estimated Completion (Minutes)" max_length="40" name="estimated_completion_minutes" type="integer"/>
+    </element>
+</database>

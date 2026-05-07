@@ -1,41 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
-  <sp_widget action="INSERT_OR_UPDATE">
-    <sys_id>1e925e5230a249e0b5e546a3a2f1fa2e</sys_id>
-    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
-    <sys_update_name>sp_widget_1e925e5230a249e0b5e546a3a2f1fa2e</sys_update_name>
-    <category>custom</category>
-    <client_script><![CDATA[api.controller = function() { var c = this; };
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() { var c = this; };
 ]]></client_script>
-    <controller_as>c</controller_as>
-    <css><![CDATA[.ibar-kpi-card { text-align: center; padding: 16px 8px; border-radius: 4px; border: 1px solid #ddd; margin-bottom: 16px; } .ibar-kpi-value { font-size: 32px; font-weight: 700; line-height: 1.2; } .ibar-kpi-label { font-size: 12px; color: #777; text-transform: uppercase; margin-top: 4px; } .ibar-kpi-success { border-left: 3px solid #5cb85c; } .ibar-kpi-warning { border-left: 3px solid #f0ad4e; }
-]]></css>
-    <data_table>sp_instance</data_table>
-    <demo_data/>
-    <description/>
-    <docs/>
-    <field_list/>
-    <has_preview>false</has_preview>
-    <id>ibar_template_stats</id>
-    <internal>false</internal>
-    <link><![CDATA[function link(scope, element, attrs, controller) {}
+        <controller_as>c</controller_as>
+        <css>.ibar-kpi-card { text-align: center; padding: 16px 8px; border-radius: 4px; border: 1px solid #ddd; margin-bottom: 16px; } .ibar-kpi-value { font-size: 32px; font-weight: 700; line-height: 1.2; } .ibar-kpi-label { font-size: 12px; color: #777; text-transform: uppercase; margin-top: 4px; } .ibar-kpi-success { border-left: 3px solid #5cb85c; } .ibar-kpi-warning { border-left: 3px solid #f0ad4e; }
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ibar_template_stats</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {}
 ]]></link>
-    <name>IBAR Template Stats</name>
-    <option_schema/>
-    <public>false</public>
-    <roles/>
-    <script><![CDATA[(function() { data.stats = { total: 0, active: 0, draft: 0, archived: 0 };
+        <name>IBAR Template Stats</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() { data.stats = { total: 0, active: 0, draft: 0, archived: 0 };
   try { var gr = new GlideRecord("x_1433041_identi_0_template"); gr.setLimit(200); gr.query();
     while (gr.next()) { data.stats.total++; var s = gr.getValue("status"); if (s === "active") data.stats.active++; else if (s === "draft") data.stats.draft++; else data.stats.archived++; }
   } catch (e) { gs.error("IBAR Template Stats widget error: " + e.message); }
 })();
 ]]></script>
-    <servicenow>false</servicenow>
-    <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-stats"></span> Template Statistics</h3></div><div class="panel-body"><div class="row">
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 16:43:57</sys_created_on>
+        <sys_id>1e925e5230a249e0b5e546a3a2f1fa2e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>IBAR Template Stats</sys_name>
+        <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
+        <sys_update_name>sp_widget_1e925e5230a249e0b5e546a3a2f1fa2e</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 16:43:57</sys_updated_on>
+        <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-stats"></span> Template Statistics</h3></div><div class="panel-body"><div class="row">
   <div class="col-sm-3 col-xs-6 text-center"><div class="ibar-kpi-card"><div class="ibar-kpi-value">{{c.data.stats.total}}</div><div class="ibar-kpi-label">Total</div></div></div>
   <div class="col-sm-3 col-xs-6 text-center"><div class="ibar-kpi-card ibar-kpi-success"><div class="ibar-kpi-value">{{c.data.stats.active}}</div><div class="ibar-kpi-label">Active</div></div></div>
   <div class="col-sm-3 col-xs-6 text-center"><div class="ibar-kpi-card ibar-kpi-warning"><div class="ibar-kpi-value">{{c.data.stats.draft}}</div><div class="ibar-kpi-label">Draft</div></div></div>
   <div class="col-sm-3 col-xs-6 text-center"><div class="ibar-kpi-card"><div class="ibar-kpi-value">{{c.data.stats.archived}}</div><div class="ibar-kpi-label">Archived</div></div></div>
 </div></div></div>
 ]]></template>
-  </sp_widget>
+    </sp_widget>
 </record_update>

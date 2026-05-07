@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element active="false" audit="true" db_object_id="1fd733cd803d4d9f9f7029791ff2f32e" label="Template Section" name="x_1433041_identi_0_template_section" type="collection">
+        <element default="true" label="Active" max_length="40" name="active" type="boolean"/>
+        <element label="Template" mandatory="true" max_length="32" name="template" reference="x_1433041_identi_0_questionnaire_template" type="reference"/>
+        <element label="Collapsible" max_length="40" name="collapsible" type="boolean"/>
+        <element default="100" label="Order" max_length="40" name="order" type="integer"/>
+        <element label="Visible Roles" max_length="4000" name="visible_roles" reference="sys_user_role" type="glide_list"/>
+        <element label="Section" mandatory="true" max_length="32" name="section" reference="x_1433041_identi_0_section" type="reference"/>
+        <index name="index">
+            <element name="section"/>
+        </index>
+        <index name="index2">
+            <element name="template"/>
+        </index>
+    </element>
+</database>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element active="false" audit="true" db_object_id="a47c8f19406444759e3996894d54b133" label="Question Option" name="x_1433041_identi_0_question_option" type="collection">
+        <element label="Question" mandatory="true" max_length="32" name="question" reference="x_1433041_identi_0_question" type="reference"/>
+        <element display="true" label="Label" mandatory="true" max_length="255" name="label" type="string"/>
+        <element default="100" label="Order" max_length="40" name="order" type="integer"/>
+        <element label="Value" mandatory="true" max_length="255" name="value" type="string"/>
+        <element label="Default Selected" max_length="40" name="default_selected" type="boolean"/>
+        <element default="true" label="Active" max_length="40" name="active" type="boolean"/>
+        <index name="index">
+            <element name="question"/>
+        </index>
+    </element>
+</database>

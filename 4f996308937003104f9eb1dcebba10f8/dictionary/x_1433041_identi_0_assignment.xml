@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element active="false" audit="true" db_object_id="fada8e6a3c58498a8621f9b11c64e5f9" label="Assignment" name="x_1433041_identi_0_assignment" type="collection">
+        <element label="Group" max_length="32" name="group" reference="sys_user_group" type="reference"/>
+        <element default="true" label="Active" max_length="40" name="active" type="boolean"/>
+        <element choice="1" label="Role" mandatory="true" max_length="40" name="role" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Developer" sequence="4" value="developer"/>
+                <element inactive_on_update="false" label="IT Custodian" sequence="1" value="it_custodian"/>
+                <element inactive_on_update="false" label="Audit Owner" sequence="2" value="audit_owner"/>
+                <element inactive_on_update="false" label="Program Manager" sequence="3" value="program_manager"/>
+                <element inactive_on_update="false" label="Application Owner" sequence="0" value="application_owner"/>
+            </choice>
+        </element>
+        <element label="Assigned At" max_length="40" name="assigned_at" type="glide_date_time"/>
+        <element label="Assigned By" max_length="32" name="assigned_by" reference="sys_user" type="reference"/>
+        <element choice="1" default="all" label="Notification Preference" max_length="40" name="notification_preference" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Critical Only" sequence="1" value="critical_only"/>
+                <element inactive_on_update="false" label="All Notifications" sequence="0" value="all"/>
+                <element inactive_on_update="false" label="None" sequence="2" value="none"/>
+            </choice>
+        </element>
+        <element label="User" mandatory="true" max_length="32" name="user" reference="sys_user" type="reference"/>
+        <element label="Application" mandatory="true" max_length="32" name="application" reference="x_1433041_identi_0_application" type="reference"/>
+        <index name="index">
+            <element name="application"/>
+        </index>
+        <index name="index2">
+            <element name="assigned_by"/>
+        </index>
+        <index name="index3">
+            <element name="group"/>
+        </index>
+        <index name="index4">
+            <element name="user"/>
+        </index>
+    </element>
+</database>

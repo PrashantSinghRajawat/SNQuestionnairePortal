@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element active="false" audit="true" db_object_id="4ddb009ccbca4f2f98e8bbe10fab43d4" label="Template Assignment Rule" name="x_1433041_identi_0_template_assignment_rule" type="collection">
+        <element choice="1" label="Application Type" max_length="40" name="application_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Complex" sequence="2" value="complex"/>
+                <element inactive_on_update="false" label="Expedited" sequence="1" value="expedited"/>
+                <element inactive_on_update="false" label="Standard" sequence="0" value="standard"/>
+            </choice>
+        </element>
+        <element choice="1" label="Integration Type" max_length="40" name="integration_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="LDAP" sequence="2" value="ldap"/>
+                <element inactive_on_update="false" label="SAML" sequence="0" value="saml"/>
+                <element inactive_on_update="false" label="OAuth" sequence="1" value="oauth"/>
+                <element inactive_on_update="false" label="Custom" sequence="4" value="custom"/>
+                <element inactive_on_update="false" label="SCIM" sequence="3" value="scim"/>
+            </choice>
+        </element>
+        <element default="true" label="Active" max_length="40" name="active" type="boolean"/>
+        <element label="Client" max_length="32" name="client" reference="core_company" type="reference"/>
+        <element choice="1" label="Compliance Type" max_length="40" name="compliance_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="SOX" sequence="0" value="sox"/>
+                <element inactive_on_update="false" label="HIPAA" sequence="1" value="hipaa"/>
+                <element inactive_on_update="false" label="None" sequence="4" value="none"/>
+                <element inactive_on_update="false" label="GDPR" sequence="2" value="gdpr"/>
+                <element inactive_on_update="false" label="PCI" sequence="3" value="pci"/>
+            </choice>
+        </element>
+        <element default="100" label="Priority" max_length="40" name="priority" type="integer"/>
+        <element label="Template" mandatory="true" max_length="32" name="template" reference="x_1433041_identi_0_questionnaire_template" type="reference"/>
+        <index name="index">
+            <element name="client"/>
+        </index>
+        <index name="index2">
+            <element name="template"/>
+        </index>
+    </element>
+</database>

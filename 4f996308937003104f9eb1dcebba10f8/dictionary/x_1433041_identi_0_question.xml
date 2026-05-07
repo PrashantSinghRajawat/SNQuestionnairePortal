@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element active="false" audit="true" db_object_id="397760cfe70c47f8b1edb30b68754272" label="Question" name="x_1433041_identi_0_question" type="collection">
+        <element label="Help Text" max_length="65536" name="help_text" type="html"/>
+        <element label="Question Key" mandatory="true" max_length="100" name="question_key" type="string"/>
+        <element label="Attachment Required" max_length="40" name="attachment_required" type="boolean"/>
+        <element label="Placeholder" max_length="255" name="placeholder" type="string"/>
+        <element choice="1" default="standard" label="Display Style" max_length="40" name="display_style" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Card" sequence="2" value="card"/>
+                <element inactive_on_update="false" label="Compact" sequence="1" value="compact"/>
+                <element inactive_on_update="false" label="Standard" sequence="0" value="standard"/>
+            </choice>
+        </element>
+        <element label="Min Length" max_length="40" name="min_length" type="integer"/>
+        <element label="Read Only" max_length="40" name="read_only" type="boolean"/>
+        <element label="Max Length" max_length="40" name="max_length" type="integer"/>
+        <element default="true" label="Active" max_length="40" name="active" type="boolean"/>
+        <element label="Min Value" max_length="20" name="min_value" type="decimal"/>
+        <element label="Visibility Roles" max_length="4000" name="visibility_roles" reference="sys_user_role" type="glide_list"/>
+        <element label="Question Label" max_length="65536" name="label" type="html"/>
+        <element label="Section" mandatory="true" max_length="32" name="section" reference="x_1433041_identi_0_section" type="reference"/>
+        <element default="100" label="Order" max_length="40" name="order" type="integer"/>
+        <element label="Default Value" max_length="500" name="default_value" type="string"/>
+        <element label="Recommended" max_length="40" name="recommended" type="boolean"/>
+        <element label="Scoring Weight" max_length="20" name="scoring_weight" type="decimal"/>
+        <element label="Max Value" max_length="20" name="max_value" type="decimal"/>
+        <element label="Multi Response Allowed" max_length="40" name="multi_response_allowed" type="boolean"/>
+        <element choice="1" label="Question Type" mandatory="true" max_length="40" name="question_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="User Reference" sequence="17" value="user_reference"/>
+                <element inactive_on_update="false" label="Multi Select" sequence="7" value="multi_select"/>
+                <element inactive_on_update="false" label="Section Header" sequence="23" value="section_header"/>
+                <element inactive_on_update="false" label="Phone" sequence="14" value="phone"/>
+                <element inactive_on_update="false" label="Repeatable Grid" sequence="21" value="repeatable_grid"/>
+                <element inactive_on_update="false" label="Boolean" sequence="10" value="boolean"/>
+                <element inactive_on_update="false" label="Rich Text" sequence="2" value="rich_text"/>
+                <element inactive_on_update="false" label="Number" sequence="3" value="number"/>
+                <element inactive_on_update="false" label="Single Line Text" sequence="0" value="single_line_text"/>
+                <element inactive_on_update="false" label="Multi Line Text" sequence="1" value="multi_line_text"/>
+                <element inactive_on_update="false" label="Radio" sequence="8" value="radio"/>
+                <element inactive_on_update="false" label="Table Reference" sequence="19" value="table_reference"/>
+                <element inactive_on_update="false" label="Date Time" sequence="12" value="datetime"/>
+                <element inactive_on_update="false" label="Attachment" sequence="16" value="attachment"/>
+                <element inactive_on_update="false" label="Informational Text" sequence="22" value="informational_text"/>
+                <element inactive_on_update="false" label="Decimal" sequence="4" value="decimal"/>
+                <element inactive_on_update="false" label="Checkbox" sequence="9" value="checkbox"/>
+                <element inactive_on_update="false" label="Date" sequence="11" value="date"/>
+                <element inactive_on_update="false" label="Currency" sequence="5" value="currency"/>
+                <element inactive_on_update="false" label="Dropdown" sequence="6" value="dropdown"/>
+                <element inactive_on_update="false" label="Group Reference" sequence="18" value="group_reference"/>
+                <element inactive_on_update="false" label="URL" sequence="15" value="url"/>
+                <element inactive_on_update="false" label="Dynamic Lookup" sequence="20" value="dynamic_lookup"/>
+                <element inactive_on_update="false" label="Email" sequence="13" value="email"/>
+            </choice>
+        </element>
+        <element choice="1" default="full" label="UI Width" max_length="40" name="ui_width" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Full Width" sequence="0" value="full"/>
+                <element inactive_on_update="false" label="Half Width" sequence="1" value="half"/>
+                <element inactive_on_update="false" label="One Third" sequence="2" value="third"/>
+            </choice>
+        </element>
+        <element display="true" label="Short Label" max_length="200" name="short_label" type="string"/>
+        <element label="Validation Regex" max_length="500" name="validation_regex" type="string"/>
+        <element label="Required" max_length="40" name="required" type="boolean"/>
+        <index name="index">
+            <element name="section"/>
+        </index>
+    </element>
+</database>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element active="false" audit="true" db_object_id="0409bec45f1a4d03a3d3b33cb3d1b7f2" label="Communication Message" name="x_1433041_identi_0_communication_message" type="collection">
+        <element label="Sender" mandatory="true" max_length="32" name="sender" reference="sys_user" type="reference"/>
+        <element label="Message" mandatory="true" max_length="65536" name="message" type="html"/>
+        <element label="Sent At" max_length="40" name="sent_at" type="glide_date_time"/>
+        <element label="Recipient" max_length="32" name="recipient" reference="sys_user" type="reference"/>
+        <element label="Thread" mandatory="true" max_length="32" name="thread" reference="x_1433041_identi_0_communication_thread" type="reference"/>
+        <element label="Read" max_length="40" name="read_flag" type="boolean"/>
+        <index name="index">
+            <element name="recipient"/>
+        </index>
+        <index name="index2">
+            <element name="sender"/>
+        </index>
+        <index name="index3">
+            <element name="thread"/>
+        </index>
+    </element>
+</database>

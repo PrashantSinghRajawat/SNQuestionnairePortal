@@ -1,39 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
-  <sp_widget action="INSERT_OR_UPDATE">
-    <sys_id>ccad52435f464e0e997f4ca1ec024a91</sys_id>
-    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
-    <sys_update_name>sp_widget_ccad52435f464e0e997f4ca1ec024a91</sys_update_name>
-    <category>custom</category>
-    <client_script><![CDATA[api.controller = function() { var c = this; };
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() { var c = this; };
 ]]></client_script>
-    <controller_as>c</controller_as>
-    <css><![CDATA[/* minimal */
-]]></css>
-    <data_table>sp_instance</data_table>
-    <demo_data/>
-    <description/>
-    <docs/>
-    <field_list/>
-    <has_preview>false</has_preview>
-    <id>ibar_assignment_rules</id>
-    <internal>false</internal>
-    <link><![CDATA[function link(scope, element, attrs, controller) {}
+        <controller_as>c</controller_as>
+        <css>/* minimal */
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ibar_assignment_rules</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {}
 ]]></link>
-    <name>IBAR Assignment Rules</name>
-    <option_schema/>
-    <public>false</public>
-    <roles/>
-    <script><![CDATA[(function() { data.rules = [];
+        <name>IBAR Assignment Rules</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() { data.rules = [];
   try { var gr = new GlideRecord("x_1433041_identi_0_assignment"); gr.addQuery("active", true); gr.orderBy("role"); gr.setLimit(50); gr.query();
     while (gr.next()) { data.rules.push({ sys_id: gr.getValue("sys_id"), user: gr.getDisplayValue("user"), role: gr.getDisplayValue("role"), application_type: gr.getDisplayValue("application_type"), active: gr.getValue("active") === "1" }); }
   } catch (e) { gs.error("IBAR Assignment Rules widget error: " + e.message); }
 })();
 ]]></script>
-    <servicenow>false</servicenow>
-    <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-transfer"></span> Assignment Rules <span class="badge">{{c.data.rules.length}}</span></h3></div><div class="panel-body">
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 17:22:46</sys_created_on>
+        <sys_id>ccad52435f464e0e997f4ca1ec024a91</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>IBAR Assignment Rules</sys_name>
+        <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
+        <sys_update_name>sp_widget_ccad52435f464e0e997f4ca1ec024a91</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 17:22:46</sys_updated_on>
+        <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-transfer"></span> Assignment Rules <span class="badge">{{c.data.rules.length}}</span></h3></div><div class="panel-body">
   <table class="table table-striped table-hover" ng-if="c.data.rules.length > 0"><thead><tr><th>User</th><th>Role</th><th>App Type</th><th>Active</th></tr></thead>
     <tbody><tr ng-repeat="r in c.data.rules track by r.sys_id"><td>{{r.user}}</td><td><span class="label label-info">{{r.role}}</span></td><td>{{r.application_type}}</td><td><span class="glyphicon" ng-class="r.active ? 'glyphicon-ok text-success' : 'glyphicon-remove text-danger'"></span></td></tr></tbody></table>
   <p class="text-muted text-center" ng-if="c.data.rules.length === 0">No assignment rules configured.</p></div></div>
 ]]></template>
-  </sp_widget>
+    </sp_widget>
 </record_update>
