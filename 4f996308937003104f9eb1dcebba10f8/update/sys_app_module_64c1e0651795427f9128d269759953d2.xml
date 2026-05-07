@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module">
+  <sys_app_module action="INSERT_OR_UPDATE">
+    <sys_id>64c1e0651795427f9128d269759953d2</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_app_module_64c1e0651795427f9128d269759953d2</sys_update_name>
+    <active>true</active>
+    <application>61c87937a3aa439ca399936c8390ca7e</application>
+    <hint>Manage questionnaire templates</hint>
+    <link_type>LIST</link_type>
+    <name>x_1433041_identi_0_questionnaire_template</name>
+    <order>600</order>
+    <roles>x_1433041_identi_0.config_admin</roles>
+    <title>Questionnaire Templates</title>
+  </sys_app_module>
+</record_update>

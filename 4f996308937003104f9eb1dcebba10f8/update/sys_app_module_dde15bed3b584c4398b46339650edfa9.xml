@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module">
+  <sys_app_module action="INSERT_OR_UPDATE">
+    <sys_id>dde15bed3b584c4398b46339650edfa9</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_app_module_dde15bed3b584c4398b46339650edfa9</sys_update_name>
+    <active>true</active>
+    <application>61c87937a3aa439ca399936c8390ca7e</application>
+    <link_type>SEPARATOR</link_type>
+    <order>500</order>
+    <roles>x_1433041_identi_0.config_admin,x_1433041_identi_0.admin</roles>
+    <title>Configuration</title>
+  </sys_app_module>
+</record_update>

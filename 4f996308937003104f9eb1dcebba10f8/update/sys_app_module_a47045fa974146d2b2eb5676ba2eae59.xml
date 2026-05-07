@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module">
+  <sys_app_module action="INSERT_OR_UPDATE">
+    <sys_id>a47045fa974146d2b2eb5676ba2eae59</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_app_module_a47045fa974146d2b2eb5676ba2eae59</sys_update_name>
+    <active>true</active>
+    <application>61c87937a3aa439ca399936c8390ca7e</application>
+    <hint>Open the operational admin dashboard</hint>
+    <link_type>DIRECT</link_type>
+    <order>300</order>
+    <query>/appready?id=appready_admin_dashboard</query>
+    <roles>x_1433041_identi_0.admin</roles>
+    <title>Admin Dashboard</title>
+  </sys_app_module>
+</record_update>

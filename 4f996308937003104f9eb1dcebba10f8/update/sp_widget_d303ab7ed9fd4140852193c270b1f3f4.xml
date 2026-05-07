@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>d303ab7ed9fd4140852193c270b1f3f4</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_d303ab7ed9fd4140852193c270b1f3f4</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function($scope) {
+  var c = this;
+
+  c.loading = false;
+  c.searchTerm = "";
+  c.statusFilter = "";
+
+  c.getStatusClass = function(status) {
+    var classes = {
+      "draft": "label-default",
+      "in_progress": "label-info",
+      "clarification_requested": "label-warning",
+      "submitted": "label-primary",
+      "admin_review": "label-info",
+      "build_ready": "label-success",
+      "completed": "label-success"
+    };
+    return classes[status] || "label-default";
+  };
+
+  c.filterApplications = function() {
+    c.loading = true;
+    c.server.get({
+      action: "filter",
+      status: c.statusFilter,
+      search: c.searchTerm
+    }).then(function(r) {
+      c.data.applications = r.data.applications;
+      c.data.totalCount = r.data.totalCount;
+      c.loading = false;
+    }, function() {
+      c.loading = false;
+    });
+  };
+
+  c.openApplication = function(app) {
+    window.location.href = "?id=appready_questionnaire&app_id=" + app.sys_id;
+  };
+
+  c.clearFilters = function() {
+    c.searchTerm = "";
+    c.statusFilter = "";
+    c.filterApplications();
+  };
+};
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.ibar-filter-row {
+  margin-top: 12px;
+}
+.ibar-app-card {
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.15s;
+  margin-bottom: 16px;
+}
+.ibar-app-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+.ibar-app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.ibar-app-name {
+  font-size: 14px;
+  color: $text-color;
+  flex: 1;
+  margin-right: 8px;
+}
+.ibar-app-meta {
+  margin-bottom: 8px;
+}
+.ibar-progress {
+  height: 8px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+.ibar-app-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ibar-empty-state {
+  padding: 48px 24px;
+}
+.ibar-empty-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 16px;
+  opacity: 0.35;
+  color: $text-muted;
+}
+@keyframes ibar-spin-animation {
+  to { transform: rotate(360deg); }
+}
+.ibar-spin {
+  animation: ibar-spin-animation 0.8s linear infinite;
+  font-size: 24px;
+  display: block;
+  margin-bottom: 8px;
+  color: $brand-primary;
+}
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_my_applications</id>
+    <internal>false</internal>
+    <link>function link(scope, element, attrs, controller) {
+}</link>
+    <name>IBAR My Applications</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() {
+  data.applications = [];
+  data.message = "";
+  data.totalCount = 0;
+
+  try {
+    if (input && input.action === "filter") {
+      // Handle filtering
+      var filterStatus = input.status || "";
+      var searchTerm = input.search || "";
+      loadApplications(filterStatus, searchTerm);
+      return;
+    }
+
+    // Initial load - get all assigned applications for current user
+    loadApplications("", "");
+  } catch (e) {
+    gs.error("IBAR My Applications widget error: " + e.message);
+    data.message = "An error occurred loading applications.";
+  }
+
+  function loadApplications(statusFilter, searchFilter) {
+    var userId = gs.getUserID();
+
+    // Get assignments for current user
+    var assignmentGr = new GlideRecord("x_1433041_identi_0_assignment");
+    assignmentGr.addQuery("user", userId);
+    assignmentGr.setLimit(100);
+    assignmentGr.query();
+
+    var appIds = [];
+    while (assignmentGr.next()) {
+      appIds.push(assignmentGr.getValue("application"));
+    }
+
+    if (appIds.length === 0) {
+      data.message = "No applications assigned to you.";
+      return;
+    }
+
+    // Load application records
+    var appGr = new GlideRecord("x_1433041_identi_0_application");
+    appGr.addQuery("sys_id", "IN", appIds.join(","));
+    appGr.addQuery("active", true);
+
+    if (statusFilter) {
+      appGr.addQuery("questionnaire_status", statusFilter);
+    }
+    if (searchFilter) {
+      appGr.addQuery("name", "CONTAINS", searchFilter);
+    }
+
+    appGr.orderByDesc("sys_updated_on");
+    appGr.setLimit(50);
+    appGr.query();
+
+    data.totalCount = appGr.getRowCount();
+
+    while (appGr.next()) {
+      data.applications.push({
+        sys_id: appGr.getUniqueValue(),
+        name: appGr.getValue("name"),
+        number: appGr.getValue("number"),
+        client: appGr.getDisplayValue("client"),
+        status: appGr.getValue("questionnaire_status"),
+        status_display: appGr.getDisplayValue("questionnaire_status"),
+        completion_percent: parseInt(appGr.getValue("completion_percent")) || 0,
+        last_saved_at: appGr.getDisplayValue("last_saved_at"),
+        missing_items_count: parseInt(appGr.getValue("missing_items_count")) || 0
+      });
+    }
+  }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="panel panel-default">
+  <div class="panel-heading">
+    <div class="clearfix">
+      <h3 class="panel-title pull-left">
+        <span class="glyphicon glyphicon-th-list"></span> My Applications
+        <span class="badge" ng-if="c.data.totalCount">{{c.data.totalCount}}</span>
+      </h3>
+    </div>
+    <div class="ibar-filter-row">
+      <div class="row">
+        <div class="col-sm-6">
+          <input type="text" class="form-control" placeholder="Search applications..."
+                 ng-model="c.searchTerm" ng-change="c.filterApplications()" />
+        </div>
+        <div class="col-sm-4">
+          <select class="form-control" ng-model="c.statusFilter" ng-change="c.filterApplications()">
+            <option value="">All Statuses</option>
+            <option value="draft">Draft</option>
+            <option value="in_progress">In Progress</option>
+            <option value="clarification_requested">Clarification Requested</option>
+            <option value="submitted">Submitted</option>
+            <option value="admin_review">Admin Review</option>
+            <option value="build_ready">Build Ready</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+        <div class="col-sm-2">
+          <button type="button" class="btn btn-default btn-block" ng-click="c.clearFilters()">
+            <span class="glyphicon glyphicon-remove"></span> Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel-body">
+    <!-- Loading -->
+    <div class="text-center" ng-if="c.loading">
+      <span class="glyphicon glyphicon-refresh ibar-spin"></span>
+      <p class="text-muted">Loading applications...</p>
+    </div>
+
+    <!-- Application Cards -->
+    <div class="row" ng-if="!c.loading && c.data.applications.length > 0">
+      <div class="col-md-6 col-lg-4" ng-repeat="app in c.data.applications track by app.sys_id">
+        <div class="panel panel-default ibar-app-card" ng-click="c.openApplication(app)">
+          <div class="panel-body">
+            <div class="ibar-app-header">
+              <strong class="ibar-app-name">{{app.name}}</strong>
+              <span class="label" ng-class="c.getStatusClass(app.status)">{{app.status_display}}</span>
+            </div>
+            <p class="text-muted ibar-app-meta">
+              <small>{{app.number}} &middot; {{app.client}}</small>
+            </p>
+            <div class="progress ibar-progress">
+              <div class="progress-bar" role="progressbar"
+                   ng-style="{width: app.completion_percent + '%'}"
+                   ng-class="{'progress-bar-success': app.completion_percent === 100, 'progress-bar-info': app.completion_percent < 100}">
+                {{app.completion_percent}}%
+              </div>
+            </div>
+            <div class="ibar-app-footer">
+              <small class="text-muted" ng-if="app.last_saved_at">
+                <span class="glyphicon glyphicon-time"></span> {{app.last_saved_at}}
+              </small>
+              <small class="text-warning pull-right" ng-if="app.missing_items_count > 0">
+                <span class="glyphicon glyphicon-exclamation-sign"></span> {{app.missing_items_count}} missing
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="text-center ibar-empty-state" ng-if="!c.loading && c.data.applications.length === 0">
+      <span class="glyphicon glyphicon-inbox ibar-empty-icon"></span>
+      <h4>No Applications Found</h4>
+      <p class="text-muted" ng-if="!c.data.message">No applications match your filters.</p>
+      <p class="text-muted" ng-if="c.data.message">{{c.data.message}}</p>
+      <button type="button" class="btn btn-default" ng-click="c.clearFilters()" ng-if="c.searchTerm || c.statusFilter">
+        Clear Filters
+      </button>
+    </div>
+  </div>
+</div>
+]]></template>
+  </sp_widget>
+</record_update>

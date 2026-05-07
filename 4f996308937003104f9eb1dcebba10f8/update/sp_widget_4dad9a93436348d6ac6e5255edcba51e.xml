@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>4dad9a93436348d6ac6e5255edcba51e</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_4dad9a93436348d6ac6e5255edcba51e</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function($scope, $timeout) {
+  var c = this;
+
+  c.saving = false;
+  c.autoSaveTimer = null;
+  c.currentSectionIndex = c.data.currentSectionIndex || 0;
+
+  c.saveResponse = function(question) {
+    var responseValue = c.data.responses[question.sys_id] || "";
+    c.saving = true;
+    c.data.saveStatus = "saving";
+
+    c.server.get({
+      action: "save_response",
+      questionId: question.sys_id,
+      responseValue: responseValue,
+      appId: c.data.appId
+    }).then(function(r) {
+      c.data.saveStatus = "saved";
+      c.saving = false;
+      $timeout(function() {
+        c.data.saveStatus = "";
+      }, 2000);
+    }, function() {
+      c.data.saveStatus = "error";
+      c.saving = false;
+    });
+  };
+
+  c.autoSave = function(question) {
+    if (c.autoSaveTimer) {
+      $timeout.cancel(c.autoSaveTimer);
+    }
+    c.autoSaveTimer = $timeout(function() {
+      c.saveResponse(question);
+    }, 1500);
+  };
+
+  c.goToSection = function(index) {
+    if (index < 0 || index >= c.data.totalSections) return;
+    c.currentSectionIndex = index;
+    c.server.get({
+      action: "load_section",
+      appId: c.data.appId,
+      sectionIndex: index
+    }).then(function(r) {
+      c.data.questions = r.data.questions;
+      c.data.responses = r.data.responses;
+      c.data.sections = r.data.sections;
+      c.data.currentSectionIndex = index;
+    });
+  };
+
+  c.nextSection = function() {
+    c.goToSection(c.currentSectionIndex + 1);
+  };
+
+  c.prevSection = function() {
+    c.goToSection(c.currentSectionIndex - 1);
+  };
+
+  c.getCurrentSection = function() {
+    if (c.data.sections && c.data.sections[c.currentSectionIndex]) {
+      return c.data.sections[c.currentSectionIndex];
+    }
+    return { name: "", description: "" };
+  };
+
+  c.goHome = function() {
+    window.location.href = "?id=appready_home";
+  };
+};
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.ibar-q-title {
+  margin-top: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: $text-color;
+}
+.ibar-header-progress {
+  height: 8px;
+  margin-top: 8px;
+  border-radius: 4px;
+}
+.ibar-save-indicator {
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+.ibar-section-item {
+  cursor: pointer;
+  font-size: 13px;
+}
+.ibar-section-item:hover {
+  background-color: $background-secondary;
+}
+.ibar-section-desc {
+  margin-top: 4px;
+  font-size: 13px;
+}
+.ibar-question-group {
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid $border-tertiary;
+}
+.ibar-question-group:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+@keyframes ibar-spin-animation {
+  to { transform: rotate(360deg); }
+}
+.ibar-spin {
+  animation: ibar-spin-animation 0.8s linear infinite;
+}
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_questionnaire_engine</id>
+    <internal>false</internal>
+    <link>function link(scope, element, attrs, controller) {
+}</link>
+    <name>IBAR Questionnaire Engine</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() {
+  data.application = null;
+  data.sections = [];
+  data.questions = [];
+  data.responses = {};
+  data.currentSectionIndex = 0;
+  data.totalSections = 0;
+  data.completionPercent = 0;
+  data.message = "";
+  data.saveStatus = "";
+  data.appId = "";
+
+  try {
+    // Handle save action
+    if (input && input.action === "save_response") {
+      saveResponse(input.questionId, input.responseValue, input.appId);
+      return;
+    }
+
+    // Handle section navigation
+    if (input && input.action === "load_section") {
+      loadSection(input.appId, input.sectionIndex);
+      return;
+    }
+
+    // Initial load - get application from URL parameter
+    var appId = $sp.getParameter("app_id");
+    if (!appId) {
+      data.message = "No application specified. Please select an application from your dashboard.";
+      return;
+    }
+
+    data.appId = appId;
+    loadApplication(appId);
+  } catch (e) {
+    gs.error("IBAR Questionnaire Engine error: " + e.message);
+    data.message = "An error occurred loading the questionnaire.";
+  }
+
+  function loadApplication(appId) {
+    var appGr = new GlideRecord("x_1433041_identi_0_application");
+    if (!appGr.get(appId)) {
+      data.message = "Application not found.";
+      return;
+    }
+
+    data.application = {
+      sys_id: appGr.getUniqueValue(),
+      name: appGr.getValue("name"),
+      number: appGr.getValue("number"),
+      status: appGr.getValue("questionnaire_status"),
+      status_display: appGr.getDisplayValue("questionnaire_status"),
+      completion_percent: parseInt(appGr.getValue("completion_percent")) || 0,
+      template_id: appGr.getValue("questionnaire_template")
+    };
+
+    data.completionPercent = data.application.completion_percent;
+
+    // Load sections from template
+    if (data.application.template_id) {
+      loadSections(data.application.template_id, appId);
+    } else {
+      data.message = "No questionnaire template assigned to this application.";
+    }
+  }
+
+  function loadSections(templateId, appId) {
+    var tsSectGr = new GlideRecord("x_1433041_identi_0_template_section");
+    tsSectGr.addQuery("questionnaire_template", templateId);
+    tsSectGr.orderBy("order");
+    tsSectGr.setLimit(50);
+    tsSectGr.query();
+
+    while (tsSectGr.next()) {
+      var sectionId = tsSectGr.getValue("section");
+      var sectGr = new GlideRecord("x_1433041_identi_0_section");
+      if (sectGr.get(sectionId)) {
+        data.sections.push({
+          sys_id: sectGr.getUniqueValue(),
+          name: sectGr.getValue("name"),
+          description: sectGr.getValue("description") || "",
+          order: parseInt(tsSectGr.getValue("order")) || 0
+        });
+      }
+    }
+
+    data.totalSections = data.sections.length;
+
+    // Load questions for the first section
+    if (data.sections.length > 0) {
+      loadQuestions(data.sections[0].sys_id, appId);
+    }
+  }
+
+  function loadQuestions(sectionId, appId) {
+    data.questions = [];
+    data.responses = {};
+
+    var qGr = new GlideRecord("x_1433041_identi_0_question");
+    qGr.addQuery("section", sectionId);
+    qGr.orderBy("order");
+    qGr.setLimit(100);
+    qGr.query();
+
+    var questionIds = [];
+    while (qGr.next()) {
+      var q = {
+        sys_id: qGr.getUniqueValue(),
+        label: qGr.getValue("label"),
+        type: qGr.getValue("type"),
+        mandatory: qGr.getValue("mandatory") === "1",
+        help_text: qGr.getValue("help_text") || "",
+        placeholder: qGr.getValue("placeholder") || "",
+        options: []
+      };
+
+      // Load options for dropdown/radio type questions
+      var optGr = new GlideRecord("x_1433041_identi_0_question_option");
+      optGr.addQuery("question", q.sys_id);
+      optGr.orderBy("order");
+      optGr.setLimit(50);
+      optGr.query();
+      while (optGr.next()) {
+        q.options.push({
+          value: optGr.getValue("value"),
+          label: optGr.getValue("label")
+        });
+      }
+
+      data.questions.push(q);
+      questionIds.push(q.sys_id);
+    }
+
+    // Load existing responses
+    if (questionIds.length > 0) {
+      var respGr = new GlideRecord("x_1433041_identi_0_response");
+      respGr.addQuery("application", appId);
+      respGr.addQuery("question", "IN", questionIds.join(","));
+      respGr.setLimit(100);
+      respGr.query();
+
+      while (respGr.next()) {
+        data.responses[respGr.getValue("question")] = respGr.getValue("response_value");
+      }
+    }
+  }
+
+  function loadSection(appId, sectionIndex) {
+    data.appId = appId;
+    var appGr = new GlideRecord("x_1433041_identi_0_application");
+    if (!appGr.get(appId)) {
+      data.message = "Application not found.";
+      return;
+    }
+
+    data.application = {
+      sys_id: appGr.getUniqueValue(),
+      name: appGr.getValue("name"),
+      number: appGr.getValue("number"),
+      status: appGr.getValue("questionnaire_status"),
+      completion_percent: parseInt(appGr.getValue("completion_percent")) || 0,
+      template_id: appGr.getValue("questionnaire_template")
+    };
+
+    data.completionPercent = data.application.completion_percent;
+    data.currentSectionIndex = sectionIndex;
+
+    // Reload sections
+    var tsSectGr = new GlideRecord("x_1433041_identi_0_template_section");
+    tsSectGr.addQuery("questionnaire_template", data.application.template_id);
+    tsSectGr.orderBy("order");
+    tsSectGr.setLimit(50);
+    tsSectGr.query();
+
+    while (tsSectGr.next()) {
+      var sectionId = tsSectGr.getValue("section");
+      var sectGr = new GlideRecord("x_1433041_identi_0_section");
+      if (sectGr.get(sectionId)) {
+        data.sections.push({
+          sys_id: sectGr.getUniqueValue(),
+          name: sectGr.getValue("name"),
+          description: sectGr.getValue("description") || "",
+          order: parseInt(tsSectGr.getValue("order")) || 0
+        });
+      }
+    }
+
+    data.totalSections = data.sections.length;
+
+    if (data.sections[sectionIndex]) {
+      loadQuestions(data.sections[sectionIndex].sys_id, appId);
+    }
+  }
+
+  function saveResponse(questionId, responseValue, appId) {
+    var respGr = new GlideRecord("x_1433041_identi_0_response");
+    respGr.addQuery("application", appId);
+    respGr.addQuery("question", questionId);
+    respGr.setLimit(1);
+    respGr.query();
+
+    if (respGr.next()) {
+      respGr.setValue("response_value", responseValue);
+      respGr.setValue("answered_by", gs.getUserID());
+      respGr.setValue("answered_at", new GlideDateTime().getDisplayValue());
+      respGr.update();
+    } else {
+      respGr.initialize();
+      respGr.setValue("application", appId);
+      respGr.setValue("question", questionId);
+      respGr.setValue("response_value", responseValue);
+      respGr.setValue("answered_by", gs.getUserID());
+      respGr.setValue("answered_at", new GlideDateTime().getDisplayValue());
+      respGr.insert();
+    }
+
+    data.saveStatus = "saved";
+    data.responses[questionId] = responseValue;
+  }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div>
+  <!-- Error/Message State -->
+  <div class="alert alert-warning" ng-if="c.data.message && !c.data.application" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign"></span>
+    {{c.data.message}}
+    <button type="button" class="btn btn-default btn-sm pull-right" ng-click="c.goHome()">
+      <span class="glyphicon glyphicon-home"></span> Back to Dashboard
+    </button>
+  </div>
+
+  <!-- Questionnaire Layout -->
+  <div ng-if="c.data.application">
+    <!-- Header -->
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-sm-8">
+            <h3 class="ibar-q-title">{{c.data.application.name}}</h3>
+            <p class="text-muted">
+              <code>{{c.data.application.number}}</code> &middot;
+              <span class="label label-info">{{c.data.application.status_display}}</span>
+            </p>
+          </div>
+          <div class="col-sm-4 text-right">
+            <div class="ibar-save-indicator" ng-if="c.data.saveStatus">
+              <span class="text-success" ng-if="c.data.saveStatus === 'saved'">
+                <span class="glyphicon glyphicon-ok-circle"></span> Saved
+              </span>
+              <span class="text-muted" ng-if="c.data.saveStatus === 'saving'">
+                <span class="glyphicon glyphicon-refresh ibar-spin"></span> Saving...
+              </span>
+              <span class="text-danger" ng-if="c.data.saveStatus === 'error'">
+                <span class="glyphicon glyphicon-exclamation-sign"></span> Save failed
+              </span>
+            </div>
+            <div class="progress ibar-header-progress">
+              <div class="progress-bar progress-bar-success" ng-style="{width: c.data.completionPercent + '%'}">
+                {{c.data.completionPercent}}%
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content: Sidebar + Questions -->
+    <div class="row">
+      <!-- Section Navigation Sidebar -->
+      <div class="col-md-3">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">Sections</h4>
+          </div>
+          <ul class="list-group">
+            <li class="list-group-item ibar-section-item"
+                ng-repeat="section in c.data.sections track by section.sys_id"
+                ng-class="{'active': $index === c.currentSectionIndex}"
+                ng-click="c.goToSection($index)">
+              <span class="badge">{{$index + 1}}</span>
+              {{section.name}}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Question Panel -->
+      <div class="col-md-9">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              {{c.getCurrentSection().name}}
+              <small class="text-muted pull-right">
+                Section {{c.currentSectionIndex + 1}} of {{c.data.totalSections}}
+              </small>
+            </h4>
+            <p class="text-muted ibar-section-desc" ng-if="c.getCurrentSection().description">
+              {{c.getCurrentSection().description}}
+            </p>
+          </div>
+          <div class="panel-body">
+            <!-- Questions -->
+            <div class="form-group ibar-question-group"
+                 ng-repeat="question in c.data.questions track by question.sys_id">
+              <label class="control-label">
+                {{question.label}}
+                <span class="text-danger" ng-if="question.mandatory">*</span>
+              </label>
+              <small class="help-block" ng-if="question.help_text">{{question.help_text}}</small>
+
+              <!-- Text input -->
+              <input type="text" class="form-control"
+                     ng-if="question.type === 'text' || question.type === 'short_text'"
+                     ng-model="c.data.responses[question.sys_id]"
+                     ng-change="c.autoSave(question)"
+                     placeholder="{{question.placeholder}}" />
+
+              <!-- Textarea -->
+              <textarea class="form-control" rows="4"
+                        ng-if="question.type === 'long_text' || question.type === 'textarea'"
+                        ng-model="c.data.responses[question.sys_id]"
+                        ng-change="c.autoSave(question)"
+                        placeholder="{{question.placeholder}}"></textarea>
+
+              <!-- Dropdown -->
+              <select class="form-control"
+                      ng-if="question.type === 'dropdown' || question.type === 'choice'"
+                      ng-model="c.data.responses[question.sys_id]"
+                      ng-change="c.saveResponse(question)">
+                <option value="">-- Select --</option>
+                <option ng-repeat="opt in question.options track by opt.value"
+                        value="{{opt.value}}">{{opt.label}}</option>
+              </select>
+
+              <!-- Yes/No -->
+              <div ng-if="question.type === 'yes_no' || question.type === 'boolean'">
+                <label class="radio-inline">
+                  <input type="radio" ng-model="c.data.responses[question.sys_id]"
+                         value="yes" ng-change="c.saveResponse(question)" /> Yes
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" ng-model="c.data.responses[question.sys_id]"
+                         value="no" ng-change="c.saveResponse(question)" /> No
+                </label>
+              </div>
+            </div>
+
+            <!-- Empty state -->
+            <div class="text-center text-muted" ng-if="c.data.questions.length === 0">
+              <span class="glyphicon glyphicon-info-sign"></span>
+              No questions in this section.
+            </div>
+          </div>
+
+          <!-- Section Navigation -->
+          <div class="panel-footer clearfix">
+            <button type="button" class="btn btn-default pull-left"
+                    ng-click="c.prevSection()"
+                    ng-disabled="c.currentSectionIndex === 0">
+              <span class="glyphicon glyphicon-chevron-left"></span> Previous
+            </button>
+            <button type="button" class="btn btn-primary pull-right"
+                    ng-click="c.nextSection()"
+                    ng-if="c.currentSectionIndex < c.data.totalSections - 1">
+              Next <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+            <button type="button" class="btn btn-success pull-right"
+                    ng-if="c.currentSectionIndex === c.data.totalSections - 1">
+              <span class="glyphicon glyphicon-ok"></span> Review & Submit
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+]]></template>
+  </sp_widget>
+</record_update>

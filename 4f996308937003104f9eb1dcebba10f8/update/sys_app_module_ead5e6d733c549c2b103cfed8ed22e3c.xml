@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module">
+  <sys_app_module action="INSERT_OR_UPDATE">
+    <sys_id>ead5e6d733c549c2b103cfed8ed22e3c</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_app_module_ead5e6d733c549c2b103cfed8ed22e3c</sys_update_name>
+    <active>true</active>
+    <application>61c87937a3aa439ca399936c8390ca7e</application>
+    <hint>View and manage the build queue</hint>
+    <link_type>DIRECT</link_type>
+    <order>400</order>
+    <query>/appready?id=appready_build_queue</query>
+    <roles>x_1433041_identi_0.developer,x_1433041_identi_0.admin</roles>
+    <title>Build Queue</title>
+  </sys_app_module>
+</record_update>

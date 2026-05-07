@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_module">
+  <sys_app_module action="INSERT_OR_UPDATE">
+    <sys_id>8cdc3f569a7e4abc825dc32dffbc58a0</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_app_module_8cdc3f569a7e4abc825dc32dffbc58a0</sys_update_name>
+    <active>true</active>
+    <application>61c87937a3aa439ca399936c8390ca7e</application>
+    <hint>View my assigned onboarding applications</hint>
+    <link_type>DIRECT</link_type>
+    <order>200</order>
+    <query>/appready?id=appready_home</query>
+    <title>My Applications</title>
+  </sys_app_module>
+</record_update>

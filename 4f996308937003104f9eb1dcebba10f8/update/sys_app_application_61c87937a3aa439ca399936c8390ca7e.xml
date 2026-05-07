@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_app_application">
+  <sys_app_application action="INSERT_OR_UPDATE">
+    <sys_id>61c87937a3aa439ca399936c8390ca7e</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_app_application_61c87937a3aa439ca399936c8390ca7e</sys_update_name>
+    <active>true</active>
+    <category/>
+    <description>IdentityBridge AppReady - Enterprise application onboarding management</description>
+    <device_type>browser</device_type>
+    <hint>Application onboarding and readiness platform</hint>
+    <name/>
+    <order>100</order>
+    <roles/>
+    <title>IdentityBridge AppReady</title>
+  </sys_app_application>
+</record_update>

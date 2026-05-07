@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>e80044f3562e4d2da0c5423ef3fcb97c</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_e80044f3562e4d2da0c5423ef3fcb97c</sys_update_name>
+    <category>custom</category>
+    <client_script>api.controller = function () {
+    /* widget controller */
+    var c = this;
+};
+</client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.ibar-kpi-card {
+  text-align: center;
+  padding: 16px 8px;
+  border-radius: 4px;
+  border: 1px solid $border-tertiary;
+  margin-bottom: 16px;
+  background: $background-primary;
+}
+.ibar-kpi-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: $text-color;
+  line-height: 1.2;
+}
+.ibar-kpi-label {
+  font-size: 12px;
+  color: $text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+}
+.ibar-kpi-info {
+  border-left: 3px solid $brand-info;
+}
+.ibar-kpi-primary {
+  border-left: 3px solid $brand-primary;
+}
+.ibar-kpi-success {
+  border-left: 3px solid $brand-success;
+}
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_progress_summary</id>
+    <internal>false</internal>
+    <link>function link(scope, element, attrs, controller) {
+}</link>
+    <name>IBAR Progress Summary</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() {
+  data.kpis = {
+    total: 0,
+    in_progress: 0,
+    submitted: 0,
+    completed: 0,
+    overdue: 0
+  };
+  data.userName = "";
+
+  try {
+    var userId = gs.getUserID();
+
+    // Get user display name
+    var userGr = new GlideRecord("sys_user");
+    if (userGr.get(userId)) {
+      data.userName = userGr.getDisplayValue("name");
+    }
+
+    // Get assignments for current user
+    var assignmentGr = new GlideRecord("x_1433041_identi_0_assignment");
+    assignmentGr.addQuery("user", userId);
+    assignmentGr.setLimit(200);
+    assignmentGr.query();
+
+    var appIds = [];
+    while (assignmentGr.next()) {
+      appIds.push(assignmentGr.getValue("application"));
+    }
+
+    if (appIds.length === 0) {
+      return;
+    }
+
+    // Count by status
+    var appGr = new GlideRecord("x_1433041_identi_0_application");
+    appGr.addQuery("sys_id", "IN", appIds.join(","));
+    appGr.addQuery("active", true);
+    appGr.setLimit(200);
+    appGr.query();
+
+    while (appGr.next()) {
+      data.kpis.total++;
+      var status = appGr.getValue("questionnaire_status");
+      if (status === "in_progress" || status === "draft" || status === "clarification_requested") {
+        data.kpis.in_progress++;
+      } else if (status === "submitted" || status === "admin_review") {
+        data.kpis.submitted++;
+      } else if (status === "completed" || status === "build_ready") {
+        data.kpis.completed++;
+      }
+    }
+  } catch (e) {
+    gs.error("IBAR Progress Summary widget error: " + e.message);
+  }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      <span class="glyphicon glyphicon-stats"></span>
+      Welcome back, {{c.data.userName}}
+    </h3>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-3 col-xs-6">
+        <div class="ibar-kpi-card">
+          <div class="ibar-kpi-value">{{c.data.kpis.total}}</div>
+          <div class="ibar-kpi-label">Total Applications</div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-xs-6">
+        <div class="ibar-kpi-card ibar-kpi-info">
+          <div class="ibar-kpi-value">{{c.data.kpis.in_progress}}</div>
+          <div class="ibar-kpi-label">In Progress</div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-xs-6">
+        <div class="ibar-kpi-card ibar-kpi-primary">
+          <div class="ibar-kpi-value">{{c.data.kpis.submitted}}</div>
+          <div class="ibar-kpi-label">Submitted</div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-xs-6">
+        <div class="ibar-kpi-card ibar-kpi-success">
+          <div class="ibar-kpi-value">{{c.data.kpis.completed}}</div>
+          <div class="ibar-kpi-label">Completed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+]]></template>
+  </sp_widget>
+</record_update>
