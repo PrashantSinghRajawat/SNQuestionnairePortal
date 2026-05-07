@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+  <sys_script_include action="INSERT_OR_UPDATE">
+    <sys_id>d68786443361448ba8e874eec869c37a</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_script_include_d68786443361448ba8e874eec869c37a</sys_update_name>
+    <access>package_private</access>
+    <active>true</active>
+    <api_name>x_1433041_identi_0.AppReadyAuditService</api_name>
+    <caller_access/>
+    <client_callable>true</client_callable>
+    <description>Service for centralized audit event logging and retrieval - creates audit trails for all onboarding lifecycle events</description>
+    <mobile_callable>false</mobile_callable>
+    <name>AppReadyAuditService</name>
+    <sandbox_callable>false</sandbox_callable>
+    <script><![CDATA[var AppReadyAuditService = Class.create();
+AppReadyAuditService.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+    initialize: function() {},
+
+    logEvent: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var eventType = this.getParameter('sysparm_event_type');
+        var description = this.getParameter('sysparm_description');
+        var targetTable = this.getParameter('sysparm_target_table') || '';
+        var targetRecord = this.getParameter('sysparm_target_record') || '';
+        var previousValue = this.getParameter('sysparm_previous_value') || '';
+        var newValue = this.getParameter('sysparm_new_value') || '';
+        var severity = this.getParameter('sysparm_severity') || 'info';
+
+        var gr = new GlideRecord('x_1433041_identi_0_audit_event');
+        gr.initialize();
+        gr.setValue('application', applicationId);
+        gr.setValue('event_type', eventType);
+        gr.setValue('description', description);
+        gr.setValue('performed_by', gs.getUserID());
+        gr.setValue('performed_at', new GlideDateTime().getDisplayValue());
+        gr.setValue('target_table', targetTable);
+        gr.setValue('target_record', targetRecord);
+        gr.setValue('previous_value', previousValue);
+        gr.setValue('new_value', newValue);
+        gr.setValue('severity', severity);
+        var eventId = gr.insert();
+
+        return JSON.stringify({ success: true, audit_event_id: eventId });
+    },
+
+    getAuditHistory: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var limit = parseInt(this.getParameter('sysparm_limit') || '50');
+
+        var events = [];
+        var gr = new GlideRecord('x_1433041_identi_0_audit_event');
+        gr.addQuery('application', applicationId);
+        gr.orderByDesc('performed_at');
+        gr.setLimit(limit);
+        gr.query();
+
+        while (gr.next()) {
+            var performedByName = '';
+            if (gr.getValue('performed_by')) {
+                var userGr = new GlideRecord('sys_user');
+                if (userGr.get(gr.getValue('performed_by'))) {
+                    performedByName = userGr.getValue('name');
+                }
+            }
+            events.push({
+                sys_id: gr.getUniqueValue(),
+                event_type: gr.getValue('event_type'),
+                description: gr.getValue('description'),
+                performed_by_name: performedByName,
+                performed_at: gr.getValue('performed_at'),
+                target_table: gr.getValue('target_table'),
+                target_record: gr.getValue('target_record'),
+                previous_value: gr.getValue('previous_value'),
+                new_value: gr.getValue('new_value'),
+                severity: gr.getValue('severity')
+            });
+        }
+
+        return JSON.stringify({ success: true, events: events, count: events.length });
+    },
+
+    getRecentActivity: function() {
+        var limit = parseInt(this.getParameter('sysparm_limit') || '20');
+        var events = [];
+        var gr = new GlideRecord('x_1433041_identi_0_audit_event');
+        gr.orderByDesc('performed_at');
+        gr.setLimit(limit);
+        gr.query();
+
+        while (gr.next()) {
+            var appName = '';
+            if (gr.getValue('application')) {
+                var appGr = new GlideRecord('x_1433041_identi_0_application');
+                if (appGr.get(gr.getValue('application'))) {
+                    appName = appGr.getValue('name');
+                }
+            }
+            var performedByName = '';
+            if (gr.getValue('performed_by')) {
+                var userGr = new GlideRecord('sys_user');
+                if (userGr.get(gr.getValue('performed_by'))) {
+                    performedByName = userGr.getValue('name');
+                }
+            }
+            events.push({
+                sys_id: gr.getUniqueValue(),
+                application_name: appName,
+                event_type: gr.getValue('event_type'),
+                description: gr.getValue('description'),
+                performed_by_name: performedByName,
+                performed_at: gr.getValue('performed_at'),
+                severity: gr.getValue('severity')
+            });
+        }
+
+        return JSON.stringify({ success: true, events: events });
+    },
+
+    type: 'AppReadyAuditService'
+});]]></script>
+    <sys_policy/>
+  </sys_script_include>
+</record_update>

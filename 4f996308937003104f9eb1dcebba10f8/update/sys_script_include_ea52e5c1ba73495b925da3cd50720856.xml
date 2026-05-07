@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+  <sys_script_include action="INSERT_OR_UPDATE">
+    <sys_id>ea52e5c1ba73495b925da3cd50720856</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_script_include_ea52e5c1ba73495b925da3cd50720856</sys_update_name>
+    <access>package_private</access>
+    <active>true</active>
+    <api_name>x_1433041_identi_0.AppReadyReminderEngine</api_name>
+    <caller_access/>
+    <client_callable>true</client_callable>
+    <description>Engine for processing manual and scheduled reminders - resolves recipients dynamically based on application status and sends reminder notifications</description>
+    <mobile_callable>false</mobile_callable>
+    <name>AppReadyReminderEngine</name>
+    <sandbox_callable>false</sandbox_callable>
+    <script><![CDATA[var AppReadyReminderEngine = Class.create();
+AppReadyReminderEngine.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+    initialize: function() {},
+
+    sendReminder: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var appGr = new GlideRecord('x_1433041_identi_0_application');
+        if (!appGr.get(applicationId)) {
+            return JSON.stringify({ success: false, message: 'Application not found' });
+        }
+
+        var recipientId = this._resolveRecipient(appGr);
+        if (!recipientId) {
+            return JSON.stringify({ success: false, message: 'No recipient could be resolved' });
+        }
+
+        var appName = appGr.getValue('name');
+        var completionPercent = appGr.getValue('completion_percent') || '0';
+        var portalLink = gs.getProperty('glide.servlet.uri') + 'sp?id=appready-questionnaire&app_id=' + applicationId;
+
+        var subject = 'Reminder - Questionnaire Pending Completion';
+        var message = '<p>Your onboarding questionnaire remains incomplete.</p>';
+        message += '<p><strong>Application:</strong> ' + appName + '</p>';
+        message += '<p><strong>Current Progress:</strong> ' + completionPercent + '%</p>';
+        message += '<p>Please continue onboarding using the link below:</p>';
+        message += '<p><a href="' + portalLink + '">Continue Questionnaire</a></p>';
+
+        var eventId = this._createNotificationEvent(applicationId, 'reminder', recipientId, subject, message);
+        this._updateCommunicationThread(applicationId, subject);
+
+        var reminderCount = parseInt(appGr.getValue('reminder_count') || '0') + 1;
+        appGr.setValue('reminder_count', reminderCount.toString());
+        appGr.update();
+
+        this._logAudit(applicationId, 'reminder_sent', 'Reminder #' + reminderCount + ' sent');
+
+        return JSON.stringify({ success: true, notification_event_id: eventId, reminder_count: reminderCount });
+    },
+
+    sendEscalation: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var appGr = new GlideRecord('x_1433041_identi_0_application');
+        if (!appGr.get(applicationId)) {
+            return JSON.stringify({ success: false, message: 'Application not found' });
+        }
+
+        var pmGr = new GlideRecord('x_1433041_identi_0_assignment');
+        pmGr.addQuery('application', applicationId);
+        pmGr.addQuery('role', 'program_manager');
+        pmGr.addQuery('active', true);
+        pmGr.setLimit(1);
+        pmGr.query();
+
+        var recipientId = '';
+        if (pmGr.next()) {
+            recipientId = pmGr.getValue('user');
+        } else {
+            recipientId = appGr.getValue('assigned_owner');
+        }
+
+        if (!recipientId) {
+            return JSON.stringify({ success: false, message: 'No escalation recipient found' });
+        }
+
+        var appName = appGr.getValue('name');
+        var subject = 'Escalation - Onboarding SLA Breach';
+        var message = '<p>The following application has breached its onboarding SLA:</p>';
+        message += '<p><strong>Application:</strong> ' + appName + '</p>';
+        message += '<p><strong>Due Date:</strong> ' + (appGr.getValue('due_date') || 'Not Set') + '</p>';
+        message += '<p><strong>Completion:</strong> ' + (appGr.getValue('completion_percent') || '0') + '%</p>';
+        message += '<p>Immediate action is required.</p>';
+
+        var eventId = this._createNotificationEvent(applicationId, 'overdue_escalation', recipientId, subject, message);
+
+        appGr.setValue('escalation_status', 'escalated');
+        appGr.update();
+
+        this._logAudit(applicationId, 'escalation_triggered', 'Escalation triggered - SLA breach');
+
+        return JSON.stringify({ success: true, notification_event_id: eventId });
+    },
+
+    findInactiveApplications: function() {
+        var daysInactive = parseInt(this.getParameter('sysparm_days_inactive') || '3');
+        var cutoffDate = new GlideDateTime();
+        cutoffDate.addDaysLocalTime(-daysInactive);
+
+        var inactiveApps = [];
+        var gr = new GlideRecord('x_1433041_identi_0_application');
+        gr.addQuery('active', true);
+        gr.addQuery('questionnaire_status', 'IN', 'draft,in_progress,clarification_requested');
+
+        var qc = gr.addQuery('last_saved_at', '<', cutoffDate.getDisplayValue());
+        qc.addOrCondition('last_saved_at', '');
+        gr.query();
+
+        while (gr.next()) {
+            inactiveApps.push({
+                sys_id: gr.getUniqueValue(),
+                name: gr.getValue('name'),
+                status: gr.getValue('questionnaire_status'),
+                completion_percent: gr.getValue('completion_percent'),
+                last_saved_at: gr.getValue('last_saved_at'),
+                assigned_owner: gr.getValue('assigned_owner'),
+                due_date: gr.getValue('due_date'),
+                reminder_count: gr.getValue('reminder_count')
+            });
+        }
+
+        return JSON.stringify({ success: true, inactive_applications: inactiveApps, count: inactiveApps.length });
+    },
+
+    processScheduledReminders: function() {
+        var inactiveResult = JSON.parse(this.findInactiveApplications());
+        if (!inactiveResult.success || inactiveResult.count === 0) {
+            return JSON.stringify({ success: true, message: 'No inactive applications found', reminders_sent: 0 });
+        }
+
+        var remindersSent = 0;
+        for (var i = 0; i < inactiveResult.inactive_applications.length; i++) {
+            var app = inactiveResult.inactive_applications[i];
+            this._sendScheduledReminder(app.sys_id);
+            remindersSent++;
+        }
+
+        return JSON.stringify({ success: true, reminders_sent: remindersSent });
+    },
+
+    _sendScheduledReminder: function(applicationId) {
+        var appGr = new GlideRecord('x_1433041_identi_0_application');
+        if (!appGr.get(applicationId)) return;
+
+        var recipientId = this._resolveRecipient(appGr);
+        if (!recipientId) return;
+
+        var subject = 'Automated Reminder - Questionnaire Pending';
+        var message = '<p>This is an automated reminder that your onboarding questionnaire requires attention.</p>';
+        message += '<p><strong>Application:</strong> ' + appGr.getValue('name') + '</p>';
+        message += '<p><strong>Progress:</strong> ' + (appGr.getValue('completion_percent') || '0') + '%</p>';
+
+        this._createNotificationEvent(applicationId, 'reminder', recipientId, subject, message);
+
+        var reminderCount = parseInt(appGr.getValue('reminder_count') || '0') + 1;
+        appGr.setValue('reminder_count', reminderCount.toString());
+        appGr.update();
+    },
+
+    _resolveRecipient: function(appGr) {
+        var applicationId = appGr.getUniqueValue();
+        var status = appGr.getValue('questionnaire_status');
+        var roleType = 'application_owner';
+
+        if (status === 'draft' || status === 'in_progress') {
+            roleType = 'application_owner';
+        } else if (status === 'clarification_requested') {
+            roleType = 'application_owner';
+        } else if (status === 'admin_review') {
+            roleType = 'program_manager';
+        }
+
+        var gr = new GlideRecord('x_1433041_identi_0_assignment');
+        gr.addQuery('application', applicationId);
+        gr.addQuery('role', roleType);
+        gr.addQuery('active', true);
+        gr.setLimit(1);
+        gr.query();
+        if (gr.next()) {
+            return gr.getValue('user');
+        }
+
+        return appGr.getValue('assigned_owner');
+    },
+
+    _createNotificationEvent: function(applicationId, eventType, recipientId, subject, message) {
+        var gr = new GlideRecord('x_1433041_identi_0_notification_event');
+        gr.initialize();
+        gr.setValue('application', applicationId);
+        gr.setValue('event_type', eventType);
+        gr.setValue('recipient', recipientId);
+        gr.setValue('subject', subject);
+        gr.setValue('message', message);
+        gr.setValue('sent_by', gs.getUserID());
+        gr.setValue('sent_at', new GlideDateTime().getDisplayValue());
+        gr.setValue('delivery_status', 'sent');
+        return gr.insert();
+    },
+
+    _updateCommunicationThread: function(applicationId, subject) {
+        var gr = new GlideRecord('x_1433041_identi_0_communication_thread');
+        gr.addQuery('application', applicationId);
+        gr.addQuery('thread_type', 'reminder');
+        gr.addQuery('status', 'open');
+        gr.setLimit(1);
+        gr.query();
+        if (gr.next()) {
+            gr.setValue('last_activity_at', new GlideDateTime().getDisplayValue());
+            gr.update();
+        } else {
+            gr.initialize();
+            gr.setValue('application', applicationId);
+            gr.setValue('thread_type', 'reminder');
+            gr.setValue('subject', subject);
+            gr.setValue('created_by', gs.getUserID());
+            gr.setValue('status', 'open');
+            gr.setValue('created_at', new GlideDateTime().getDisplayValue());
+            gr.setValue('last_activity_at', new GlideDateTime().getDisplayValue());
+            gr.insert();
+        }
+    },
+
+    _logAudit: function(applicationId, eventType, description) {
+        var auditGr = new GlideRecord('x_1433041_identi_0_audit_event');
+        auditGr.initialize();
+        auditGr.setValue('application', applicationId);
+        auditGr.setValue('event_type', eventType);
+        auditGr.setValue('description', description);
+        auditGr.setValue('performed_by', gs.getUserID());
+        auditGr.setValue('performed_at', new GlideDateTime().getDisplayValue());
+        auditGr.setValue('target_table', 'x_1433041_identi_0_application');
+        auditGr.setValue('target_record', applicationId);
+        auditGr.insert();
+    },
+
+    type: 'AppReadyReminderEngine'
+});]]></script>
+    <sys_policy/>
+  </sys_script_include>
+</record_update>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+  <sys_choice_set field="event_type" table="x_1433041_identi_0_audit_event">
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>e1153fc0a8464ff7a11d4fbb08774d43</sys_id>
+      <name>x_1433041_identi_0_audit_event</name>
+      <element>event_type</element>
+      <label>Application Created</label>
+      <value>application_created</value>
+      <sequence>0</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>4bd8d71255604aa882365957c9442835</sys_id>
+      <name>x_1433041_identi_0_audit_event</name>
+      <element>event_type</element>
+      <label>Assignment Created</label>
+      <value>assignment_created</value>
+      <sequence>1</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>cab5e980a6434b1798f8c1aee941de43</sys_id>
+      <name>x_1433041_identi_0_audit_event</name>
+      <element>event_type</element>
+      <label>Template Assigned</label>
+      <value>template_assigned</value>
+      <sequence>2</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>b51a2e9c4db24c4f88def4ad8ccbfc6b</sys_id>
+      <name>x_1433041_identi_0_audit_event</name>
+      <element>event_type</element>
+      <label>Notification Sent</label>
+      <value>notification_sent</value>
+      <sequence>3</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>4594e0c663b74b3295384e2e7eba9613</sys_id>
+      <name>x_1433041_identi_0_audit_event</name>
+      <element>event_type</element>
+      <label>Reminder Sent</label>
+      <value>reminder_sent</value>
+      <sequence>4</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>8a8364fcb5d24f3681a9c073d7a3aff0</sys_id>
+      <name>x_1433041_identi_0_audit_event</name>
+      <element>event_type</element>
+      <label>Escalation Triggered</label>
+      <value>escalation_triggered</value>
+      <sequence>5</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>571f87e62beb4a6aa29e60bb78eb7622</sys_id>
+      <name>x_1433041_identi_0_audit_event</name>
+      <element>event_type</element>
+      <label>Status Changed</label>
+      <value>status_changed</value>
+      <sequence>6</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>5b54984bda174856b0f39d7661981914</sys_id>
+      <name>x_1433041_identi_0_audit_event</name>
+      <element>event_type</element>
+      <label>Response Submitted</label>
+      <value>response_submitted</value>
+      <sequence>7</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>ba8ce98cf49047338b46e863746c28a1</sys_id>
+      <name>x_1433041_identi_0_audit_event</name>
+      <element>event_type</element>
+      <label>Clarification Requested</label>
+      <value>clarification_requested</value>
+      <sequence>8</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>e8e13dd91f3b415db5b49c79e0113003</sys_id>
+      <name>x_1433041_identi_0_audit_event</name>
+      <element>event_type</element>
+      <label>Clarification Resolved</label>
+      <value>clarification_resolved</value>
+      <sequence>9</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>6046e1e8d3a74f3cac9c6c2e6f3a12ee</sys_id>
+      <name>x_1433041_identi_0_audit_event</name>
+      <element>event_type</element>
+      <label>Submission Completed</label>
+      <value>submission_completed</value>
+      <sequence>10</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>36ba4cf2a9fa439a8852292dcdcaa259</sys_id>
+      <name>x_1433041_identi_0_audit_event</name>
+      <element>event_type</element>
+      <label>Build Ready</label>
+      <value>build_ready</value>
+      <sequence>11</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice_set action="INSERT_OR_UPDATE">
+      <sys_id>fe71abbec0d7418486e466e1040b80ae</sys_id>
+      <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+      <name>x_1433041_identi_0_audit_event</name>
+      <element>event_type</element>
+    </sys_choice_set>
+  </sys_choice_set>
+</record_update>

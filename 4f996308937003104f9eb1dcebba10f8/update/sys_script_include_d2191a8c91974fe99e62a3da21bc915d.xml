@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+  <sys_script_include action="INSERT_OR_UPDATE">
+    <sys_id>d2191a8c91974fe99e62a3da21bc915d</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_script_include_d2191a8c91974fe99e62a3da21bc915d</sys_update_name>
+    <access>package_private</access>
+    <active>true</active>
+    <api_name>x_1433041_identi_0.AppReadyApplicationService</api_name>
+    <caller_access/>
+    <client_callable>true</client_callable>
+    <description>Service for application creation, lifecycle management, and status transitions during the onboarding workflow</description>
+    <mobile_callable>false</mobile_callable>
+    <name>AppReadyApplicationService</name>
+    <sandbox_callable>false</sandbox_callable>
+    <script><![CDATA[var AppReadyApplicationService = Class.create();
+AppReadyApplicationService.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+    initialize: function() {},
+
+    createApplication: function() {
+        var name = this.getParameter('sysparm_name');
+        var applicationType = this.getParameter('sysparm_application_type');
+        var client = this.getParameter('sysparm_client');
+        var businessUnit = this.getParameter('sysparm_business_unit');
+        var criticality = this.getParameter('sysparm_criticality');
+        var integrationType = this.getParameter('sysparm_integration_type');
+        var ownerId = this.getParameter('sysparm_owner_id');
+        var dueDate = this.getParameter('sysparm_due_date');
+        var templateId = this.getParameter('sysparm_template_id');
+
+        var gr = new GlideRecord('x_1433041_identi_0_application');
+        gr.initialize();
+        gr.setValue('name', name);
+        gr.setValue('application_type', applicationType || '');
+        gr.setValue('client', client || '');
+        gr.setValue('business_unit', businessUnit || '');
+        gr.setValue('criticality', criticality || '');
+        gr.setValue('integration_type', integrationType || '');
+        gr.setValue('assigned_owner', ownerId || '');
+        gr.setValue('due_date', dueDate || '');
+        gr.setValue('questionnaire_status', 'draft');
+        gr.setValue('active', true);
+
+        if (templateId) {
+            gr.setValue('questionnaire_template', templateId);
+            var tplGr = new GlideRecord('x_1433041_identi_0_questionnaire_template');
+            if (tplGr.get(templateId)) {
+                gr.setValue('questionnaire_version', tplGr.getValue('version'));
+            }
+        }
+
+        var appId = gr.insert();
+        if (!appId) {
+            return JSON.stringify({ success: false, message: 'Failed to create application' });
+        }
+
+        this._logAudit(appId, 'application_created', 'Application created: ' + name);
+
+        return JSON.stringify({ success: true, application_id: appId });
+    },
+
+    updateStatus: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var newStatus = this.getParameter('sysparm_status');
+
+        var gr = new GlideRecord('x_1433041_identi_0_application');
+        if (!gr.get(applicationId)) {
+            return JSON.stringify({ success: false, message: 'Application not found' });
+        }
+
+        var previousStatus = gr.getValue('questionnaire_status');
+        gr.setValue('questionnaire_status', newStatus);
+        gr.setValue('last_saved_at', new GlideDateTime().getDisplayValue());
+        gr.setValue('last_activity_by', gs.getUserID());
+        gr.update();
+
+        this._logAudit(applicationId, 'status_changed', 'Status changed from ' + previousStatus + ' to ' + newStatus);
+
+        return JSON.stringify({ success: true, previous_status: previousStatus, new_status: newStatus });
+    },
+
+    getApplication: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var gr = new GlideRecord('x_1433041_identi_0_application');
+        if (!gr.get(applicationId)) {
+            return JSON.stringify({ success: false, message: 'Application not found' });
+        }
+
+        return JSON.stringify({
+            success: true,
+            application: {
+                sys_id: gr.getUniqueValue(),
+                number: gr.getValue('number'),
+                name: gr.getValue('name'),
+                application_type: gr.getValue('application_type'),
+                client: gr.getValue('client'),
+                business_unit: gr.getValue('business_unit'),
+                criticality: gr.getValue('criticality'),
+                integration_type: gr.getValue('integration_type'),
+                questionnaire_template: gr.getValue('questionnaire_template'),
+                questionnaire_version: gr.getValue('questionnaire_version'),
+                questionnaire_status: gr.getValue('questionnaire_status'),
+                completion_percent: gr.getValue('completion_percent'),
+                readiness_score: gr.getValue('readiness_score'),
+                assigned_owner: gr.getValue('assigned_owner'),
+                due_date: gr.getValue('due_date'),
+                last_saved_at: gr.getValue('last_saved_at'),
+                last_activity_by: gr.getValue('last_activity_by'),
+                reminder_count: gr.getValue('reminder_count'),
+                escalation_status: gr.getValue('escalation_status'),
+                active: gr.getValue('active')
+            }
+        });
+    },
+
+    resolveAndAssignTemplate: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var gr = new GlideRecord('x_1433041_identi_0_application');
+        if (!gr.get(applicationId)) {
+            return JSON.stringify({ success: false, message: 'Application not found' });
+        }
+
+        var templateId = gr.getValue('questionnaire_template');
+        if (templateId) {
+            return JSON.stringify({ success: true, template_id: templateId, resolution: 'already_assigned' });
+        }
+
+        var clientId = gr.getValue('client');
+        if (clientId) {
+            var ruleGr = new GlideRecord('x_1433041_identi_0_template_assignment_rule');
+            ruleGr.addQuery('client', clientId);
+            ruleGr.addQuery('active', true);
+            ruleGr.orderBy('priority');
+            ruleGr.setLimit(1);
+            ruleGr.query();
+            if (ruleGr.next()) {
+                templateId = ruleGr.getValue('template');
+                gr.setValue('questionnaire_template', templateId);
+                var tplGr = new GlideRecord('x_1433041_identi_0_questionnaire_template');
+                if (tplGr.get(templateId)) {
+                    gr.setValue('questionnaire_version', tplGr.getValue('version'));
+                }
+                gr.update();
+                this._logAudit(applicationId, 'template_assigned', 'Template assigned via client rule');
+                return JSON.stringify({ success: true, template_id: templateId, resolution: 'client_rule' });
+            }
+        }
+
+        var defaultGr = new GlideRecord('x_1433041_identi_0_questionnaire_template');
+        defaultGr.addQuery('is_default', true);
+        defaultGr.addQuery('active', true);
+        defaultGr.addQuery('status', 'published');
+        defaultGr.setLimit(1);
+        defaultGr.query();
+        if (defaultGr.next()) {
+            templateId = defaultGr.getUniqueValue();
+            gr.setValue('questionnaire_template', templateId);
+            gr.setValue('questionnaire_version', defaultGr.getValue('version'));
+            gr.update();
+            this._logAudit(applicationId, 'template_assigned', 'Default template assigned');
+            return JSON.stringify({ success: true, template_id: templateId, resolution: 'default' });
+        }
+
+        return JSON.stringify({ success: false, message: 'No template could be resolved' });
+    },
+
+    _logAudit: function(applicationId, eventType, description) {
+        var auditGr = new GlideRecord('x_1433041_identi_0_audit_event');
+        auditGr.initialize();
+        auditGr.setValue('application', applicationId);
+        auditGr.setValue('event_type', eventType);
+        auditGr.setValue('description', description);
+        auditGr.setValue('performed_by', gs.getUserID());
+        auditGr.setValue('performed_at', new GlideDateTime().getDisplayValue());
+        auditGr.setValue('target_table', 'x_1433041_identi_0_application');
+        auditGr.setValue('target_record', applicationId);
+        auditGr.insert();
+    },
+
+    type: 'AppReadyApplicationService'
+});]]></script>
+    <sys_policy/>
+  </sys_script_include>
+</record_update>

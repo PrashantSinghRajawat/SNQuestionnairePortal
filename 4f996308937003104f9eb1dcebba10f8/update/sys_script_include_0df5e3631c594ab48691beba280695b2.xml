@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+  <sys_script_include action="INSERT_OR_UPDATE">
+    <sys_id>0df5e3631c594ab48691beba280695b2</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_script_include_0df5e3631c594ab48691beba280695b2</sys_update_name>
+    <access>package_private</access>
+    <active>true</active>
+    <api_name>x_1433041_identi_0.AppReadyCommunicationService</api_name>
+    <caller_access/>
+    <client_callable>true</client_callable>
+    <description>Service for managing communication threads and messages - handles clarification requests, thread lifecycle, and message history</description>
+    <mobile_callable>false</mobile_callable>
+    <name>AppReadyCommunicationService</name>
+    <sandbox_callable>false</sandbox_callable>
+    <script><![CDATA[var AppReadyCommunicationService = Class.create();
+AppReadyCommunicationService.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+    initialize: function() {},
+
+    createClarificationThread: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var subject = this.getParameter('sysparm_subject');
+        var message = this.getParameter('sysparm_message');
+        var assignedTo = this.getParameter('sysparm_assigned_to');
+
+        var gr = new GlideRecord('x_1433041_identi_0_communication_thread');
+        gr.initialize();
+        gr.setValue('application', applicationId);
+        gr.setValue('thread_type', 'clarification');
+        gr.setValue('subject', subject);
+        gr.setValue('created_by', gs.getUserID());
+        gr.setValue('assigned_to', assignedTo);
+        gr.setValue('status', 'open');
+        gr.setValue('latest_message', message);
+        gr.setValue('created_at', new GlideDateTime().getDisplayValue());
+        gr.setValue('last_activity_at', new GlideDateTime().getDisplayValue());
+        var threadId = gr.insert();
+
+        this._addMessage(threadId, message, assignedTo);
+
+        var appGr = new GlideRecord('x_1433041_identi_0_application');
+        if (appGr.get(applicationId)) {
+            appGr.setValue('clarification_status', 'pending');
+            appGr.update();
+        }
+
+        this._logAudit(applicationId, 'clarification_requested', 'Clarification requested: ' + subject);
+
+        return JSON.stringify({ success: true, thread_id: threadId });
+    },
+
+    respondToThread: function() {
+        var threadId = this.getParameter('sysparm_thread_id');
+        var message = this.getParameter('sysparm_message');
+
+        var gr = new GlideRecord('x_1433041_identi_0_communication_thread');
+        if (!gr.get(threadId)) {
+            return JSON.stringify({ success: false, message: 'Thread not found' });
+        }
+
+        gr.setValue('latest_message', message);
+        gr.setValue('last_activity_at', new GlideDateTime().getDisplayValue());
+        gr.setValue('status', 'pending');
+        gr.update();
+
+        var recipientId = gr.getValue('created_by');
+        this._addMessage(threadId, message, recipientId);
+
+        var applicationId = gr.getValue('application');
+        var appGr = new GlideRecord('x_1433041_identi_0_application');
+        if (appGr.get(applicationId)) {
+            appGr.setValue('clarification_status', 'responded');
+            appGr.update();
+        }
+
+        return JSON.stringify({ success: true, message: 'Response added' });
+    },
+
+    resolveThread: function() {
+        var threadId = this.getParameter('sysparm_thread_id');
+        var gr = new GlideRecord('x_1433041_identi_0_communication_thread');
+        if (!gr.get(threadId)) {
+            return JSON.stringify({ success: false, message: 'Thread not found' });
+        }
+
+        gr.setValue('status', 'resolved');
+        gr.setValue('last_activity_at', new GlideDateTime().getDisplayValue());
+        gr.update();
+
+        var applicationId = gr.getValue('application');
+        var openThreads = new GlideRecord('x_1433041_identi_0_communication_thread');
+        openThreads.addQuery('application', applicationId);
+        openThreads.addQuery('thread_type', 'clarification');
+        openThreads.addQuery('status', 'IN', 'open,pending');
+        openThreads.query();
+
+        if (openThreads.getRowCount() === 0) {
+            var appGr = new GlideRecord('x_1433041_identi_0_application');
+            if (appGr.get(applicationId)) {
+                appGr.setValue('clarification_status', 'resolved');
+                appGr.update();
+            }
+        }
+
+        this._logAudit(applicationId, 'clarification_resolved', 'Clarification resolved');
+
+        return JSON.stringify({ success: true, message: 'Thread resolved' });
+    },
+
+    getThreadMessages: function() {
+        var threadId = this.getParameter('sysparm_thread_id');
+        var messages = [];
+        var gr = new GlideRecord('x_1433041_identi_0_communication_message');
+        gr.addQuery('thread', threadId);
+        gr.orderBy('sent_at');
+        gr.query();
+
+        while (gr.next()) {
+            var senderName = '';
+            var senderGr = new GlideRecord('sys_user');
+            if (senderGr.get(gr.getValue('sender'))) {
+                senderName = senderGr.getValue('name');
+            }
+            messages.push({
+                sys_id: gr.getUniqueValue(),
+                sender_name: senderName,
+                message: gr.getValue('message'),
+                sent_at: gr.getValue('sent_at'),
+                read_flag: gr.getValue('read_flag')
+            });
+        }
+        return JSON.stringify({ success: true, messages: messages });
+    },
+
+    getApplicationThreads: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var threads = [];
+        var gr = new GlideRecord('x_1433041_identi_0_communication_thread');
+        gr.addQuery('application', applicationId);
+        gr.orderByDesc('last_activity_at');
+        gr.query();
+
+        while (gr.next()) {
+            var assignedName = '';
+            if (gr.getValue('assigned_to')) {
+                var userGr = new GlideRecord('sys_user');
+                if (userGr.get(gr.getValue('assigned_to'))) {
+                    assignedName = userGr.getValue('name');
+                }
+            }
+            threads.push({
+                sys_id: gr.getUniqueValue(),
+                thread_type: gr.getValue('thread_type'),
+                subject: gr.getValue('subject'),
+                status: gr.getValue('status'),
+                assigned_to_name: assignedName,
+                created_at: gr.getValue('created_at'),
+                last_activity_at: gr.getValue('last_activity_at')
+            });
+        }
+        return JSON.stringify({ success: true, threads: threads });
+    },
+
+    _addMessage: function(threadId, message, recipientId) {
+        var gr = new GlideRecord('x_1433041_identi_0_communication_message');
+        gr.initialize();
+        gr.setValue('thread', threadId);
+        gr.setValue('sender', gs.getUserID());
+        gr.setValue('recipient', recipientId);
+        gr.setValue('message', message);
+        gr.setValue('sent_at', new GlideDateTime().getDisplayValue());
+        gr.setValue('read_flag', false);
+        gr.insert();
+    },
+
+    _logAudit: function(applicationId, eventType, description) {
+        var auditGr = new GlideRecord('x_1433041_identi_0_audit_event');
+        auditGr.initialize();
+        auditGr.setValue('application', applicationId);
+        auditGr.setValue('event_type', eventType);
+        auditGr.setValue('description', description);
+        auditGr.setValue('performed_by', gs.getUserID());
+        auditGr.setValue('performed_at', new GlideDateTime().getDisplayValue());
+        auditGr.setValue('target_table', 'x_1433041_identi_0_communication_thread');
+        auditGr.setValue('target_record', applicationId);
+        auditGr.insert();
+    },
+
+    type: 'AppReadyCommunicationService'
+});]]></script>
+    <sys_policy/>
+  </sys_script_include>
+</record_update>

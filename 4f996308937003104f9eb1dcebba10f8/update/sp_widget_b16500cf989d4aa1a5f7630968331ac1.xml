@@ -76,8 +76,7 @@
   animation: ibar-spin-animation 0.8s linear infinite;
   font-size: 24px;
   color: $brand-primary;
-}
-]]></css>
+}]]></css>
     <data_table>sp_instance</data_table>
     <demo_data/>
     <description/>
@@ -86,8 +85,8 @@
     <has_preview>false</has_preview>
     <id>ibar_application_grid</id>
     <internal>false</internal>
-    <link>function link(scope, element, attrs, controller) {
-}</link>
+    <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
     <name>IBAR Application Grid</name>
     <option_schema/>
     <public>false</public>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+  <sys_choice_set field="application_type" table="x_1433041_identi_0_application">
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>3d09ccb1a9bd458bb1f8c0da639e7da1</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>application_type</element>
+      <label>SaaS</label>
+      <value>saas</value>
+      <sequence>0</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>5328597b235440599ce2d86818871fed</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>application_type</element>
+      <label>On-Premise</label>
+      <value>on_premise</value>
+      <sequence>1</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>c25c4d2218254ecaa0c64fa81eacfb34</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>application_type</element>
+      <label>Hybrid</label>
+      <value>hybrid</value>
+      <sequence>2</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>8f78794b3ef84cd5a8a4d4de61fd89c0</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>application_type</element>
+      <label>Custom</label>
+      <value>custom</value>
+      <sequence>3</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>4f9f485af5b54e34a3b75306acc28e3d</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>application_type</element>
+      <label>COTS</label>
+      <value>cots</value>
+      <sequence>4</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice_set action="INSERT_OR_UPDATE">
+      <sys_id>709fee9557684fb9811340ab5edbee7b</sys_id>
+      <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+      <name>x_1433041_identi_0_application</name>
+      <element>application_type</element>
+    </sys_choice_set>
+  </sys_choice_set>
+</record_update>

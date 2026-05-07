@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>0e3a8117e42748a587aebce7cdc2c100</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_0e3a8117e42748a587aebce7cdc2c100</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() {
+  var c = this;
+
+  c.getOverdueClass = function(daysOverdue) {
+    if (daysOverdue > 7) return "overdue-critical";
+    if (daysOverdue > 3) return "overdue-warning";
+    return "overdue-minor";
+  };
+};
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.ibar-overdue-applications {
+  padding: 20px;
+}
+.ibar-overdue-applications .section-title {
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.ibar-overdue-applications .overdue-critical {
+  background-color: #fdeaea;
+}
+.ibar-overdue-applications .overdue-warning {
+  background-color: #fff8e1;
+}
+.ibar-overdue-applications .overdue-minor {
+  background-color: #fff;
+}
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_overdue_applications</id>
+    <internal>false</internal>
+    <link>function link(scope, element, attrs, controller) {
+}</link>
+    <name>IBAR Overdue Applications</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() {
+  data.overdueApplications = [];
+  data.count = 0;
+
+  try {
+    var now = new GlideDateTime();
+    var gr = new GlideRecord("x_1433041_identi_0_application");
+    gr.addQuery("active", true);
+    gr.addQuery("questionnaire_status", "IN", "draft,in_progress,clarification_requested");
+    gr.addNotNullQuery("due_date");
+    gr.addQuery("due_date", "<", now.getDisplayValue());
+    gr.orderBy("due_date");
+    gr.query();
+
+    data.count = gr.getRowCount();
+
+    while (gr.next()) {
+      var ownerName = "";
+      if (gr.getValue("assigned_owner")) {
+        var userGr = new GlideRecord("sys_user");
+        if (userGr.get(gr.getValue("assigned_owner"))) {
+          ownerName = userGr.getValue("name");
+        }
+      }
+
+      var dueDate = new GlideDateTime(gr.getValue("due_date"));
+      var diff = gs.dateDiff(dueDate.getDisplayValue(), now.getDisplayValue(), true);
+      var daysOverdue = Math.floor(parseInt(diff) / 86400);
+
+      data.overdueApplications.push({
+        sys_id: gr.getUniqueValue(),
+        name: gr.getValue("name"),
+        due_date: gr.getDisplayValue("due_date"),
+        days_overdue: daysOverdue,
+        completion_percent: parseInt(gr.getValue("completion_percent")) || 0,
+        owner_name: ownerName,
+        escalation_status: gr.getValue("escalation_status"),
+        reminder_count: parseInt(gr.getValue("reminder_count")) || 0
+      });
+    }
+  } catch (e) {
+    gs.error("IBAR Overdue Applications error: " + e.message);
+  }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="ibar-overdue-applications">
+  <h3 class="section-title"><i class="fa fa-clock-o text-danger"></i> Overdue Applications ({{c.data.count}})</h3>
+
+  <div ng-if="c.data.overdueApplications.length === 0" class="text-muted text-center">
+    <i class="fa fa-check-circle text-success"></i> No overdue applications.
+  </div>
+
+  <table class="table table-condensed" ng-if="c.data.overdueApplications.length > 0">
+    <thead>
+      <tr>
+        <th>Application</th>
+        <th>Owner</th>
+        <th>Due Date</th>
+        <th>Days Overdue</th>
+        <th>Progress</th>
+        <th>Reminders</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="app in c.data.overdueApplications" ng-class="c.getOverdueClass(app.days_overdue)">
+        <td><strong>{{app.name}}</strong></td>
+        <td>{{app.owner_name || 'Unassigned'}}</td>
+        <td>{{app.due_date}}</td>
+        <td><span class="text-danger"><strong>{{app.days_overdue}} days</strong></span></td>
+        <td>{{app.completion_percent}}%</td>
+        <td>{{app.reminder_count}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+]]></template>
+  </sp_widget>
+</record_update>

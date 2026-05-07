@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>23602e3c60e9427dbd595aa641f8b451</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_23602e3c60e9427dbd595aa641f8b451</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function($scope) {
+  var c = this;
+
+  c.newAssignment = { role: "", user_id: "" };
+  c.roles = [
+    { value: "application_owner", label: "Application Owner" },
+    { value: "it_custodian", label: "IT Custodian" },
+    { value: "audit_owner", label: "Audit Owner" },
+    { value: "program_manager", label: "Program Manager" },
+    { value: "developer", label: "Developer" }
+  ];
+
+  $scope.$on("application.created", function(event, params) {
+    c.data.applicationId = params.app_id;
+  });
+
+  c.assignUser = function() {
+    if (!c.data.applicationId || !c.newAssignment.role || !c.newAssignment.user_id) return;
+
+    c.server.get({
+      action: "assign",
+      app_id: c.data.applicationId,
+      role: c.newAssignment.role,
+      user_id: c.newAssignment.user_id
+    }).then(function(r) {
+      c.data.assignments = r.data.assignments;
+      c.newAssignment = { role: "", user_id: "" };
+    });
+  };
+
+  c.removeAssignment = function(assignment) {
+    c.server.get({
+      action: "remove",
+      assignment_id: assignment.sys_id
+    }).then(function(r) {
+      c.data.assignments = r.data.assignments;
+    });
+  };
+};
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.ibar-assignment-panel {
+  padding: 20px;
+}
+.ibar-assignment-panel .section-title {
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.ibar-assignment-panel .assign-form {
+  margin-top: 16px;
+  padding: 12px;
+  background: #f9f9f9;
+  border-radius: 4px;
+}
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_user_assignment_panel</id>
+    <internal>false</internal>
+    <link>function link(scope, element, attrs, controller) {
+}</link>
+    <name>IBAR User Assignment Panel</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() {
+  data.assignments = [];
+  data.message = "";
+  data.applicationId = input && input.app_id ? input.app_id : ($sp.getParameter("app_id") || "");
+
+  try {
+    if (input && input.action === "assign") {
+      assignUser(input);
+      return;
+    }
+    if (input && input.action === "remove") {
+      removeAssignment(input.assignment_id);
+      return;
+    }
+
+    if (data.applicationId) {
+      loadAssignments(data.applicationId);
+    }
+  } catch (e) {
+    gs.error("IBAR User Assignment Panel error: " + e.message);
+    data.message = "An error occurred.";
+  }
+
+  function loadAssignments(appId) {
+    var gr = new GlideRecord("x_1433041_identi_0_assignment");
+    gr.addQuery("application", appId);
+    gr.addQuery("active", true);
+    gr.query();
+    while (gr.next()) {
+      var userName = "";
+      var userGr = new GlideRecord("sys_user");
+      if (userGr.get(gr.getValue("user"))) {
+        userName = userGr.getValue("name");
+      }
+      data.assignments.push({
+        sys_id: gr.getUniqueValue(),
+        role: gr.getValue("role"),
+        role_display: gr.getDisplayValue("role"),
+        user_id: gr.getValue("user"),
+        user_name: userName,
+        assigned_at: gr.getDisplayValue("assigned_at")
+      });
+    }
+  }
+
+  function assignUser(params) {
+    var existing = new GlideRecord("x_1433041_identi_0_assignment");
+    existing.addQuery("application", params.app_id);
+    existing.addQuery("role", params.role);
+    existing.addQuery("active", true);
+    existing.query();
+    while (existing.next()) {
+      existing.setValue("active", false);
+      existing.update();
+    }
+
+    var gr = new GlideRecord("x_1433041_identi_0_assignment");
+    gr.initialize();
+    gr.setValue("application", params.app_id);
+    gr.setValue("user", params.user_id);
+    gr.setValue("role", params.role);
+    gr.setValue("active", true);
+    gr.setValue("assigned_at", new GlideDateTime().getDisplayValue());
+    gr.setValue("assigned_by", gs.getUserID());
+    gr.insert();
+
+    if (params.role === "application_owner") {
+      var appGr = new GlideRecord("x_1433041_identi_0_application");
+      if (appGr.get(params.app_id)) {
+        appGr.setValue("assigned_owner", params.user_id);
+        appGr.update();
+      }
+    }
+
+    data.applicationId = params.app_id;
+    loadAssignments(params.app_id);
+    data.message = "User assigned successfully.";
+  }
+
+  function removeAssignment(assignmentId) {
+    var gr = new GlideRecord("x_1433041_identi_0_assignment");
+    if (gr.get(assignmentId)) {
+      var appId = gr.getValue("application");
+      gr.setValue("active", false);
+      gr.update();
+      data.applicationId = appId;
+      loadAssignments(appId);
+      data.message = "Assignment removed.";
+    }
+  }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="ibar-assignment-panel">
+  <h3 class="section-title">Assignment Section</h3>
+
+  <div ng-if="!c.data.applicationId" class="alert alert-info">
+    <i class="fa fa-info-circle"></i> Create an application first to assign users.
+  </div>
+
+  <div ng-if="c.data.applicationId">
+    <table class="table table-striped" ng-if="c.data.assignments.length > 0">
+      <thead>
+        <tr>
+          <th>Role</th>
+          <th>User</th>
+          <th>Assigned At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="a in c.data.assignments">
+          <td><span class="label label-info">{{a.role_display}}</span></td>
+          <td>{{a.user_name}}</td>
+          <td>{{a.assigned_at}}</td>
+          <td><button class="btn btn-xs btn-danger" ng-click="c.removeAssignment(a)"><i class="fa fa-times"></i></button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="assign-form">
+      <div class="row">
+        <div class="col-sm-4">
+          <select class="form-control" ng-model="c.newAssignment.role">
+            <option value="">-- Select Role --</option>
+            <option ng-repeat="r in c.roles" value="{{r.value}}">{{r.label}}</option>
+          </select>
+        </div>
+        <div class="col-sm-5">
+          <sn-record-picker table="'sys_user'" display-field="'name'" search-fields="'name,email'" value-field="'sys_id'" field="c.newAssignment.user_id"></sn-record-picker>
+        </div>
+        <div class="col-sm-3">
+          <button class="btn btn-primary btn-block" ng-click="c.assignUser()" ng-disabled="!c.newAssignment.role || !c.newAssignment.user_id">
+            <i class="fa fa-plus"></i> Assign
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+]]></template>
+  </sp_widget>
+</record_update>

@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>945f656e095a4fc2830742451da68f3b</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_945f656e095a4fc2830742451da68f3b</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() {
+  var c = this;
+  c.selectedApp = null;
+  c.clarificationSubject = "";
+
+  c.sendReminder = function(app) {
+    c.server.get({ action: "send_reminder", app_id: app.sys_id }).then(function(r) {
+      c.data.applications = r.data.applications;
+      c.data.actionResult = r.data.actionResult;
+    });
+  };
+
+  c.escalate = function(app) {
+    c.server.get({ action: "escalate", app_id: app.sys_id }).then(function(r) {
+      c.data.applications = r.data.applications;
+      c.data.actionResult = r.data.actionResult;
+    });
+  };
+
+  c.requestClarification = function(app) {
+    c.server.get({
+      action: "request_clarification",
+      app_id: app.sys_id,
+      subject: c.clarificationSubject || "Clarification Required"
+    }).then(function(r) {
+      c.data.applications = r.data.applications;
+      c.data.actionResult = r.data.actionResult;
+      c.clarificationSubject = "";
+      c.selectedApp = null;
+    });
+  };
+
+  c.selectForClarification = function(app) {
+    c.selectedApp = app;
+  };
+
+  c.dismissResult = function() {
+    c.data.actionResult = "";
+  };
+};
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.ibar-reminder-actions {
+  padding: 20px;
+}
+.ibar-reminder-actions .section-title {
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.ibar-reminder-actions .app-action-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ibar-reminder-actions .app-info {
+  flex: 1;
+}
+.ibar-reminder-actions .app-actions-btns .btn {
+  margin-left: 4px;
+}
+.ibar-reminder-actions .clarification-form {
+  margin-top: 16px;
+  padding: 12px;
+  background: #f9f9f9;
+  border-radius: 4px;
+}
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_reminder_actions</id>
+    <internal>false</internal>
+    <link>function link(scope, element, attrs, controller) {
+}</link>
+    <name>IBAR Reminder Actions</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() {
+  data.applications = [];
+  data.message = "";
+  data.actionResult = "";
+
+  try {
+    if (input && input.action === "send_reminder") {
+      sendReminder(input.app_id);
+      return;
+    }
+    if (input && input.action === "escalate") {
+      escalateApplication(input.app_id);
+      return;
+    }
+    if (input && input.action === "request_clarification") {
+      requestClarification(input);
+      return;
+    }
+
+    loadActionableApplications();
+  } catch (e) {
+    gs.error("IBAR Reminder Actions error: " + e.message);
+    data.message = "An error occurred.";
+  }
+
+  function loadActionableApplications() {
+    var gr = new GlideRecord("x_1433041_identi_0_application");
+    gr.addQuery("active", true);
+    gr.addQuery("questionnaire_status", "IN", "draft,in_progress,clarification_requested");
+    gr.orderBy("due_date");
+    gr.setLimit(20);
+    gr.query();
+
+    while (gr.next()) {
+      var ownerName = "";
+      if (gr.getValue("assigned_owner")) {
+        var userGr = new GlideRecord("sys_user");
+        if (userGr.get(gr.getValue("assigned_owner"))) {
+          ownerName = userGr.getValue("name");
+        }
+      }
+      data.applications.push({
+        sys_id: gr.getUniqueValue(),
+        name: gr.getValue("name"),
+        status: gr.getValue("questionnaire_status"),
+        status_display: gr.getDisplayValue("questionnaire_status"),
+        completion_percent: parseInt(gr.getValue("completion_percent")) || 0,
+        owner_name: ownerName,
+        reminder_count: parseInt(gr.getValue("reminder_count")) || 0,
+        due_date: gr.getDisplayValue("due_date")
+      });
+    }
+  }
+
+  function sendReminder(appId) {
+    var appGr = new GlideRecord("x_1433041_identi_0_application");
+    if (!appGr.get(appId)) {
+      data.actionResult = "Application not found.";
+      return;
+    }
+
+    var recipientId = resolveRecipient(appGr);
+    if (!recipientId) {
+      data.actionResult = "No recipient could be resolved.";
+      return;
+    }
+
+    var portalLink = gs.getProperty("glide.servlet.uri") + "sp?id=appready-questionnaire&app_id=" + appId;
+    var subject = "Reminder - Questionnaire Pending Completion";
+    var message = "<p>Your onboarding questionnaire remains incomplete.</p>";
+    message += "<p><strong>Application:</strong> " + appGr.getValue("name") + "</p>";
+    message += "<p><strong>Progress:</strong> " + (appGr.getValue("completion_percent") || "0") + "%</p>";
+    message += "<p><a href=\"" + portalLink + "\">Continue Questionnaire</a></p>";
+
+    var eventGr = new GlideRecord("x_1433041_identi_0_notification_event");
+    eventGr.initialize();
+    eventGr.setValue("application", appId);
+    eventGr.setValue("event_type", "reminder");
+    eventGr.setValue("recipient", recipientId);
+    eventGr.setValue("subject", subject);
+    eventGr.setValue("message", message);
+    eventGr.setValue("sent_by", gs.getUserID());
+    eventGr.setValue("sent_at", new GlideDateTime().getDisplayValue());
+    eventGr.setValue("delivery_status", "sent");
+    eventGr.insert();
+
+    var reminderCount = parseInt(appGr.getValue("reminder_count") || "0") + 1;
+    appGr.setValue("reminder_count", reminderCount.toString());
+    appGr.update();
+
+    data.actionResult = "Reminder sent successfully (Reminder #" + reminderCount + ").";
+    loadActionableApplications();
+  }
+
+  function escalateApplication(appId) {
+    var appGr = new GlideRecord("x_1433041_identi_0_application");
+    if (!appGr.get(appId)) {
+      data.actionResult = "Application not found.";
+      return;
+    }
+
+    appGr.setValue("escalation_status", "escalated");
+    appGr.update();
+
+    var auditGr = new GlideRecord("x_1433041_identi_0_audit_event");
+    auditGr.initialize();
+    auditGr.setValue("application", appId);
+    auditGr.setValue("event_type", "escalation_triggered");
+    auditGr.setValue("description", "Manual escalation triggered");
+    auditGr.setValue("performed_by", gs.getUserID());
+    auditGr.setValue("performed_at", new GlideDateTime().getDisplayValue());
+    auditGr.setValue("severity", "warning");
+    auditGr.insert();
+
+    data.actionResult = "Application escalated.";
+    loadActionableApplications();
+  }
+
+  function requestClarification(params) {
+    var threadGr = new GlideRecord("x_1433041_identi_0_communication_thread");
+    threadGr.initialize();
+    threadGr.setValue("application", params.app_id);
+    threadGr.setValue("thread_type", "clarification");
+    threadGr.setValue("subject", params.subject || "Clarification Required");
+    threadGr.setValue("created_by", gs.getUserID());
+    threadGr.setValue("status", "open");
+    threadGr.setValue("created_at", new GlideDateTime().getDisplayValue());
+    threadGr.setValue("last_activity_at", new GlideDateTime().getDisplayValue());
+    threadGr.insert();
+
+    var appGr = new GlideRecord("x_1433041_identi_0_application");
+    if (appGr.get(params.app_id)) {
+      appGr.setValue("clarification_status", "pending");
+      appGr.update();
+    }
+
+    data.actionResult = "Clarification request created.";
+    loadActionableApplications();
+  }
+
+  function resolveRecipient(appGr) {
+    var applicationId = appGr.getUniqueValue();
+    var status = appGr.getValue("questionnaire_status");
+    var roleType = "application_owner";
+
+    if (status === "admin_review") roleType = "program_manager";
+
+    var gr = new GlideRecord("x_1433041_identi_0_assignment");
+    gr.addQuery("application", applicationId);
+    gr.addQuery("role", roleType);
+    gr.addQuery("active", true);
+    gr.setLimit(1);
+    gr.query();
+    if (gr.next()) return gr.getValue("user");
+
+    return appGr.getValue("assigned_owner");
+  }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="ibar-reminder-actions">
+  <h3 class="section-title"><i class="fa fa-bell"></i> Actions</h3>
+
+  <div class="alert alert-info" ng-if="c.data.actionResult" ng-click="c.dismissResult()">
+    <i class="fa fa-check-circle"></i> {{c.data.actionResult}} <span class="pull-right text-muted" style="cursor:pointer">dismiss</span>
+  </div>
+
+  <div ng-if="c.data.applications.length === 0" class="text-muted text-center">
+    <i class="fa fa-check-circle"></i> No actionable applications.
+  </div>
+
+  <div class="app-action-list" ng-if="c.data.applications.length > 0">
+    <div class="app-action-item" ng-repeat="app in c.data.applications">
+      <div class="app-info">
+        <strong>{{app.name}}</strong>
+        <span class="label label-default">{{app.status_display}}</span>
+        <span class="text-muted">{{app.completion_percent}}%</span>
+        <span class="text-muted" ng-if="app.reminder_count > 0">({{app.reminder_count}} reminders sent)</span>
+      </div>
+      <div class="app-actions-btns">
+        <button class="btn btn-xs btn-warning" ng-click="c.sendReminder(app)" title="Send Reminder">
+          <i class="fa fa-bell"></i> Remind
+        </button>
+        <button class="btn btn-xs btn-info" ng-click="c.selectForClarification(app)" title="Request Clarification">
+          <i class="fa fa-question-circle"></i> Clarify
+        </button>
+        <button class="btn btn-xs btn-danger" ng-click="c.escalate(app)" title="Escalate">
+          <i class="fa fa-exclamation-triangle"></i> Escalate
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="clarification-form" ng-if="c.selectedApp">
+    <h4>Request Clarification for: {{c.selectedApp.name}}</h4>
+    <div class="form-group">
+      <input type="text" class="form-control" ng-model="c.clarificationSubject" placeholder="Clarification subject..." />
+    </div>
+    <button class="btn btn-primary btn-sm" ng-click="c.requestClarification(c.selectedApp)">Submit</button>
+    <button class="btn btn-default btn-sm" ng-click="c.selectedApp = null">Cancel</button>
+  </div>
+</div>
+]]></template>
+  </sp_widget>
+</record_update>

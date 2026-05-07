@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>9956ae2a7eae4f848e71cb0aaef008ed</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_9956ae2a7eae4f848e71cb0aaef008ed</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function($scope) {
+  var c = this;
+
+  c.formData = {
+    name: "",
+    application_type: "",
+    client: "",
+    business_unit: "",
+    criticality: "",
+    integration_type: "",
+    due_date: "",
+    template_id: ""
+  };
+
+  c.saving = false;
+  c.successMessage = "";
+  c.errorMessage = "";
+
+  c.applicationTypes = [
+    { value: "saas", label: "SaaS" },
+    { value: "on_premise", label: "On-Premise" },
+    { value: "hybrid", label: "Hybrid" },
+    { value: "custom", label: "Custom" },
+    { value: "cots", label: "COTS" }
+  ];
+
+  c.businessUnits = [
+    { value: "finance", label: "Finance" },
+    { value: "hr", label: "Human Resources" },
+    { value: "it", label: "Information Technology" },
+    { value: "operations", label: "Operations" },
+    { value: "sales", label: "Sales" },
+    { value: "legal", label: "Legal" },
+    { value: "engineering", label: "Engineering" }
+  ];
+
+  c.criticalityLevels = [
+    { value: "critical", label: "Critical" },
+    { value: "high", label: "High" },
+    { value: "medium", label: "Medium" },
+    { value: "low", label: "Low" }
+  ];
+
+  c.integrationTypes = [
+    { value: "saml", label: "SAML" },
+    { value: "oauth", label: "OAuth" },
+    { value: "ldap", label: "LDAP" },
+    { value: "radius", label: "RADIUS" },
+    { value: "kerberos", label: "Kerberos" },
+    { value: "custom", label: "Custom" },
+    { value: "none", label: "None" }
+  ];
+
+  c.saveApplication = function() {
+    if (!c.formData.name) {
+      c.errorMessage = "Application Name is required.";
+      return;
+    }
+
+    c.saving = true;
+    c.errorMessage = "";
+    c.successMessage = "";
+
+    c.server.get({
+      action: "create",
+      name: c.formData.name,
+      application_type: c.formData.application_type,
+      client: c.formData.client,
+      business_unit: c.formData.business_unit,
+      criticality: c.formData.criticality,
+      integration_type: c.formData.integration_type,
+      due_date: c.formData.due_date,
+      template_id: c.formData.template_id
+    }).then(function(r) {
+      c.saving = false;
+      if (r.data.createdAppId) {
+        c.successMessage = r.data.message;
+        $scope.$emit("application.created", { app_id: r.data.createdAppId });
+      } else {
+        c.errorMessage = r.data.message || "Failed to create application.";
+      }
+    }, function() {
+      c.saving = false;
+      c.errorMessage = "An error occurred. Please try again.";
+    });
+  };
+
+  c.resetForm = function() {
+    c.formData = {
+      name: "",
+      application_type: "",
+      client: "",
+      business_unit: "",
+      criticality: "",
+      integration_type: "",
+      due_date: "",
+      template_id: ""
+    };
+    c.successMessage = "";
+    c.errorMessage = "";
+  };
+};
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.ibar-create-form {
+  padding: 20px;
+}
+.ibar-create-form .section-title {
+  margin-bottom: 24px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #0078d4;
+  padding-bottom: 10px;
+}
+.ibar-create-form .form-group {
+  margin-bottom: 16px;
+}
+.ibar-create-form .control-label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  display: block;
+}
+.ibar-create-form .form-actions {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+.ibar-create-form .form-actions .btn {
+  margin-right: 10px;
+}
+.ibar-create-form .help-block {
+  font-size: 12px;
+  color: #666;
+}
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_application_create_form</id>
+    <internal>false</internal>
+    <link>function link(scope, element, attrs, controller) {
+}</link>
+    <name>IBAR Application Create Form</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() {
+  data.clients = [];
+  data.templates = [];
+  data.message = "";
+  data.createdAppId = "";
+
+  try {
+    if (input && input.action === "create") {
+      createApplication(input);
+      return;
+    }
+
+    loadClients();
+    loadTemplates();
+  } catch (e) {
+    gs.error("IBAR Application Create Form error: " + e.message);
+    data.message = "An error occurred loading form data.";
+  }
+
+  function loadClients() {
+    var gr = new GlideRecord("core_company");
+    gr.addActiveQuery();
+    gr.orderBy("name");
+    gr.setLimit(100);
+    gr.query();
+    while (gr.next()) {
+      data.clients.push({
+        sys_id: gr.getUniqueValue(),
+        name: gr.getValue("name")
+      });
+    }
+  }
+
+  function loadTemplates() {
+    var gr = new GlideRecord("x_1433041_identi_0_questionnaire_template");
+    gr.addQuery("active", true);
+    gr.addQuery("status", "published");
+    gr.orderBy("name");
+    gr.query();
+    while (gr.next()) {
+      data.templates.push({
+        sys_id: gr.getUniqueValue(),
+        name: gr.getValue("name"),
+        version: gr.getValue("version"),
+        is_default: gr.getValue("is_default") == "true"
+      });
+    }
+  }
+
+  function createApplication(params) {
+    var gr = new GlideRecord("x_1433041_identi_0_application");
+    gr.initialize();
+    gr.setValue("name", params.name || "");
+    gr.setValue("application_type", params.application_type || "");
+    gr.setValue("client", params.client || "");
+    gr.setValue("business_unit", params.business_unit || "");
+    gr.setValue("criticality", params.criticality || "");
+    gr.setValue("integration_type", params.integration_type || "");
+    gr.setValue("due_date", params.due_date || "");
+    gr.setValue("questionnaire_status", "draft");
+    gr.setValue("active", true);
+
+    if (params.template_id) {
+      gr.setValue("questionnaire_template", params.template_id);
+      var tplGr = new GlideRecord("x_1433041_identi_0_questionnaire_template");
+      if (tplGr.get(params.template_id)) {
+        gr.setValue("questionnaire_version", tplGr.getValue("version"));
+      }
+    }
+
+    var appId = gr.insert();
+    if (appId) {
+      data.createdAppId = appId;
+      data.message = "Application created successfully.";
+
+      var auditGr = new GlideRecord("x_1433041_identi_0_audit_event");
+      auditGr.initialize();
+      auditGr.setValue("application", appId);
+      auditGr.setValue("event_type", "application_created");
+      auditGr.setValue("description", "Application created: " + params.name);
+      auditGr.setValue("performed_by", gs.getUserID());
+      auditGr.setValue("performed_at", new GlideDateTime().getDisplayValue());
+      auditGr.setValue("target_table", "x_1433041_identi_0_application");
+      auditGr.setValue("target_record", appId);
+      auditGr.insert();
+    } else {
+      data.message = "Failed to create application.";
+    }
+  }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="ibar-create-form">
+  <h2 class="section-title">Create New Application</h2>
+
+  <div class="alert alert-success" ng-if="c.successMessage">
+    <i class="fa fa-check-circle"></i> {{c.successMessage}}
+  </div>
+  <div class="alert alert-danger" ng-if="c.errorMessage">
+    <i class="fa fa-exclamation-circle"></i> {{c.errorMessage}}
+  </div>
+
+  <form name="createForm" ng-submit="c.saveApplication()" novalidate>
+    <div class="form-group">
+      <label class="control-label">Application Name <span class="text-danger">*</span></label>
+      <input type="text" class="form-control" ng-model="c.formData.name" required placeholder="Enter application name" />
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Application Type</label>
+          <select class="form-control" ng-model="c.formData.application_type">
+            <option value="">-- Select --</option>
+            <option ng-repeat="t in c.applicationTypes" value="{{t.value}}">{{t.label}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Client</label>
+          <select class="form-control" ng-model="c.formData.client">
+            <option value="">-- Select --</option>
+            <option ng-repeat="cl in c.data.clients" value="{{cl.sys_id}}">{{cl.name}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Business Unit</label>
+          <select class="form-control" ng-model="c.formData.business_unit">
+            <option value="">-- Select --</option>
+            <option ng-repeat="bu in c.businessUnits" value="{{bu.value}}">{{bu.label}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Criticality</label>
+          <select class="form-control" ng-model="c.formData.criticality">
+            <option value="">-- Select --</option>
+            <option ng-repeat="cr in c.criticalityLevels" value="{{cr.value}}">{{cr.label}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Integration Type</label>
+          <select class="form-control" ng-model="c.formData.integration_type">
+            <option value="">-- Select --</option>
+            <option ng-repeat="it in c.integrationTypes" value="{{it.value}}">{{it.label}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label class="control-label">Due Date</label>
+          <input type="date" class="form-control" ng-model="c.formData.due_date" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label">Questionnaire Template</label>
+      <select class="form-control" ng-model="c.formData.template_id">
+        <option value="">-- Auto-resolve --</option>
+        <option ng-repeat="tpl in c.data.templates" value="{{tpl.sys_id}}">{{tpl.name}} (v{{tpl.version}}) {{tpl.is_default ? '★ Default' : ''}}</option>
+      </select>
+      <p class="help-block">Leave empty to auto-resolve based on client assignment rules.</p>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" ng-disabled="c.saving">
+        <i class="fa fa-spinner fa-spin" ng-if="c.saving"></i>
+        {{c.saving ? 'Creating...' : 'Save Application'}}
+      </button>
+      <button type="button" class="btn btn-default" ng-click="c.resetForm()">Reset</button>
+    </div>
+  </form>
+</div>
+]]></template>
+  </sp_widget>
+</record_update>

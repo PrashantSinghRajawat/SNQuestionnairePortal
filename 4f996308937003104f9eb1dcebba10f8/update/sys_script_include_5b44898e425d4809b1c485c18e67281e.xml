@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+  <sys_script_include action="INSERT_OR_UPDATE">
+    <sys_id>5b44898e425d4809b1c485c18e67281e</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_script_include_5b44898e425d4809b1c485c18e67281e</sys_update_name>
+    <access>package_private</access>
+    <active>true</active>
+    <api_name>x_1433041_identi_0.AppReadyDashboardService</api_name>
+    <caller_access/>
+    <client_callable>true</client_callable>
+    <description>Service for admin dashboard data aggregation - provides KPIs, application summaries, overdue tracking, and operational metrics</description>
+    <mobile_callable>false</mobile_callable>
+    <name>AppReadyDashboardService</name>
+    <sandbox_callable>false</sandbox_callable>
+    <script><![CDATA[var AppReadyDashboardService = Class.create();
+AppReadyDashboardService.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+    initialize: function() {},
+
+    getDashboardKPIs: function() {
+        var kpis = {
+            total_applications: 0,
+            in_progress: 0,
+            no_activity: 0,
+            overdue: 0,
+            clarifications_pending: 0,
+            build_ready: 0,
+            completed: 0
+        };
+
+        var gr = new GlideRecord('x_1433041_identi_0_application');
+        gr.addQuery('active', true);
+        gr.query();
+        kpis.total_applications = gr.getRowCount();
+
+        gr = new GlideRecord('x_1433041_identi_0_application');
+        gr.addQuery('active', true);
+        gr.addQuery('questionnaire_status', 'in_progress');
+        gr.query();
+        kpis.in_progress = gr.getRowCount();
+
+        gr = new GlideRecord('x_1433041_identi_0_application');
+        gr.addQuery('active', true);
+        gr.addQuery('questionnaire_status', 'IN', 'draft,in_progress');
+        gr.addQuery('completion_percent', '0');
+        gr.query();
+        kpis.no_activity = gr.getRowCount();
+
+        var now = new GlideDateTime();
+        gr = new GlideRecord('x_1433041_identi_0_application');
+        gr.addQuery('active', true);
+        gr.addQuery('questionnaire_status', 'IN', 'draft,in_progress,clarification_requested');
+        gr.addNotNullQuery('due_date');
+        gr.addQuery('due_date', '<', now.getDisplayValue());
+        gr.query();
+        kpis.overdue = gr.getRowCount();
+
+        gr = new GlideRecord('x_1433041_identi_0_application');
+        gr.addQuery('active', true);
+        gr.addQuery('clarification_status', 'pending');
+        gr.query();
+        kpis.clarifications_pending = gr.getRowCount();
+
+        gr = new GlideRecord('x_1433041_identi_0_application');
+        gr.addQuery('active', true);
+        gr.addQuery('questionnaire_status', 'build_ready');
+        gr.query();
+        kpis.build_ready = gr.getRowCount();
+
+        gr = new GlideRecord('x_1433041_identi_0_application');
+        gr.addQuery('active', true);
+        gr.addQuery('questionnaire_status', 'completed');
+        gr.query();
+        kpis.completed = gr.getRowCount();
+
+        return JSON.stringify({ success: true, kpis: kpis });
+    },
+
+    getApplicationGrid: function() {
+        var limit = parseInt(this.getParameter('sysparm_limit') || '50');
+        var offset = parseInt(this.getParameter('sysparm_offset') || '0');
+        var statusFilter = this.getParameter('sysparm_status_filter');
+
+        var applications = [];
+        var gr = new GlideRecord('x_1433041_identi_0_application');
+        gr.addQuery('active', true);
+        if (statusFilter) {
+            gr.addQuery('questionnaire_status', statusFilter);
+        }
+        gr.orderByDesc('sys_created_on');
+        gr.chooseWindow(offset, offset + limit);
+        gr.query();
+
+        while (gr.next()) {
+            var ownerName = '';
+            if (gr.getValue('assigned_owner')) {
+                var userGr = new GlideRecord('sys_user');
+                if (userGr.get(gr.getValue('assigned_owner'))) {
+                    ownerName = userGr.getValue('name');
+                }
+            }
+            applications.push({
+                sys_id: gr.getUniqueValue(),
+                number: gr.getValue('number'),
+                name: gr.getValue('name'),
+                application_type: gr.getValue('application_type'),
+                questionnaire_status: gr.getValue('questionnaire_status'),
+                completion_percent: gr.getValue('completion_percent'),
+                assigned_owner_name: ownerName,
+                due_date: gr.getValue('due_date'),
+                last_saved_at: gr.getValue('last_saved_at'),
+                reminder_count: gr.getValue('reminder_count'),
+                escalation_status: gr.getValue('escalation_status'),
+                criticality: gr.getValue('criticality')
+            });
+        }
+
+        return JSON.stringify({ success: true, applications: applications, count: applications.length });
+    },
+
+    getOverdueApplications: function() {
+        var now = new GlideDateTime();
+        var overdueApps = [];
+
+        var gr = new GlideRecord('x_1433041_identi_0_application');
+        gr.addQuery('active', true);
+        gr.addQuery('questionnaire_status', 'IN', 'draft,in_progress,clarification_requested');
+        gr.addNotNullQuery('due_date');
+        gr.addQuery('due_date', '<', now.getDisplayValue());
+        gr.orderBy('due_date');
+        gr.query();
+
+        while (gr.next()) {
+            var ownerName = '';
+            if (gr.getValue('assigned_owner')) {
+                var userGr = new GlideRecord('sys_user');
+                if (userGr.get(gr.getValue('assigned_owner'))) {
+                    ownerName = userGr.getValue('name');
+                }
+            }
+            overdueApps.push({
+                sys_id: gr.getUniqueValue(),
+                name: gr.getValue('name'),
+                due_date: gr.getValue('due_date'),
+                completion_percent: gr.getValue('completion_percent'),
+                assigned_owner_name: ownerName,
+                reminder_count: gr.getValue('reminder_count'),
+                escalation_status: gr.getValue('escalation_status')
+            });
+        }
+
+        return JSON.stringify({ success: true, overdue_applications: overdueApps, count: overdueApps.length });
+    },
+
+    getClarificationSummary: function() {
+        var clarifications = [];
+        var gr = new GlideRecord('x_1433041_identi_0_communication_thread');
+        gr.addQuery('thread_type', 'clarification');
+        gr.addQuery('status', 'IN', 'open,pending');
+        gr.orderByDesc('created_at');
+        gr.query();
+
+        while (gr.next()) {
+            var appName = '';
+            var appGr = new GlideRecord('x_1433041_identi_0_application');
+            if (appGr.get(gr.getValue('application'))) {
+                appName = appGr.getValue('name');
+            }
+            var assignedName = '';
+            if (gr.getValue('assigned_to')) {
+                var userGr = new GlideRecord('sys_user');
+                if (userGr.get(gr.getValue('assigned_to'))) {
+                    assignedName = userGr.getValue('name');
+                }
+            }
+            clarifications.push({
+                sys_id: gr.getUniqueValue(),
+                application_name: appName,
+                subject: gr.getValue('subject'),
+                assigned_to_name: assignedName,
+                status: gr.getValue('status'),
+                created_at: gr.getValue('created_at'),
+                last_activity_at: gr.getValue('last_activity_at')
+            });
+        }
+
+        return JSON.stringify({ success: true, clarifications: clarifications, count: clarifications.length });
+    },
+
+    type: 'AppReadyDashboardService'
+});]]></script>
+    <sys_policy/>
+  </sys_script_include>
+</record_update>

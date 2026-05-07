@@ -4,11 +4,11 @@
     <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
     <sys_update_name>sp_widget_e80044f3562e4d2da0c5423ef3fcb97c</sys_update_name>
     <category>custom</category>
-    <client_script>api.controller = function () {
+    <client_script><![CDATA[api.controller = function () {
     /* widget controller */
     var c = this;
 };
-</client_script>
+]]></client_script>
     <controller_as>c</controller_as>
     <css><![CDATA[.ibar-kpi-card {
   text-align: center;
@@ -39,8 +39,7 @@
 }
 .ibar-kpi-success {
   border-left: 3px solid $brand-success;
-}
-]]></css>
+}]]></css>
     <data_table>sp_instance</data_table>
     <demo_data/>
     <description/>
@@ -49,8 +48,8 @@
     <has_preview>false</has_preview>
     <id>ibar_progress_summary</id>
     <internal>false</internal>
-    <link>function link(scope, element, attrs, controller) {
-}</link>
+    <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
     <name>IBAR Progress Summary</name>
     <option_schema/>
     <public>false</public>

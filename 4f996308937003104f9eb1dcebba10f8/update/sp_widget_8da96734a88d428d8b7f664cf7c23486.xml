@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>8da96734a88d428d8b7f664cf7c23486</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_8da96734a88d428d8b7f664cf7c23486</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function($scope) {
+  var c = this;
+
+  $scope.$on("application.created", function(event, params) {
+    c.loadPreview(params.app_id);
+  });
+
+  c.loadPreview = function(appId) {
+    c.server.get({ action: "preview", app_id: appId }).then(function(r) {
+      c.data.preview = r.data.preview;
+      c.data.message = r.data.message;
+    });
+  };
+
+  c.sendWelcome = function(appId) {
+    c.server.get({ action: "send", app_id: appId }).then(function(r) {
+      c.data.sent = r.data.sent;
+      c.data.message = r.data.message;
+    });
+  };
+};
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.ibar-notification-preview {
+  padding: 20px;
+}
+.ibar-notification-preview .section-title {
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.ibar-notification-preview .email-preview {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.ibar-notification-preview .preview-header {
+  padding: 12px 16px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  font-size: 13px;
+}
+.ibar-notification-preview .preview-body {
+  padding: 16px;
+}
+.ibar-notification-preview .preview-actions {
+  padding: 12px 16px;
+  border-top: 1px solid #eee;
+  background: #fafafa;
+}
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_notification_preview</id>
+    <internal>false</internal>
+    <link>function link(scope, element, attrs, controller) {
+}</link>
+    <name>IBAR Notification Preview</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() {
+  data.preview = null;
+  data.sent = false;
+  data.message = "";
+
+  try {
+    if (input && input.action === "preview") {
+      generatePreview(input.app_id);
+      return;
+    }
+    if (input && input.action === "send") {
+      sendWelcome(input.app_id);
+      return;
+    }
+  } catch (e) {
+    gs.error("IBAR Notification Preview error: " + e.message);
+    data.message = "An error occurred.";
+  }
+
+  function generatePreview(appId) {
+    var appGr = new GlideRecord("x_1433041_identi_0_application");
+    if (!appGr.get(appId)) {
+      data.message = "Application not found.";
+      return;
+    }
+
+    var ownerName = "Not Assigned";
+    var ownerEmail = "";
+    if (appGr.getValue("assigned_owner")) {
+      var userGr = new GlideRecord("sys_user");
+      if (userGr.get(appGr.getValue("assigned_owner"))) {
+        ownerName = userGr.getValue("name");
+        ownerEmail = userGr.getValue("email");
+      }
+    }
+
+    var portalLink = gs.getProperty("glide.servlet.uri") + "sp?id=appready-questionnaire&app_id=" + appId;
+
+    data.preview = {
+      recipient_name: ownerName,
+      recipient_email: ownerEmail,
+      subject: "Welcome - Application Onboarding Initiated",
+      application_name: appGr.getValue("name"),
+      portal_link: portalLink,
+      due_date: appGr.getDisplayValue("due_date") || "Not Set"
+    };
+  }
+
+  function sendWelcome(appId) {
+    var appGr = new GlideRecord("x_1433041_identi_0_application");
+    if (!appGr.get(appId)) {
+      data.message = "Application not found.";
+      return;
+    }
+
+    var ownerId = appGr.getValue("assigned_owner");
+    if (!ownerId) {
+      data.message = "No owner assigned. Cannot send welcome notification.";
+      return;
+    }
+
+    var portalLink = gs.getProperty("glide.servlet.uri") + "sp?id=appready-questionnaire&app_id=" + appId;
+    var subject = "Welcome - Application Onboarding Initiated";
+    var message = "<p>Your application onboarding process has been initiated.</p>";
+    message += "<p><strong>Application:</strong> " + appGr.getValue("name") + "</p>";
+    message += "<p>Please complete the onboarding questionnaire:</p>";
+    message += "<p><a href=\"" + portalLink + "\">Open Questionnaire</a></p>";
+    message += "<p><strong>Due Date:</strong> " + (appGr.getDisplayValue("due_date") || "Not Set") + "</p>";
+
+    var eventGr = new GlideRecord("x_1433041_identi_0_notification_event");
+    eventGr.initialize();
+    eventGr.setValue("application", appId);
+    eventGr.setValue("event_type", "submission_confirmation");
+    eventGr.setValue("recipient", ownerId);
+    eventGr.setValue("subject", subject);
+    eventGr.setValue("message", message);
+    eventGr.setValue("sent_by", gs.getUserID());
+    eventGr.setValue("sent_at", new GlideDateTime().getDisplayValue());
+    eventGr.setValue("delivery_status", "sent");
+    eventGr.insert();
+
+    var threadGr = new GlideRecord("x_1433041_identi_0_communication_thread");
+    threadGr.initialize();
+    threadGr.setValue("application", appId);
+    threadGr.setValue("thread_type", "general");
+    threadGr.setValue("subject", subject);
+    threadGr.setValue("created_by", gs.getUserID());
+    threadGr.setValue("assigned_to", ownerId);
+    threadGr.setValue("status", "open");
+    threadGr.setValue("created_at", new GlideDateTime().getDisplayValue());
+    threadGr.setValue("last_activity_at", new GlideDateTime().getDisplayValue());
+    threadGr.insert();
+
+    data.sent = true;
+    data.message = "Welcome notification sent successfully.";
+  }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="ibar-notification-preview">
+  <h3 class="section-title">Welcome Notification Preview</h3>
+
+  <div ng-if="!c.data.preview && !c.data.message" class="text-muted">
+    <i class="fa fa-envelope-o"></i> Welcome notification preview will appear after application creation.
+  </div>
+
+  <div ng-if="c.data.message && !c.data.preview" class="alert" ng-class="{'alert-success': c.data.sent, 'alert-warning': !c.data.sent}">
+    {{c.data.message}}
+  </div>
+
+  <div ng-if="c.data.preview" class="email-preview">
+    <div class="preview-header">
+      <div><strong>To:</strong> {{c.data.preview.recipient_name}} ({{c.data.preview.recipient_email}})</div>
+      <div><strong>Subject:</strong> {{c.data.preview.subject}}</div>
+    </div>
+    <div class="preview-body">
+      <p>Your application onboarding process has been initiated.</p>
+      <p><strong>Application:</strong> {{c.data.preview.application_name}}</p>
+      <p>Please complete the onboarding questionnaire using the link below:</p>
+      <p><a href="{{c.data.preview.portal_link}}">Open Questionnaire</a></p>
+      <p><strong>Due Date:</strong> {{c.data.preview.due_date}}</p>
+    </div>
+    <div class="preview-actions" ng-if="!c.data.sent">
+      <button class="btn btn-success" ng-click="c.sendWelcome(c.data.preview.application_name)">
+        <i class="fa fa-paper-plane"></i> Send Welcome Email
+      </button>
+    </div>
+    <div ng-if="c.data.sent" class="alert alert-success">
+      <i class="fa fa-check"></i> {{c.data.message}}
+    </div>
+  </div>
+</div>
+]]></template>
+  </sp_widget>
+</record_update>

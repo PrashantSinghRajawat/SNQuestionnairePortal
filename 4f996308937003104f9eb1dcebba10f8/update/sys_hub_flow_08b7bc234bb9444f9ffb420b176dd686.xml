@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+  <sys_hub_flow action="INSERT_OR_UPDATE">
+    <sys_id>08b7bc234bb9444f9ffb420b176dd686</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_hub_flow_08b7bc234bb9444f9ffb420b176dd686</sys_update_name>
+    <access>public</access>
+    <active>false</active>
+    <annotation/>
+    <category/>
+    <description>Scheduled daily flow that detects SLA breaches and escalates overdue applications</description>
+    <flow_priority>MEDIUM</flow_priority>
+    <generation_source>fluent</generation_source>
+    <internal_name>escalation_flow</internal_name>
+    <label_cache>[{"name":"28fee40e-f42a-446d-bd09-fca3f73c1743.Records","label":"28fee40e-f42a-446d-bd09-fca3f73c1743➛Records","type":"records","base_type":"records","usedInstances":{"da651190-9442-43e4-8bb5-302e9383d819":["items"]},"attributes":{},"column_name":"Records"}]</label_cache>
+    <name>Escalation Flow</name>
+    <run_as>user</run_as>
+    <run_with_roles/>
+    <show_draft_actions>false</show_draft_actions>
+    <status>draft</status>
+    <sys_policy/>
+    <type>flow</type>
+    <version>2</version>
+  <version_record/>
+    </sys_hub_flow>
+  <sys_hub_trigger_instance_v2 action="delete_multiple" query="flow=08b7bc234bb9444f9ffb420b176dd686^sys_idNOT IN5c9617718e7e42139e0d7ab6121de00d"/>
+  <sys_hub_trigger_instance_v2 action="INSERT_OR_UPDATE">
+    <sys_id>5c9617718e7e42139e0d7ab6121de00d</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <category/>
+    <comment/>
+    <flow>08b7bc234bb9444f9ffb420b176dd686</flow>
+    <name>Daily</name>
+    <trigger_definition>89142dc0c32222002841b63b12d3ae8a</trigger_definition>
+    <trigger_inputs>H4sIAAAAAAAAA42QMWsDMQyF/0rR7IBuKtHWpRDo1tAlhKLY6lXg8xlZCRwh/z2YyxLo0FHo6b3v6XAFNx1HsV1pziXK59J2CQggQOaTZCDY6yQQQIuLFc77pQoQjFmTfPu6S1KlJCm+XsbfWaN8aHOgwzHAxCWxz7YAuZ0lwGxJDGhADFB46n4Ppwvncx+H7StucNjg8IJbQiTEnqOtZl6+/iN6V8mPJi2aVn+LrhcB+uHcpENqTiZlRaxsPIl3qiv4HxWfMZ9+c7sd7xEm/pZJAQAA</trigger_inputs>
+    <trigger_outputs/>
+    <trigger_type>daily</trigger_type>
+  </sys_hub_trigger_instance_v2>
+  <sys_hub_action_instance_v2 action="delete_multiple" query="flow=08b7bc234bb9444f9ffb420b176dd686^sys_idNOT IN28fee40ef42a446dbd09fca3f73c1743"/>
+  <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
+    <sys_id>28fee40ef42a446dbd09fca3f73c1743</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <action_type>43400a1587003300663ca1bb36cb0b4b</action_type>
+    <action_type_parent>43400a1587003300663ca1bb36cb0b4b</action_type_parent>
+    <active>true</active>
+    <comment/>
+    <display_text/>
+    <flow>08b7bc234bb9444f9ffb420b176dd686</flow>
+    <generation_source/>
+    <order>1</order>
+    <parent_ui_id/>
+    <sys_class_name>sys_hub_action_instance_v2</sys_class_name>
+    <ui_id>28fee40e-f42a-446d-bd09-fca3f73c1743</ui_id>
+    <updation_source/>
+    <values>H4sIAAAAAAAAA82SMU/DMBCFfwueQIpQq5YlogMSCwsTYkHEOuxLeshxzN0ltKry31HSCkI70JH13Xt6n579sjMRajS5cU30pNREMZnpILSDCE6pw5Vyi8VHizLcIxCjFQVt5eHRM5SaUbSJm4pRJHMBmEpyMJgt45hDX/gWrQfF23foQBxT0ryS69h83oPiE9V4eVWgOAj75L7hYnWQ0JvMeJIUYPv8T/H2sbuRyuQlBMHMJGCoUZFNvjO6TUdj9332/QYKbwEn82/sfLlYzJZzSx6jkp1ZSCkc4E/3+NN/NuBIYkesKaA0rHa0/ECOGog7xZlczl9m3ZD7XVrDxjJKG3TyNW9mx3WDcnYNRcUK2fT96xcWBAKlAwMAAA==</values>
+  </sys_hub_action_instance_v2>
+  <sys_hub_alias_mapping action="delete_multiple" query="source_id=28fee40ef42a446dbd09fca3f73c1743"/>
+  <sys_hub_flow_logic_instance_v2 action="delete_multiple" query="flow=08b7bc234bb9444f9ffb420b176dd686^sys_idNOT INda651190944243e48bb5302e9383d819"/>
+  <sys_hub_flow_logic_instance_v2 action="INSERT_OR_UPDATE">
+    <sys_id>da651190944243e48bb5302e9383d819</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <comment/>
+    <flow>08b7bc234bb9444f9ffb420b176dd686</flow>
+    <logic_definition>098e1dc5c3e232002841b63b12d3ae33</logic_definition>
+    <order>2</order>
+    <ui_id>da651190-9442-43e4-8bb5-302e9383d819</ui_id>
+    <values>H4sIAAAAAAAAA52NMQ+CMBSE/8ubqUFoRNkcXQ1xMQylfTWNpSU8kJCm/900asLsdvfd5S6An6dhnqjxZyLzcFDf2wxeYjSis0gfq1AaMt41iV1c6n+D1YneyC1a/PjU1i9bZn46gBM9Qg1mwp4gHdk5+RCKo0bkOTLNC8E4PyjWqfzEtBSlrkq5r3i5u6L0o6IYIQNlaLBivf27ENv4BjAaAQL+AAAA</values>
+  </sys_hub_flow_logic_instance_v2>
+</record_update>

@@ -4,11 +4,11 @@
     <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
     <sys_update_name>sp_widget_61263e86e7bf485f8ea3d0809246b97d</sys_update_name>
     <category>custom</category>
-    <client_script>api.controller = function () {
+    <client_script><![CDATA[api.controller = function () {
     /* widget controller */
     var c = this;
 };
-</client_script>
+]]></client_script>
     <controller_as>c</controller_as>
     <css><![CDATA[.ibar-kpi-card {
   text-align: center;
@@ -35,8 +35,7 @@
 .ibar-kpi-primary { border-left: 3px solid $brand-primary; }
 .ibar-kpi-success { border-left: 3px solid $brand-success; }
 .ibar-kpi-warning { border-left: 3px solid $brand-warning; }
-.ibar-kpi-danger { border-left: 3px solid $brand-danger; }
-]]></css>
+.ibar-kpi-danger { border-left: 3px solid $brand-danger; }]]></css>
     <data_table>sp_instance</data_table>
     <demo_data/>
     <description/>
@@ -45,8 +44,8 @@
     <has_preview>false</has_preview>
     <id>ibar_admin_kpi_summary</id>
     <internal>false</internal>
-    <link>function link(scope, element, attrs, controller) {
-}</link>
+    <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
     <name>IBAR Admin KPI Summary</name>
     <option_schema/>
     <public>false</public>

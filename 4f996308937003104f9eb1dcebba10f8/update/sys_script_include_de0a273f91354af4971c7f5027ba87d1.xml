@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+  <sys_script_include action="INSERT_OR_UPDATE">
+    <sys_id>de0a273f91354af4971c7f5027ba87d1</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sys_script_include_de0a273f91354af4971c7f5027ba87d1</sys_update_name>
+    <access>package_private</access>
+    <active>true</active>
+    <api_name>x_1433041_identi_0.AppReadyNotificationService</api_name>
+    <caller_access/>
+    <client_callable>true</client_callable>
+    <description>Service for notification orchestration - creates notification events, resolves templates, and sends welcome/reminder emails</description>
+    <mobile_callable>false</mobile_callable>
+    <name>AppReadyNotificationService</name>
+    <sandbox_callable>false</sandbox_callable>
+    <script><![CDATA[var AppReadyNotificationService = Class.create();
+AppReadyNotificationService.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+    initialize: function() {},
+
+    sendWelcomeNotification: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var appGr = new GlideRecord('x_1433041_identi_0_application');
+        if (!appGr.get(applicationId)) {
+            return JSON.stringify({ success: false, message: 'Application not found' });
+        }
+
+        var ownerId = appGr.getValue('assigned_owner');
+        if (!ownerId) {
+            return JSON.stringify({ success: false, message: 'No owner assigned' });
+        }
+
+        var portalLink = gs.getProperty('glide.servlet.uri') + 'sp?id=appready-questionnaire&app_id=' + applicationId;
+        var appName = appGr.getValue('name');
+        var dueDate = appGr.getValue('due_date') || 'Not Set';
+
+        var subject = 'Welcome - Application Onboarding Initiated';
+        var message = '<p>Your application onboarding process has been initiated.</p>';
+        message += '<p><strong>Application:</strong> ' + appName + '</p>';
+        message += '<p>Please complete the onboarding questionnaire using the link below:</p>';
+        message += '<p><a href="' + portalLink + '">Open Questionnaire</a></p>';
+        message += '<p><strong>Due Date:</strong> ' + dueDate + '</p>';
+        message += '<p>Thank you.</p>';
+
+        var threadId = this._createCommunicationThread(applicationId, 'general', subject, ownerId);
+        var eventId = this._createNotificationEvent(applicationId, 'submission_confirmation', ownerId, subject, message);
+
+        this._logAudit(applicationId, 'notification_sent', 'Welcome notification sent to owner');
+
+        return JSON.stringify({ success: true, notification_event_id: eventId, thread_id: threadId });
+    },
+
+    sendNotification: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var recipientId = this.getParameter('sysparm_recipient_id');
+        var eventType = this.getParameter('sysparm_event_type');
+        var subject = this.getParameter('sysparm_subject');
+        var message = this.getParameter('sysparm_message');
+
+        var eventId = this._createNotificationEvent(applicationId, eventType, recipientId, subject, message);
+        this._logAudit(applicationId, 'notification_sent', 'Notification sent: ' + subject);
+
+        return JSON.stringify({ success: true, notification_event_id: eventId });
+    },
+
+    getNotificationHistory: function() {
+        var applicationId = this.getParameter('sysparm_application_id');
+        var events = [];
+        var gr = new GlideRecord('x_1433041_identi_0_notification_event');
+        gr.addQuery('application', applicationId);
+        gr.orderByDesc('sent_at');
+        gr.query();
+        while (gr.next()) {
+            var recipientGr = new GlideRecord('sys_user');
+            var recipientName = '';
+            if (recipientGr.get(gr.getValue('recipient'))) {
+                recipientName = recipientGr.getValue('name');
+            }
+            events.push({
+                sys_id: gr.getUniqueValue(),
+                event_type: gr.getValue('event_type'),
+                recipient_name: recipientName,
+                subject: gr.getValue('subject'),
+                delivery_status: gr.getValue('delivery_status'),
+                sent_at: gr.getValue('sent_at'),
+                sent_by: gr.getValue('sent_by')
+            });
+        }
+        return JSON.stringify({ success: true, events: events });
+    },
+
+    _createNotificationEvent: function(applicationId, eventType, recipientId, subject, message) {
+        var gr = new GlideRecord('x_1433041_identi_0_notification_event');
+        gr.initialize();
+        gr.setValue('application', applicationId);
+        gr.setValue('event_type', eventType);
+        gr.setValue('recipient', recipientId);
+        gr.setValue('subject', subject);
+        gr.setValue('message', message);
+        gr.setValue('sent_by', gs.getUserID());
+        gr.setValue('sent_at', new GlideDateTime().getDisplayValue());
+        gr.setValue('delivery_status', 'sent');
+        return gr.insert();
+    },
+
+    _createCommunicationThread: function(applicationId, threadType, subject, assignedTo) {
+        var gr = new GlideRecord('x_1433041_identi_0_communication_thread');
+        gr.initialize();
+        gr.setValue('application', applicationId);
+        gr.setValue('thread_type', threadType);
+        gr.setValue('subject', subject);
+        gr.setValue('created_by', gs.getUserID());
+        gr.setValue('assigned_to', assignedTo);
+        gr.setValue('status', 'open');
+        gr.setValue('created_at', new GlideDateTime().getDisplayValue());
+        gr.setValue('last_activity_at', new GlideDateTime().getDisplayValue());
+        return gr.insert();
+    },
+
+    _logAudit: function(applicationId, eventType, description) {
+        var auditGr = new GlideRecord('x_1433041_identi_0_audit_event');
+        auditGr.initialize();
+        auditGr.setValue('application', applicationId);
+        auditGr.setValue('event_type', eventType);
+        auditGr.setValue('description', description);
+        auditGr.setValue('performed_by', gs.getUserID());
+        auditGr.setValue('performed_at', new GlideDateTime().getDisplayValue());
+        auditGr.setValue('target_table', 'x_1433041_identi_0_notification_event');
+        auditGr.setValue('target_record', applicationId);
+        auditGr.insert();
+    },
+
+    type: 'AppReadyNotificationService'
+});]]></script>
+    <sys_policy/>
+  </sys_script_include>
+</record_update>

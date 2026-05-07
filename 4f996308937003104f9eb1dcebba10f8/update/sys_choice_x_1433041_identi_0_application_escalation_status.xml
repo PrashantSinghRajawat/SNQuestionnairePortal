@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+  <sys_choice_set field="escalation_status" table="x_1433041_identi_0_application">
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>57a2f7c66cca4eeebcfd285e343021c0</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>escalation_status</element>
+      <label>None</label>
+      <value>none</value>
+      <sequence>0</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>da88e784dd47408f8b5130d99dffdf0f</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>escalation_status</element>
+      <label>Warning</label>
+      <value>warning</value>
+      <sequence>1</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>1d1cc11695134c738dfb1964f8ccc905</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>escalation_status</element>
+      <label>Escalated</label>
+      <value>escalated</value>
+      <sequence>2</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>b95828ef449e4d5eb4d522f264065567</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>escalation_status</element>
+      <label>Critical</label>
+      <value>critical</value>
+      <sequence>3</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice_set action="INSERT_OR_UPDATE">
+      <sys_id>7da68d00af464d3ba2ec127911f9ecfb</sys_id>
+      <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+      <name>x_1433041_identi_0_application</name>
+      <element>escalation_status</element>
+    </sys_choice_set>
+  </sys_choice_set>
+</record_update>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+  <sys_choice_set field="business_unit" table="x_1433041_identi_0_application">
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>385eb08b755a4a508e155335db587c44</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>business_unit</element>
+      <label>Finance</label>
+      <value>finance</value>
+      <sequence>0</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>23bf609db29547c1a6738671c036b739</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>business_unit</element>
+      <label>Human Resources</label>
+      <value>hr</value>
+      <sequence>1</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>df4fa85c7d684e9b990cd1d72cb92b1b</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>business_unit</element>
+      <label>Information Technology</label>
+      <value>it</value>
+      <sequence>2</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>d43707203e1c4ca395ee3920b740c723</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>business_unit</element>
+      <label>Operations</label>
+      <value>operations</value>
+      <sequence>3</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>e711e2561bb447669ea0a755229b4a77</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>business_unit</element>
+      <label>Sales</label>
+      <value>sales</value>
+      <sequence>4</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>8db7e11b74904047b2e310f198ccb7c5</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>business_unit</element>
+      <label>Legal</label>
+      <value>legal</value>
+      <sequence>5</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice action="INSERT_OR_UPDATE">
+      <sys_id>be75bb9576644a39bbed6924a16c9fa9</sys_id>
+      <name>x_1433041_identi_0_application</name>
+      <element>business_unit</element>
+      <label>Engineering</label>
+      <value>engineering</value>
+      <sequence>6</sequence>
+      <inactive>false</inactive>
+      <inactive_on_update>false</inactive_on_update>
+      <language>en</language>
+    </sys_choice>
+    <sys_choice_set action="INSERT_OR_UPDATE">
+      <sys_id>b18a71e9aae44169bdf01855e55f84da</sys_id>
+      <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+      <name>x_1433041_identi_0_application</name>
+      <element>business_unit</element>
+    </sys_choice_set>
+  </sys_choice_set>
+</record_update>

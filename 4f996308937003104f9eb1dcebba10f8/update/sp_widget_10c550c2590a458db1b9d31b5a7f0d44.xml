@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>10c550c2590a458db1b9d31b5a7f0d44</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_10c550c2590a458db1b9d31b5a7f0d44</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function($scope) {
+  var c = this;
+
+  $scope.$on("application.created", function(event, params) {
+    c.resolveForApp(params.app_id);
+  });
+
+  c.resolveForApp = function(appId) {
+    c.server.get({ action: "resolve", app_id: appId }).then(function(r) {
+      c.data.template = r.data.template;
+      c.data.sections = r.data.sections;
+      c.data.resolutionMethod = r.data.resolutionMethod;
+      c.data.message = r.data.message;
+    });
+  };
+
+  c.previewTemplate = function(templateId) {
+    c.server.get({ action: "preview", template_id: templateId }).then(function(r) {
+      c.data.template = r.data.template;
+      c.data.sections = r.data.sections;
+      c.data.resolutionMethod = r.data.resolutionMethod;
+      c.data.message = r.data.message;
+    });
+  };
+};
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.ibar-template-resolution {
+  padding: 20px;
+}
+.ibar-template-resolution .section-title {
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.ibar-template-resolution .template-header {
+  padding: 12px;
+  background: #f0f8ff;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+.ibar-template-resolution .template-name {
+  font-weight: 600;
+  margin-right: 10px;
+}
+.ibar-template-resolution .section-item {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+}
+.ibar-template-resolution .section-order {
+  width: 30px;
+  font-weight: 600;
+  color: #666;
+}
+.ibar-template-resolution .section-name {
+  flex: 1;
+}
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_template_resolution</id>
+    <internal>false</internal>
+    <link>function link(scope, element, attrs, controller) {
+}</link>
+    <name>IBAR Template Resolution</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() {
+  data.template = null;
+  data.sections = [];
+  data.resolutionMethod = "";
+  data.message = "";
+
+  try {
+    if (input && input.action === "resolve") {
+      resolveTemplate(input.app_id);
+      return;
+    }
+    if (input && input.action === "preview") {
+      previewTemplate(input.template_id);
+      return;
+    }
+  } catch (e) {
+    gs.error("IBAR Template Resolution error: " + e.message);
+    data.message = "An error occurred.";
+  }
+
+  function resolveTemplate(appId) {
+    var appGr = new GlideRecord("x_1433041_identi_0_application");
+    if (!appGr.get(appId)) {
+      data.message = "Application not found.";
+      return;
+    }
+
+    var templateId = appGr.getValue("questionnaire_template");
+    if (templateId) {
+      data.resolutionMethod = "Explicitly assigned";
+      loadTemplateDetails(templateId);
+      return;
+    }
+
+    var clientId = appGr.getValue("client");
+    if (clientId) {
+      var ruleGr = new GlideRecord("x_1433041_identi_0_template_assignment_rule");
+      ruleGr.addQuery("client", clientId);
+      ruleGr.addQuery("active", true);
+      ruleGr.orderBy("priority");
+      ruleGr.setLimit(1);
+      ruleGr.query();
+      if (ruleGr.next()) {
+        data.resolutionMethod = "Client assignment rule";
+        loadTemplateDetails(ruleGr.getValue("template"));
+        return;
+      }
+    }
+
+    var defaultGr = new GlideRecord("x_1433041_identi_0_questionnaire_template");
+    defaultGr.addQuery("is_default", true);
+    defaultGr.addQuery("active", true);
+    defaultGr.addQuery("status", "published");
+    defaultGr.setLimit(1);
+    defaultGr.query();
+    if (defaultGr.next()) {
+      data.resolutionMethod = "Default template";
+      loadTemplateDetails(defaultGr.getUniqueValue());
+      return;
+    }
+
+    data.message = "No template could be resolved.";
+  }
+
+  function previewTemplate(templateId) {
+    if (!templateId) {
+      data.message = "No template selected.";
+      return;
+    }
+    data.resolutionMethod = "Manual selection";
+    loadTemplateDetails(templateId);
+  }
+
+  function loadTemplateDetails(templateId) {
+    var gr = new GlideRecord("x_1433041_identi_0_questionnaire_template");
+    if (!gr.get(templateId)) {
+      data.message = "Template not found.";
+      return;
+    }
+    data.template = {
+      sys_id: gr.getUniqueValue(),
+      name: gr.getValue("name"),
+      version: gr.getValue("version"),
+      status: gr.getValue("status")
+    };
+
+    var tsGr = new GlideRecord("x_1433041_identi_0_template_section");
+    tsGr.addQuery("template", templateId);
+    tsGr.addQuery("active", true);
+    tsGr.orderBy("order");
+    tsGr.query();
+    while (tsGr.next()) {
+      var secGr = new GlideRecord("x_1433041_identi_0_section");
+      if (secGr.get(tsGr.getValue("section"))) {
+        var qCount = new GlideAggregate("x_1433041_identi_0_question");
+        qCount.addQuery("section", secGr.getUniqueValue());
+        qCount.addQuery("active", true);
+        qCount.addAggregate("COUNT");
+        qCount.query();
+        var count = 0;
+        if (qCount.next()) {
+          count = parseInt(qCount.getAggregate("COUNT"));
+        }
+        data.sections.push({
+          name: secGr.getValue("name"),
+          order: tsGr.getValue("order"),
+          question_count: count
+        });
+      }
+    }
+  }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="ibar-template-resolution">
+  <h3 class="section-title">Questionnaire Template</h3>
+
+  <div ng-if="c.data.message && !c.data.template" class="alert alert-warning">
+    {{c.data.message}}
+  </div>
+
+  <div ng-if="c.data.template" class="template-preview">
+    <div class="template-header">
+      <span class="template-name">{{c.data.template.name}}</span>
+      <span class="label label-default">v{{c.data.template.version}}</span>
+      <span class="label label-info">{{c.data.resolutionMethod}}</span>
+    </div>
+
+    <div class="sections-list" ng-if="c.data.sections.length > 0">
+      <h4>Sections ({{c.data.sections.length}})</h4>
+      <div class="section-item" ng-repeat="s in c.data.sections">
+        <span class="section-order">{{s.order}}</span>
+        <span class="section-name">{{s.name}}</span>
+        <span class="badge">{{s.question_count}} questions</span>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="!c.data.template && !c.data.message" class="text-muted">
+    <i class="fa fa-file-text-o"></i> Template will be resolved after application creation.
+  </div>
+</div>
+]]></template>
+  </sp_widget>
+</record_update>

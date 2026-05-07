@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>122e9aeace664ac9b1456fd3e74ad09b</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_122e9aeace664ac9b1456fd3e74ad09b</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() {
+  var c = this;
+
+  c.getStatusClass = function(status) {
+    if (status === "open") return "label-warning";
+    if (status === "pending") return "label-info";
+    return "label-default";
+  };
+};
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.ibar-clarification-summary {
+  padding: 20px;
+}
+.ibar-clarification-summary .section-title {
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.ibar-clarification-summary .clarification-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+.ibar-clarification-summary .cl-header {
+  margin-bottom: 4px;
+}
+.ibar-clarification-summary .cl-details span {
+  margin-right: 16px;
+  font-size: 12px;
+  color: #666;
+}
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_clarification_summary</id>
+    <internal>false</internal>
+    <link>function link(scope, element, attrs, controller) {
+}</link>
+    <name>IBAR Clarification Summary</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() {
+  data.clarifications = [];
+  data.count = 0;
+
+  try {
+    var gr = new GlideRecord("x_1433041_identi_0_communication_thread");
+    gr.addQuery("thread_type", "clarification");
+    gr.addQuery("status", "IN", "open,pending");
+    gr.orderByDesc("created_at");
+    gr.setLimit(20);
+    gr.query();
+
+    data.count = gr.getRowCount();
+
+    while (gr.next()) {
+      var appName = "";
+      var appGr = new GlideRecord("x_1433041_identi_0_application");
+      if (appGr.get(gr.getValue("application"))) {
+        appName = appGr.getValue("name");
+      }
+      var assignedName = "";
+      if (gr.getValue("assigned_to")) {
+        var userGr = new GlideRecord("sys_user");
+        if (userGr.get(gr.getValue("assigned_to"))) {
+          assignedName = userGr.getValue("name");
+        }
+      }
+      var createdByName = "";
+      if (gr.getValue("created_by")) {
+        var creatorGr = new GlideRecord("sys_user");
+        if (creatorGr.get(gr.getValue("created_by"))) {
+          createdByName = creatorGr.getValue("name");
+        }
+      }
+      data.clarifications.push({
+        sys_id: gr.getUniqueValue(),
+        application_name: appName,
+        subject: gr.getValue("subject"),
+        status: gr.getValue("status"),
+        status_display: gr.getDisplayValue("status"),
+        assigned_to_name: assignedName,
+        created_by_name: createdByName,
+        created_at: gr.getDisplayValue("created_at"),
+        last_activity_at: gr.getDisplayValue("last_activity_at")
+      });
+    }
+  } catch (e) {
+    gs.error("IBAR Clarification Summary error: " + e.message);
+  }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="ibar-clarification-summary">
+  <h3 class="section-title"><i class="fa fa-comments"></i> Clarifications Pending ({{c.data.count}})</h3>
+
+  <div ng-if="c.data.clarifications.length === 0" class="text-muted text-center">
+    <i class="fa fa-check-circle text-success"></i> No pending clarifications.
+  </div>
+
+  <div class="clarification-list" ng-if="c.data.clarifications.length > 0">
+    <div class="clarification-item" ng-repeat="cl in c.data.clarifications">
+      <div class="cl-header">
+        <span class="label" ng-class="c.getStatusClass(cl.status)">{{cl.status_display}}</span>
+        <strong>{{cl.subject}}</strong>
+      </div>
+      <div class="cl-details">
+        <span><i class="fa fa-folder-o"></i> {{cl.application_name}}</span>
+        <span ng-if="cl.assigned_to_name"><i class="fa fa-user"></i> {{cl.assigned_to_name}}</span>
+        <span class="text-muted"><i class="fa fa-clock-o"></i> {{cl.last_activity_at}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+]]></template>
+  </sp_widget>
+</record_update>
