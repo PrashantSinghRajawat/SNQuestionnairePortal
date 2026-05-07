@@ -53,8 +53,7 @@
   padding: 12px 16px;
   border-top: 1px solid #eee;
   background: #fafafa;
-}
-]]></css>
+}]]></css>
     <data_table>sp_instance</data_table>
     <demo_data/>
     <description/>
@@ -63,8 +62,8 @@
     <has_preview>false</has_preview>
     <id>ibar_notification_preview</id>
     <internal>false</internal>
-    <link>function link(scope, element, attrs, controller) {
-}</link>
+    <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
     <name>IBAR Notification Preview</name>
     <option_schema/>
     <public>false</public>

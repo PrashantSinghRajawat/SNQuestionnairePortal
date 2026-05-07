@@ -58,8 +58,7 @@
   padding: 12px;
   background: #f9f9f9;
   border-radius: 4px;
-}
-]]></css>
+}]]></css>
     <data_table>sp_instance</data_table>
     <demo_data/>
     <description/>
@@ -68,8 +67,8 @@
     <has_preview>false</has_preview>
     <id>ibar_user_assignment_panel</id>
     <internal>false</internal>
-    <link>function link(scope, element, attrs, controller) {
-}</link>
+    <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
     <name>IBAR User Assignment Panel</name>
     <option_schema/>
     <public>false</public>

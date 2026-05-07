@@ -138,8 +138,7 @@
 .ibar-create-form .help-block {
   font-size: 12px;
   color: #666;
-}
-]]></css>
+}]]></css>
     <data_table>sp_instance</data_table>
     <demo_data/>
     <description/>
@@ -148,8 +147,8 @@
     <has_preview>false</has_preview>
     <id>ibar_application_create_form</id>
     <internal>false</internal>
-    <link>function link(scope, element, attrs, controller) {
-}</link>
+    <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
     <name>IBAR Application Create Form</name>
     <option_schema/>
     <public>false</public>

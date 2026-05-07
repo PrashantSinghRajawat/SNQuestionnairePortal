@@ -34,8 +34,7 @@
   margin-right: 16px;
   font-size: 12px;
   color: #666;
-}
-]]></css>
+}]]></css>
     <data_table>sp_instance</data_table>
     <demo_data/>
     <description/>
@@ -44,8 +43,8 @@
     <has_preview>false</has_preview>
     <id>ibar_clarification_summary</id>
     <internal>false</internal>
-    <link>function link(scope, element, attrs, controller) {
-}</link>
+    <link><![CDATA[function link(scope, element, attrs, controller) {
+}]]></link>
     <name>IBAR Clarification Summary</name>
     <option_schema/>
     <public>false</public>
