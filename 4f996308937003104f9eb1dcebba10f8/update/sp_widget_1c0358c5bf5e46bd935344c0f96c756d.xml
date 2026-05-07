@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+  <sp_widget action="INSERT_OR_UPDATE">
+    <sys_id>1c0358c5bf5e46bd935344c0f96c756d</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_widget_1c0358c5bf5e46bd935344c0f96c756d</sys_update_name>
+    <category>custom</category>
+    <client_script><![CDATA[api.controller = function() { var c = this; };
+]]></client_script>
+    <controller_as>c</controller_as>
+    <css><![CDATA[.list-group { margin-bottom: 0; }
+]]></css>
+    <data_table>sp_instance</data_table>
+    <demo_data/>
+    <description/>
+    <docs/>
+    <field_list/>
+    <has_preview>false</has_preview>
+    <id>ibar_trend_analysis</id>
+    <internal>false</internal>
+    <link><![CDATA[function link(scope, element, attrs, controller) {}
+]]></link>
+    <name>IBAR Trend Analysis</name>
+    <option_schema/>
+    <public>false</public>
+    <roles/>
+    <script><![CDATA[(function() { data.trends = { by_month: [], by_status: [] };
+  try { var statusCounts = {}; var gr = new GlideRecord("x_1433041_identi_0_application"); gr.addQuery("active", true); gr.setLimit(200); gr.query();
+    while (gr.next()) { var s = gr.getDisplayValue("questionnaire_status"); statusCounts[s] = (statusCounts[s] || 0) + 1; }
+    for (var k in statusCounts) data.trends.by_status.push({ label: k, count: statusCounts[k] });
+  } catch (e) { gs.error("IBAR Trend Analysis widget error: " + e.message); }
+})();
+]]></script>
+    <servicenow>false</servicenow>
+    <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-trending-up"></span> Progress Trends</h3></div><div class="panel-body">
+  <h4>Applications by Status</h4>
+  <div class="list-group" ng-if="c.data.trends.by_status.length > 0"><div class="list-group-item" ng-repeat="s in c.data.trends.by_status track by $index"><span class="badge">{{s.count}}</span> {{s.label}}</div></div>
+  <p class="text-muted text-center" ng-if="c.data.trends.by_status.length === 0">No data available.</p></div></div>
+]]></template>
+  </sp_widget>
+</record_update>
