@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[api.controller = function() { var c = this; c.newSection = ""; c.addSection = function() { if (!c.newSection) return; c.server.get({ action: "add_section", section_name: c.newSection, section_order: (c.data.sections.length + 1) * 10 }).then(function(r) { c.data.sections = r.data.sections; c.newSection = ""; }); }; };
-]]></client_script>
+        <client_script><![CDATA[api.controller = function() {
+    var c = this;
+    c.newSection = "";
+    c.addSection = function() {
+        if (!c.newSection) return;
+        c.server.get({
+            action: "add_section",
+            section_name: c.newSection,
+            section_order: (c.data.sections.length + 1) * 10
+        }).then(function(r) {
+            c.data.sections = r.data.sections;
+            c.newSection = "";
+        });
+    };
+};]]></client_script>
         <controller_as>c</controller_as>
-        <css>.list-group { margin-bottom: 0; } hr { border-color: #ddd; }
-</css>
+        <css>.list-group { margin-bottom: 0; } hr { border-color: #ddd; }</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
@@ -20,12 +32,89 @@
         <option_schema/>
         <public>false</public>
         <roles/>
-        <script><![CDATA[(function() { data.sections = []; data.templateId = $sp.getParameter("template_id") || "";
-  try { if (!data.templateId) return;
-    if (input && input.action === "add_section") { var sGr = new GlideRecord("x_1433041_identi_0_section"); sGr.initialize(); sGr.setValue("template", data.templateId); sGr.setValue("name", input.section_name); sGr.setValue("order", input.section_order || 100); sGr.insert(); }
-    var gr = new GlideRecord("x_1433041_identi_0_section"); gr.addQuery("template", data.templateId); gr.orderBy("order"); gr.setLimit(50); gr.query();
-    while (gr.next()) { data.sections.push({ sys_id: gr.getValue("sys_id"), name: gr.getValue("name"), order: gr.getValue("order") }); }
-  } catch (e) { gs.error("IBAR Section Builder widget error: " + e.message); }
+        <script><![CDATA[(function() {
+    data.sections = [];
+    data.templateId = $sp.getParameter("template_id") || "";
+    data.msg = "";
+    try {
+        if (!data.templateId) return;
+        if (input && input.action === "add_section") {
+            // First create or find the section record
+            var sGr = new GlideRecord("x_1433041_identi_0_section");
+            sGr.initialize();
+            sGr.setValue("section_key", (input.section_name || "new_section").toLowerCase().replace(/[^a-z0-9]+/g, "_"));
+            sGr.setValue("name", input.section_name || "New Section");
+            if (input.description) sGr.setValue("description", input.description);
+            sGr.setValue("active", true);
+            var sectionId = sGr.insert();
+            // Then create the template_section junction record
+            if (sectionId) {
+                var tsGr = new GlideRecord("x_1433041_identi_0_template_section");
+                tsGr.initialize();
+                tsGr.setValue("template", data.templateId);
+                tsGr.setValue("section", sectionId);
+                tsGr.setValue("order", input.section_order || 100);
+                tsGr.setValue("active", true);
+                tsGr.insert();
+                data.msg = "Section added successfully.";
+            }
+            return;
+        }
+        if (input && input.action === "remove_section") {
+            // Deactivate the junction record
+            var rmGr = new GlideRecord("x_1433041_identi_0_template_section");
+            if (input.ts_sys_id && rmGr.get(input.ts_sys_id)) {
+                rmGr.setValue("active", false);
+                rmGr.update();
+                data.msg = "Section removed.";
+            }
+            return;
+        }
+        if (input && input.action === "reorder") {
+            if (input.orders && Array.isArray(input.orders)) {
+                for (var i = 0; i < input.orders.length; i++) {
+                    var oGr = new GlideRecord("x_1433041_identi_0_template_section");
+                    if (oGr.get(input.orders[i].ts_sys_id)) {
+                        oGr.setValue("order", input.orders[i].order);
+                        oGr.update();
+                    }
+                }
+                data.msg = "Sections reordered.";
+            }
+            return;
+        }
+        // Load sections for this template via junction table
+        var gr = new GlideRecord("x_1433041_identi_0_template_section");
+        gr.addQuery("template", data.templateId);
+        gr.addQuery("active", true);
+        gr.orderBy("order");
+        gr.setLimit(50);
+        gr.query();
+        while (gr.next()) {
+            var secGr = new GlideRecord("x_1433041_identi_0_section");
+            if (secGr.get(gr.getValue("section"))) {
+                // Count questions in this section
+                var qCount = new GlideAggregate("x_1433041_identi_0_question");
+                qCount.addQuery("section", secGr.getValue("sys_id"));
+                qCount.addQuery("active", true);
+                qCount.addAggregate("COUNT");
+                qCount.query();
+                var questionCount = 0;
+                if (qCount.next()) questionCount = parseInt(qCount.getAggregate("COUNT"), 10);
+                data.sections.push({
+                    sys_id: secGr.getValue("sys_id"),
+                    ts_sys_id: gr.getValue("sys_id"),
+                    name: secGr.getValue("name"),
+                    section_key: secGr.getValue("section_key"),
+                    description: secGr.getValue("description") || "",
+                    order: gr.getValue("order"),
+                    question_count: questionCount
+                });
+            }
+        }
+    } catch (e) {
+        gs.error("IBAR Section Builder widget error: " + e.message);
+    }
 })();
 ]]></script>
         <servicenow>false</servicenow>
@@ -33,14 +122,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-05-07 17:17:57</sys_created_on>
         <sys_id>070ea4482e7f46daa8b64f6049747a2f</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_name>IBAR Section Builder</sys_name>
         <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
         <sys_policy/>
         <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
         <sys_update_name>sp_widget_070ea4482e7f46daa8b64f6049747a2f</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-05-07 17:17:57</sys_updated_on>
+        <sys_updated_on>2026-05-07 19:38:19</sys_updated_on>
         <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-list"></span> Sections <span class="badge">{{c.data.sections.length}}</span></h3></div><div class="panel-body">
   <div class="list-group" ng-if="c.data.sections.length > 0"><div class="list-group-item" ng-repeat="s in c.data.sections track by s.sys_id"><span class="badge">{{s.order}}</span> {{s.name}}</div></div>
   <hr><div class="form-inline"><input type="text" class="form-control" ng-model="c.newSection" placeholder="Section name"><button class="btn btn-default" ng-click="c.addSection()" ng-disabled="!c.newSection"><span class="glyphicon glyphicon-plus"></span></button></div>

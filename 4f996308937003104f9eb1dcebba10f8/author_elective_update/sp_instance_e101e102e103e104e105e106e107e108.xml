@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_instance">
+  <sp_instance action="DELETE">
+    <sys_id>e101e102e103e104e105e106e107e108</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_instance_e101e102e103e104e105e106e107e108</sys_update_name>
+    <active>true</active>
+    <advanced_placeholder_dimensions>false</advanced_placeholder_dimensions>
+    <async_load>false</async_load>
+    <async_load_device_type>desktop,tablet,mobile</async_load_device_type>
+    <async_load_trigger>viewport</async_load_trigger>
+    <class_name/>
+    <color>default</color>
+    <css/>
+    <glyph/>
+    <id/>
+    <order>2</order>
+    <placeholder_dimensions>{
+	"mobile": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"desktop": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"tablet": {
+		"height": "250px",
+		"width": "100%"
+	}
+}</placeholder_dimensions>
+    <placeholder_dimensions_script>function evaluateConfig(options) { return {
+	"mobile": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"desktop": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"tablet": {
+		"height": "250px",
+		"width": "100%"
+	}
+}; }</placeholder_dimensions_script>
+    <placeholder_template>&lt;!--
+	AngularJS template with configurable options.
+	Use the "options" object to control dynamic behavior.
+	Example: Display an element when max row count is 10:
+	&lt;div ng-if="options.maxRowCount === 10"&gt;&lt;/div&gt;
+	The "skeleton-container" class is used for loading placeholders.
+--&gt;
+	&lt;div class="skeleton-container"&gt;
+	&lt;!-- Header Skeleton --&gt;
+	&lt;div class="skeleton-box skeleton-header"&gt;&lt;/div&gt;
+	&lt;!-- Body Skeleton --&gt;
+	&lt;div class="skeleton-box skeleton-line"&gt;&lt;/div&gt;
+	&lt;div class="skeleton-box skeleton-line small"&gt;&lt;/div&gt;
+	&lt;div class="skeleton-box skeleton-line medium"&gt;&lt;/div&gt;
+&lt;/div&gt;</placeholder_template>
+    <preserve_placeholder_size>false</preserve_placeholder_size>
+    <roles/>
+    <short_description/>
+    <size>md</size>
+    <sp_column>c101c102c103c104c105c106c107c108</sp_column>
+    <sp_widget>9948c5d742e647c1a95d45a712dc2bc1</sp_widget>
+    <title/>
+    <url/>
+    <widget_parameters/>
+  </sp_instance>
+<sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</application>
+        <file_path/>
+        <instance_id>a550279a3b28879c16e44a8aa4e45a3d</instance_id>
+        <instance_name>dev396198</instance_name>
+        <name>sp_instance_e101e102e103e104e105e106e107e108</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_instance">
+  <sp_instance action="INSERT_OR_UPDATE">
+    <sys_id>e101e102e103e104e105e106e107e108</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_instance_e101e102e103e104e105e106e107e108</sys_update_name>
+    <active>true</active>
+    <advanced_placeholder_dimensions>false</advanced_placeholder_dimensions>
+    <async_load>false</async_load>
+    <async_load_device_type>desktop,tablet,mobile</async_load_device_type>
+    <async_load_trigger>viewport</async_load_trigger>
+    <class_name/>
+    <color>default</color>
+    <css/>
+    <glyph/>
+    <id/>
+    <order>2</order>
+    <placeholder_dimensions>{
+	"mobile": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"desktop": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"tablet": {
+		"height": "250px",
+		"width": "100%"
+	}
+}</placeholder_dimensions>
+    <placeholder_dimensions_script>function evaluateConfig(options) { return {
+	"mobile": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"desktop": {
+		"height": "250px",
+		"width": "100%"
+	},
+	"tablet": {
+		"height": "250px",
+		"width": "100%"
+	}
+}; }</placeholder_dimensions_script>
+    <placeholder_template>&lt;!--
+	AngularJS template with configurable options.
+	Use the "options" object to control dynamic behavior.
+	Example: Display an element when max row count is 10:
+	&lt;div ng-if="options.maxRowCount === 10"&gt;&lt;/div&gt;
+	The "skeleton-container" class is used for loading placeholders.
+--&gt;
+	&lt;div class="skeleton-container"&gt;
+	&lt;!-- Header Skeleton --&gt;
+	&lt;div class="skeleton-box skeleton-header"&gt;&lt;/div&gt;
+	&lt;!-- Body Skeleton --&gt;
+	&lt;div class="skeleton-box skeleton-line"&gt;&lt;/div&gt;
+	&lt;div class="skeleton-box skeleton-line small"&gt;&lt;/div&gt;
+	&lt;div class="skeleton-box skeleton-line medium"&gt;&lt;/div&gt;
+&lt;/div&gt;</placeholder_template>
+    <preserve_placeholder_size>false</preserve_placeholder_size>
+    <roles/>
+    <short_description/>
+    <size>md</size>
+    <sp_column>c101c102c103c104c105c106c107c108</sp_column>
+    <sp_widget>9948c5d742e647c1a95d45a712dc2bc1</sp_widget>
+    <title/>
+    <url/>
+    <widget_parameters/>
+  </sp_instance>
+</record_update>]]></payload>
+        <payload_hash>728670830</payload_hash>
+        <record_name/>
+        <reverted_from/>
+        <source>fddc1c54933803104f9eb1dcebba1033</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 16:43:56</sys_created_on>
+        <sys_id>7edcdc54933803104f9eb1dcebba101c</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>19e0353124b0000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 16:43:56</sys_updated_on>
+        <type>Instance</type>
+        <update_guid>3edcdc542c380310b23f4a06efa9c01b</update_guid>
+        <update_guid_history>3edcdc542c380310b23f4a06efa9c01b:728670830</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="">63b3c9d4937c03104f9eb1dcebba1089</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 19:33:50</sys_created_on>
+        <sys_db_object display_value="" name="sp_instance">sp_instance</sys_db_object>
+        <sys_id>1f8db274b0744e129e5017e744257e24</sys_id>
+        <sys_metadata>e101e102e103e104e105e106e107e108</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
+        <sys_scope_delete display_value="">27700895c6bf4da688a22f9013198449</sys_scope_delete>
+        <sys_update_name>sp_instance_e101e102e103e104e105e106e107e108</sys_update_name>
+        <sys_update_version display_value="sp_instance_e101e102e103e104e105e106e107e108">7edcdc54933803104f9eb1dcebba101c</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 19:33:50</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

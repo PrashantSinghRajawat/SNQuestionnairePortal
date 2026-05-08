@@ -7,23 +7,23 @@
         <bootstrap_alt>false</bootstrap_alt>
         <class_name/>
         <container_class_name/>
-        <name>Templates and Actions</name>
-        <order>2</order>
+        <name>Review Section</name>
+        <order>1</order>
         <semantic_tag/>
-        <sp_page display_value="appready_template_dashboard">97ab6a4802084269a80cf368ce146da6</sp_page>
+        <sp_page display_value="appready_review_submit">e375c15a1e0c4771a7530a7a51f737b1</sp_page>
         <subheader>false</subheader>
         <sys_class_name>sp_container</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2026-05-07 16:43:55</sys_created_on>
-        <sys_id>ee01ee02ee03ee04ee05ee06ee07ee08</sys_id>
+        <sys_created_on>2026-05-08 07:03:27</sys_created_on>
+        <sys_id>b61c5b44b1554fe4890d22a5930a46c7</sys_id>
         <sys_mod_count>0</sys_mod_count>
-        <sys_name>Templates and Actions</sys_name>
+        <sys_name>Review Section</sys_name>
         <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
         <sys_policy/>
         <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
-        <sys_update_name>sp_container_ee01ee02ee03ee04ee05ee06ee07ee08</sys_update_name>
+        <sys_update_name>sp_container_b61c5b44b1554fe4890d22a5930a46c7</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-05-07 16:43:55</sys_updated_on>
+        <sys_updated_on>2026-05-08 07:03:27</sys_updated_on>
         <title/>
         <width>container</width>
     </sp_container>

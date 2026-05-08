@@ -4,8 +4,7 @@
         <client_script><![CDATA[api.controller = function() { var c = this; };
 ]]></client_script>
         <controller_as>c</controller_as>
-        <css>.well { margin-bottom: 12px; }
-</css>
+        <css>.well { margin-bottom: 12px; }</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>

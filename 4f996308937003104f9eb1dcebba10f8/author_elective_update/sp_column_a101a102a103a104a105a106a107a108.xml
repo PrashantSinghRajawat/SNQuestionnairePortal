@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_column">
+  <sp_column action="DELETE">
+    <sys_id>a101a102a103a104a105a106a107a108</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_column_a101a102a103a104a105a106a107a108</sys_update_name>
+    <class_name/>
+    <order>1</order>
+    <semantic_tag/>
+    <size>8</size>
+    <size_lg/>
+    <size_sm>12</size_sm>
+    <size_xs/>
+    <sp_row>ff01ff02ff03ff04ff05ff06ff07ff08</sp_row>
+  </sp_column>
+<sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</application>
+        <file_path/>
+        <instance_id>a550279a3b28879c16e44a8aa4e45a3d</instance_id>
+        <instance_name>dev396198</instance_name>
+        <name>sp_column_a101a102a103a104a105a106a107a108</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_column">
+  <sp_column action="INSERT_OR_UPDATE">
+    <sys_id>a101a102a103a104a105a106a107a108</sys_id>
+    <sys_scope display_value="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_scope>
+    <sys_update_name>sp_column_a101a102a103a104a105a106a107a108</sys_update_name>
+    <class_name/>
+    <order>1</order>
+    <semantic_tag/>
+    <size>8</size>
+    <size_lg/>
+    <size_sm>12</size_sm>
+    <size_xs/>
+    <sp_row>ff01ff02ff03ff04ff05ff06ff07ff08</sp_row>
+  </sp_column>
+</record_update>]]></payload>
+        <payload_hash>775210220</payload_hash>
+        <record_name>1</record_name>
+        <reverted_from/>
+        <source>fddc1c54933803104f9eb1dcebba1033</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 16:43:54</sys_created_on>
+        <sys_id>52dc5c54933803104f9eb1dcebba1092</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>19e03530a430000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 16:43:54</sys_updated_on>
+        <type>Column</type>
+        <update_guid>12dc5c54b1380310371aaca4d7f47591</update_guid>
+        <update_guid_history>12dc5c54b1380310371aaca4d7f47591:775210220</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="1">c1b389d4937c03104f9eb1dcebba10fd</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 19:33:40</sys_created_on>
+        <sys_db_object display_value="" name="sp_column">sp_column</sys_db_object>
+        <sys_id>21e9a3c1202f47e0865ceb15fd228b64</sys_id>
+        <sys_metadata>a101a102a103a104a105a106a107a108</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>1</sys_name>
+        <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
+        <sys_scope_delete display_value="">27700895c6bf4da688a22f9013198449</sys_scope_delete>
+        <sys_update_name>sp_column_a101a102a103a104a105a106a107a108</sys_update_name>
+        <sys_update_version display_value="sp_column_a101a102a103a104a105a106a107a108">52dc5c54933803104f9eb1dcebba1092</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 19:33:40</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_column">
+    <sp_column action="DELETE">
+        <aria_label/>
+        <class_name/>
+        <order>1</order>
+        <semantic_tag/>
+        <size>4</size>
+        <size_lg/>
+        <size_sm>12</size_sm>
+        <size_xs/>
+        <sp_row display_value="1">ff01ff02ff03ff04ff05ff06ff07ff08</sp_row>
+        <sys_class_name>sp_column</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 16:43:54</sys_created_on>
+        <sys_id>c101c102c103c104c105c106c107c108</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>1</sys_name>
+        <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
+        <sys_update_name>sp_column_c101c102c103c104c105c106c107c108</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 19:33:40</sys_updated_on>
+    </sp_column>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</application>
+        <file_path/>
+        <instance_id>a550279a3b28879c16e44a8aa4e45a3d</instance_id>
+        <instance_name>dev396198</instance_name>
+        <name>sp_column_c101c102c103c104c105c106c107c108</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_column"><sp_column action="INSERT_OR_UPDATE"><aria_label/><class_name/><order>1</order><semantic_tag/><size>4</size><size_lg/><size_sm>12</size_sm><size_xs/><sp_row display_value="1">ff01ff02ff03ff04ff05ff06ff07ff08</sp_row><sys_class_name>sp_column</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-05-07 16:43:54</sys_created_on><sys_id>c101c102c103c104c105c106c107c108</sys_id><sys_mod_count>1</sys_mod_count><sys_name>1</sys_name><sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package><sys_policy/><sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope><sys_update_name>sp_column_c101c102c103c104c105c106c107c108</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-05-07 19:33:40</sys_updated_on></sp_column></record_update>]]></payload>
+        <payload_hash>116010078</payload_hash>
+        <record_name>1</record_name>
+        <reverted_from/>
+        <source>6886fcd893f803104f9eb1dcebba1070</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 19:33:40</sys_created_on>
+        <sys_id>cdb3c9d4937c03104f9eb1dcebba1081</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>19e03ee77070000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 19:33:40</sys_updated_on>
+        <type>Column</type>
+        <update_guid>cdb3c9d4297c03103fd5ff2764ed8980</update_guid>
+        <update_guid_history>cdb3c9d4297c03103fd5ff2764ed8980:116010078,92dc5c543538031099680b1d3a940dc2:-1910040049</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="1">2fc34dd4937c03104f9eb1dcebba1095</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 19:34:07</sys_created_on>
+        <sys_db_object display_value="" name="sp_column">sp_column</sys_db_object>
+        <sys_id>080ad2f92214498c810f6e1d55411b44</sys_id>
+        <sys_metadata>c101c102c103c104c105c106c107c108</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>1</sys_name>
+        <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
+        <sys_scope_delete display_value="">27700895c6bf4da688a22f9013198449</sys_scope_delete>
+        <sys_update_name>sp_column_c101c102c103c104c105c106c107c108</sys_update_name>
+        <sys_update_version display_value="sp_column_c101c102c103c104c105c106c107c108">cdb3c9d4937c03104f9eb1dcebba1081</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 19:34:07</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

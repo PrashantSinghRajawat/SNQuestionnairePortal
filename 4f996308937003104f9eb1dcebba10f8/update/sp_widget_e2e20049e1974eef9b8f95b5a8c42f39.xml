@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() { var c = this; c.submitting = false;
+  c.submit = function() { if (!c.data.canSubmit || c.submitting) return; c.submitting = true; c.server.get({ action: "submit" }).then(function(r) { c.data.submitted = r.data.submitted; c.data.canSubmit = r.data.canSubmit; c.data.status = r.data.status; c.submitting = false; }); }; };
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.progress { margin: 12px 0; }</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ibar_submit_action</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {}
+]]></link>
+        <name>IBAR Submit Action</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() { data.applicationId = $sp.getParameter("app_id") || ""; data.canSubmit = false; data.submitted = false;
+  try { if (!data.applicationId) return; var gr = new GlideRecord("x_1433041_identi_0_application"); if (!gr.get(data.applicationId)) return;
+    var completion = parseInt(gr.getValue("completion_percent") || "0", 10);
+    data.canSubmit = completion >= 80 && gr.getValue("questionnaire_status") !== "submitted" && gr.getValue("questionnaire_status") !== "completed";
+    data.status = gr.getDisplayValue("questionnaire_status"); data.completion = completion;
+    if (input && input.action === "submit" && data.canSubmit) { gr.setValue("questionnaire_status", "submitted"); gr.setValue("submitted_date", new GlideDateTime().getValue()); gr.update(); data.submitted = true; data.canSubmit = false; data.status = "Submitted"; }
+  } catch (e) { gs.error("IBAR Submit Action widget error: " + e.message); }
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-08 07:03:31</sys_created_on>
+        <sys_id>e2e20049e1974eef9b8f95b5a8c42f39</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>IBAR Submit Action</sys_name>
+        <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
+        <sys_update_name>sp_widget_e2e20049e1974eef9b8f95b5a8c42f39</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-08 07:03:31</sys_updated_on>
+        <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-send"></span> Submit Application</h3></div><div class="panel-body text-center">
+  <div class="alert alert-success" ng-if="c.data.submitted"><span class="glyphicon glyphicon-ok-sign"></span> Application submitted for review!</div>
+  <p><strong>Status:</strong> <span class="label label-info">{{c.data.status}}</span></p>
+  <p><strong>Completion:</strong> {{c.data.completion}}%</p>
+  <div class="progress"><div class="progress-bar" ng-class="{'progress-bar-success': c.data.completion >= 80, 'progress-bar-warning': c.data.completion < 80}" role="progressbar" style="width: {{c.data.completion}}%">{{c.data.completion}}%</div></div>
+  <button type="button" class="btn btn-primary btn-lg btn-block" ng-click="c.submit()" ng-disabled="!c.data.canSubmit || c.submitting"><span class="glyphicon glyphicon-send"></span> Submit for Review</button>
+  <p class="text-muted" ng-if="!c.data.canSubmit && !c.data.submitted"><small>Complete at least 80% to submit.</small></p>
+</div></div>
+]]></template>
+    </sp_widget>
+</record_update>

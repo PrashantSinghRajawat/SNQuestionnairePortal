@@ -10,7 +10,7 @@
         <css/>
         <glyph/>
         <id/>
-        <order>2</order>
+        <order>1</order>
         <placeholder_dimensions>{
 	"mobile": {
 		"height": "250px",
@@ -58,23 +58,23 @@
         <roles/>
         <short_description/>
         <size>md</size>
-        <sp_column display_value="2">c101c102c103c104c105c106c107c108</sp_column>
-        <sp_widget display_value="IBAR Template Actions">9948c5d742e647c1a95d45a712dc2bc1</sp_widget>
+        <sp_column display_value="1">cf30a7bbe91046a1ac05d8dc3e5b3118</sp_column>
+        <sp_widget display_value="IBAR Notification Preview">8da96734a88d428d8b7f664cf7c23486</sp_widget>
         <sys_class_name>sp_instance</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2026-05-07 16:43:56</sys_created_on>
-        <sys_id>e101e102e103e104e105e106e107e108</sys_id>
+        <sys_created_on>2026-05-08 07:03:28</sys_created_on>
+        <sys_id>e8d6491ddbe641f8af9ad1b252d5620a</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name/>
         <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
         <sys_policy/>
         <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
-        <sys_update_name>sp_instance_e101e102e103e104e105e106e107e108</sys_update_name>
+        <sys_update_name>sp_instance_e8d6491ddbe641f8af9ad1b252d5620a</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-05-07 16:43:56</sys_updated_on>
+        <sys_updated_on>2026-05-08 07:03:28</sys_updated_on>
         <title/>
         <url/>
         <widget_parameters/>
     </sp_instance>
-    <sys_translated_text action="delete_multiple" query="documentkey=e101e102e103e104e105e106e107e108"/>
+    <sys_translated_text action="delete_multiple" query="documentkey=e8d6491ddbe641f8af9ad1b252d5620a"/>
 </record_update>

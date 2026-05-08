@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
     <sp_widget action="INSERT_OR_UPDATE">
         <category>custom</category>
-        <client_script><![CDATA[api.controller = function() { var c = this; c.name = c.data.templateData.name || ""; c.description = c.data.templateData.description || ""; c.category = c.data.templateData.category || "";
-  c.save = function() { c.server.get({ action: "save", name: c.name, description: c.description, category: c.category }).then(function(r) { c.data.saved = r.data.saved; c.data.templateId = r.data.templateId; }); }; };
-]]></client_script>
+        <client_script><![CDATA[api.controller = function() {
+    var c = this;
+    c.name = c.data.templateData.name || "";
+    c.description = c.data.templateData.description || "";
+    c.category = c.data.templateData.category || "";
+    c.save = function() {
+        c.server.get({
+            action: "save",
+            name: c.name,
+            description: c.description,
+            category: c.category
+        }).then(function(r) {
+            c.data.saved = r.data.saved;
+            c.data.templateId = r.data.templateId;
+        });
+    };
+};]]></client_script>
         <controller_as>c</controller_as>
-        <css>/* minimal */
-</css>
+        <css>/* minimal */</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
@@ -21,10 +34,94 @@
         <option_schema/>
         <public>false</public>
         <roles/>
-        <script><![CDATA[(function() { data.templateId = $sp.getParameter("template_id") || ""; data.templateData = {}; data.sections = [];
-  try { if (data.templateId) { var gr = new GlideRecord("x_1433041_identi_0_template"); if (gr.get(data.templateId)) { data.templateData = { name: gr.getValue("name"), description: gr.getValue("description"), category: gr.getValue("category"), status: gr.getDisplayValue("status") }; } }
-    if (input && input.action === "save") { var tGr = data.templateId ? new GlideRecord("x_1433041_identi_0_template") : null; if (data.templateId && tGr.get(data.templateId)) { tGr.setValue("name", input.name); tGr.setValue("description", input.description || ""); tGr.setValue("category", input.category || ""); tGr.update(); data.saved = true; } else { var nGr = new GlideRecord("x_1433041_identi_0_template"); nGr.initialize(); nGr.setValue("name", input.name); nGr.setValue("description", input.description || ""); nGr.setValue("category", input.category || ""); nGr.setValue("status", "draft"); data.templateId = nGr.insert(); data.saved = true; } }
-  } catch (e) { gs.error("IBAR Template Form widget error: " + e.message); }
+        <script><![CDATA[(function() {
+    data.templateId = $sp.getParameter("template_id") || "";
+    data.templateData = {};
+    data.sections = [];
+    data.saved = false;
+    try {
+        if (data.templateId) {
+            var gr = new GlideRecord("x_1433041_identi_0_questionnaire_template");
+            if (gr.get(data.templateId)) {
+                data.templateData = {
+                    name: gr.getValue("name"),
+                    template_key: gr.getValue("template_key"),
+                    description: gr.getValue("description"),
+                    application_type: gr.getDisplayValue("application_type"),
+                    status: gr.getDisplayValue("status"),
+                    version: gr.getValue("version"),
+                    is_default: gr.getValue("is_default") === "1",
+                    active: gr.getValue("active") === "1"
+                };
+            }
+            // Load sections via junction table
+            var tsGr = new GlideRecord("x_1433041_identi_0_template_section");
+            tsGr.addQuery("template", data.templateId);
+            tsGr.addQuery("active", true);
+            tsGr.orderBy("order");
+            tsGr.setLimit(50);
+            tsGr.query();
+            while (tsGr.next()) {
+                var secGr = new GlideRecord("x_1433041_identi_0_section");
+                if (secGr.get(tsGr.getValue("section"))) {
+                    data.sections.push({
+                        sys_id: secGr.getValue("sys_id"),
+                        ts_sys_id: tsGr.getValue("sys_id"),
+                        name: secGr.getValue("name"),
+                        section_key: secGr.getValue("section_key"),
+                        order: tsGr.getValue("order")
+                    });
+                }
+            }
+        }
+        if (input && input.action === "save") {
+            var tGr = new GlideRecord("x_1433041_identi_0_questionnaire_template");
+            if (data.templateId && tGr.get(data.templateId)) {
+                tGr.setValue("name", input.name);
+                tGr.setValue("description", input.description || "");
+                if (input.application_type) tGr.setValue("application_type", input.application_type);
+                if (input.version) tGr.setValue("version", input.version);
+                tGr.update();
+                data.saved = true;
+            } else {
+                var nGr = new GlideRecord("x_1433041_identi_0_questionnaire_template");
+                nGr.initialize();
+                nGr.setValue("name", input.name);
+                nGr.setValue("template_key", input.name.toLowerCase().replace(/[^a-z0-9]+/g, "_"));
+                nGr.setValue("description", input.description || "");
+                nGr.setValue("status", "draft");
+                nGr.setValue("version", "1.0");
+                nGr.setValue("active", true);
+                data.templateId = nGr.insert();
+                data.saved = true;
+            }
+            return;
+        }
+        if (input && input.action === "activate") {
+            var aGr = new GlideRecord("x_1433041_identi_0_questionnaire_template");
+            if (data.templateId && aGr.get(data.templateId)) {
+                aGr.setValue("status", "published");
+                aGr.setValue("published_at", new GlideDateTime().getValue());
+                aGr.setValue("published_by", gs.getUserID());
+                aGr.update();
+                data.templateData.status = "Published";
+            }
+            return;
+        }
+        if (input && input.action === "deactivate") {
+            var dGr = new GlideRecord("x_1433041_identi_0_questionnaire_template");
+            if (data.templateId && dGr.get(data.templateId)) {
+                dGr.setValue("status", "draft");
+                dGr.setValue("active", false);
+                dGr.update();
+                data.templateData.status = "Draft";
+                data.templateData.active = false;
+            }
+            return;
+        }
+    } catch (e) {
+        gs.error("IBAR Template Form widget error: " + e.message);
+    }
 })();
 ]]></script>
         <servicenow>false</servicenow>
@@ -32,14 +129,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-05-07 17:17:58</sys_created_on>
         <sys_id>e712736461584741b10f8309332b5bac</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_name>IBAR Template Form</sys_name>
         <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
         <sys_policy/>
         <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
         <sys_update_name>sp_widget_e712736461584741b10f8309332b5bac</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-05-07 17:17:58</sys_updated_on>
+        <sys_updated_on>2026-05-07 19:40:03</sys_updated_on>
         <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-edit"></span> {{c.data.templateId ? 'Edit Template' : 'New Template'}}</h3></div><div class="panel-body">
   <div class="alert alert-success" ng-if="c.data.saved"><span class="glyphicon glyphicon-ok-sign"></span> Template saved!</div>
   <form ng-submit="c.save()">

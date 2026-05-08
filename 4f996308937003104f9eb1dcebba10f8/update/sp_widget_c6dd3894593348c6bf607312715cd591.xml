@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function() {
+    var c = this;
+    c.getGroup = function(group) {
+        return (c.data.navItems || []).filter(function(item) { return item.group === group; });
+    };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.ibar-nav-sidebar { background: $panel-default-heading-bg; border-right: 1px solid $panel-default-border; padding: 0; min-height: 100vh; }
+.ibar-nav-brand { padding: 16px 20px; font-size: 18px; border-bottom: 1px solid $panel-default-border; color: $brand-primary; }
+.ibar-nav-section { padding: 8px 0; border-bottom: 1px solid $panel-default-border; }
+.ibar-nav-group-label { font-size: 11px; font-weight: 600; color: $text-muted; letter-spacing: 0.05em; padding: 8px 20px 4px; text-transform: uppercase; }
+.ibar-nav-item { display: block; padding: 8px 20px; color: $text-color; text-decoration: none; font-size: 14px; transition: background 0.15s, color 0.15s; border-left: 3px solid transparent; }
+.ibar-nav-item:hover { background: rgba(0,0,0,0.04); color: $brand-primary; text-decoration: none; }
+.ibar-nav-item .glyphicon { margin-right: 8px; width: 16px; text-align: center; }
+.ibar-nav-active { background: rgba(0,128,163,0.08); color: $brand-primary; font-weight: 500; border-left-color: $brand-primary; }
+.ibar-nav-footer { padding: 16px 20px; }
+@media (max-width: 767px) { .ibar-nav-sidebar { min-height: auto; border-right: none; border-bottom: 1px solid $panel-default-border; } }</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ibar_role_navigation</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {}
+]]></link>
+        <name>IBAR Role Navigation</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+    data.navItems = [];
+    data.userRoles = [];
+    data.currentPage = $sp.getParameter("id") || "appready_home";
+    
+    try {
+        // Get user roles
+        var isAdmin = gs.hasRole("x_1433041_identi_0.appready_admin") || gs.hasRole("admin");
+        var isOwner = gs.hasRole("x_1433041_identi_0.appready_owner") || true; // All authenticated users are owners
+        var isReviewer = gs.hasRole("x_1433041_identi_0.appready_reviewer");
+        var isSecurity = gs.hasRole("x_1433041_identi_0.appready_security");
+        var isCompliance = gs.hasRole("x_1433041_identi_0.appready_compliance");
+        var isAuditor = gs.hasRole("x_1433041_identi_0.appready_auditor");
+        
+        if (isAdmin) data.userRoles.push("admin");
+        if (isOwner) data.userRoles.push("owner");
+        if (isReviewer) data.userRoles.push("reviewer");
+        if (isSecurity) data.userRoles.push("security");
+        if (isCompliance) data.userRoles.push("compliance");
+        if (isAuditor) data.userRoles.push("auditor");
+        
+        // Build navigation - all users see these
+        data.navItems.push({ id: "appready_home", label: "Dashboard", icon: "home", group: "main", order: 10 });
+        data.navItems.push({ id: "appready_questionnaire", label: "Questionnaire", icon: "edit", group: "main", order: 20 });
+        data.navItems.push({ id: "appready_upload", label: "Documents", icon: "cloud-upload", group: "main", order: 30 });
+        data.navItems.push({ id: "appready_review_submit", label: "Review & Submit", icon: "send", group: "main", order: 40 });
+        data.navItems.push({ id: "appready_communications", label: "Communications", icon: "envelope", group: "main", order: 50 });
+        data.navItems.push({ id: "appready_activity", label: "Activity", icon: "time", group: "main", order: 60 });
+        
+        // Reviewer / Admin / Security / Compliance items
+        if (isAdmin || isReviewer || isSecurity || isCompliance) {
+            data.navItems.push({ id: "appready_review", label: "Admin Review", icon: "check", group: "review", order: 70 });
+            data.navItems.push({ id: "appready_overdue", label: "Overdue", icon: "warning-sign", group: "review", order: 80 });
+        }
+        
+        // Admin operational items
+        if (isAdmin) {
+            data.navItems.push({ id: "appready_admin_dashboard", label: "Admin Dashboard", icon: "dashboard", group: "admin", order: 90 });
+            data.navItems.push({ id: "appready_admin_create_application", label: "Create Application", icon: "plus", group: "admin", order: 100 });
+            data.navItems.push({ id: "appready_build_queue", label: "Build Queue", icon: "wrench", group: "admin", order: 110 });
+            data.navItems.push({ id: "appready_reports", label: "Reports", icon: "stats", group: "admin", order: 120 });
+        }
+        
+        // Config Admin items
+        if (isAdmin) {
+            data.navItems.push({ id: "appready_template_dashboard", label: "Templates", icon: "th-large", group: "config", order: 130 });
+            data.navItems.push({ id: "appready_template_builder", label: "Template Builder", icon: "pencil", group: "config", order: 140 });
+            data.navItems.push({ id: "appready_question_builder", label: "Question Builder", icon: "question-sign", group: "config", order: 150 });
+            data.navItems.push({ id: "appready_assignment_rules", label: "Assignments", icon: "transfer", group: "config", order: 160 });
+        }
+        
+        // Auditor items
+        if (isAdmin || isAuditor) {
+            data.navItems.push({ id: "appready_audit_logs", label: "Audit Logs", icon: "list-alt", group: "audit", order: 170 });
+        }
+        
+    } catch (e) {
+        gs.error("IBAR Role Nav widget error: " + e.message);
+    }
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-08 07:03:31</sys_created_on>
+        <sys_id>c6dd3894593348c6bf607312715cd591</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>IBAR Role Navigation</sys_name>
+        <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
+        <sys_update_name>sp_widget_c6dd3894593348c6bf607312715cd591</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-08 07:03:31</sys_updated_on>
+        <template><![CDATA[<div class="ibar-nav-sidebar">
+  <div class="ibar-nav-brand"><span class="glyphicon glyphicon-shield"></span> <strong>AppReady</strong></div>
+  <div class="ibar-nav-section" ng-if="c.getGroup('main').length > 0">
+    <div class="ibar-nav-group-label">MY WORKSPACE</div>
+    <a ng-repeat="item in c.getGroup('main') track by item.id" href="?id={{item.id}}" class="ibar-nav-item" ng-class="{'ibar-nav-active': c.data.currentPage === item.id}">
+      <span class="glyphicon glyphicon-{{item.icon}}"></span> {{item.label}}
+    </a>
+  </div>
+  <div class="ibar-nav-section" ng-if="c.getGroup('review').length > 0">
+    <div class="ibar-nav-group-label">REVIEWS</div>
+    <a ng-repeat="item in c.getGroup('review') track by item.id" href="?id={{item.id}}" class="ibar-nav-item" ng-class="{'ibar-nav-active': c.data.currentPage === item.id}">
+      <span class="glyphicon glyphicon-{{item.icon}}"></span> {{item.label}}
+    </a>
+  </div>
+  <div class="ibar-nav-section" ng-if="c.getGroup('admin').length > 0">
+    <div class="ibar-nav-group-label">ADMINISTRATION</div>
+    <a ng-repeat="item in c.getGroup('admin') track by item.id" href="?id={{item.id}}" class="ibar-nav-item" ng-class="{'ibar-nav-active': c.data.currentPage === item.id}">
+      <span class="glyphicon glyphicon-{{item.icon}}"></span> {{item.label}}
+    </a>
+  </div>
+  <div class="ibar-nav-section" ng-if="c.getGroup('config').length > 0">
+    <div class="ibar-nav-group-label">CONFIGURATION</div>
+    <a ng-repeat="item in c.getGroup('config') track by item.id" href="?id={{item.id}}" class="ibar-nav-item" ng-class="{'ibar-nav-active': c.data.currentPage === item.id}">
+      <span class="glyphicon glyphicon-{{item.icon}}"></span> {{item.label}}
+    </a>
+  </div>
+  <div class="ibar-nav-section" ng-if="c.getGroup('audit').length > 0">
+    <div class="ibar-nav-group-label">AUDIT</div>
+    <a ng-repeat="item in c.getGroup('audit') track by item.id" href="?id={{item.id}}" class="ibar-nav-item" ng-class="{'ibar-nav-active': c.data.currentPage === item.id}">
+      <span class="glyphicon glyphicon-{{item.icon}}"></span> {{item.label}}
+    </a>
+  </div>
+  <div class="ibar-nav-footer text-muted"><small>Roles: {{c.data.userRoles.join(', ')}}</small></div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

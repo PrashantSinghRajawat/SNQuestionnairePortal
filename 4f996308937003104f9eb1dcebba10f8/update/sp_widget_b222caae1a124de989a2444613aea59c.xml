@@ -5,8 +5,7 @@
   c.addQuestion = function() { if (!c.qText) return; c.server.get({ action: "add_question", text: c.qText, question_type: c.qType, mandatory: c.qMandatory, order_num: (c.data.questions.length + 1) * 10 }).then(function(r) { c.data.questions = r.data.questions; c.qText = ""; c.qMandatory = false; }); }; };
 ]]></client_script>
         <controller_as>c</controller_as>
-        <css>.list-group { margin-bottom: 0; } hr { border-color: #ddd; }
-</css>
+        <css>.list-group { margin-bottom: 0; } hr { border-color: #ddd; }</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
@@ -21,12 +20,75 @@
         <option_schema/>
         <public>false</public>
         <roles/>
-        <script><![CDATA[(function() { data.questions = []; data.sectionId = $sp.getParameter("section_id") || "";
-  try { if (!data.sectionId) return;
-    if (input && input.action === "add_question") { var qGr = new GlideRecord("x_1433041_identi_0_question"); qGr.initialize(); qGr.setValue("section", data.sectionId); qGr.setValue("text", input.text); qGr.setValue("question_type", input.question_type || "text"); qGr.setValue("mandatory", input.mandatory || false); qGr.setValue("order", input.order_num || 100); qGr.insert(); }
-    var gr = new GlideRecord("x_1433041_identi_0_question"); gr.addQuery("section", data.sectionId); gr.orderBy("order"); gr.setLimit(100); gr.query();
-    while (gr.next()) { data.questions.push({ sys_id: gr.getValue("sys_id"), text: gr.getValue("text"), question_type: gr.getDisplayValue("question_type"), mandatory: gr.getValue("mandatory") === "1", order: gr.getValue("order") }); }
-  } catch (e) { gs.error("IBAR Question Form widget error: " + e.message); }
+        <script><![CDATA[(function() {
+    data.questions = [];
+    data.sectionId = $sp.getParameter("section_id") || "";
+    data.msg = "";
+    try {
+        if (!data.sectionId) return;
+        if (input && input.action === "add_question") {
+            var qGr = new GlideRecord("x_1433041_identi_0_question");
+            qGr.initialize();
+            qGr.setValue("section", data.sectionId);
+            qGr.setValue("question_key", (input.label || "question").toLowerCase().replace(/[^a-z0-9]+/g, "_") + "_" + new GlideDateTime().getNumericValue());
+            qGr.setValue("label", input.label || "New Question");
+            qGr.setValue("question_type", input.question_type || "single_line_text");
+            qGr.setValue("required", input.required || false);
+            qGr.setValue("order", input.order_num || 100);
+            qGr.setValue("active", true);
+            if (input.help_text) qGr.setValue("help_text", input.help_text);
+            if (input.placeholder) qGr.setValue("placeholder", input.placeholder);
+            if (input.default_value) qGr.setValue("default_value", input.default_value);
+            qGr.insert();
+            data.msg = "Question added.";
+            return;
+        }
+        if (input && input.action === "update_question") {
+            var uGr = new GlideRecord("x_1433041_identi_0_question");
+            if (input.question_id && uGr.get(input.question_id)) {
+                if (input.label) uGr.setValue("label", input.label);
+                if (input.question_type) uGr.setValue("question_type", input.question_type);
+                if (typeof input.required !== "undefined") uGr.setValue("required", input.required);
+                if (input.order_num) uGr.setValue("order", input.order_num);
+                if (input.help_text !== undefined) uGr.setValue("help_text", input.help_text);
+                if (input.placeholder !== undefined) uGr.setValue("placeholder", input.placeholder);
+                uGr.update();
+                data.msg = "Question updated.";
+            }
+            return;
+        }
+        if (input && input.action === "delete_question") {
+            var dGr = new GlideRecord("x_1433041_identi_0_question");
+            if (input.question_id && dGr.get(input.question_id)) {
+                dGr.setValue("active", false);
+                dGr.update();
+                data.msg = "Question removed.";
+            }
+            return;
+        }
+        // Load questions for this section
+        var gr = new GlideRecord("x_1433041_identi_0_question");
+        gr.addQuery("section", data.sectionId);
+        gr.addQuery("active", true);
+        gr.orderBy("order");
+        gr.setLimit(100);
+        gr.query();
+        while (gr.next()) {
+            data.questions.push({
+                sys_id: gr.getValue("sys_id"),
+                label: gr.getValue("label"),
+                question_key: gr.getValue("question_key"),
+                question_type: gr.getDisplayValue("question_type"),
+                question_type_value: gr.getValue("question_type"),
+                required: gr.getValue("required") === "1",
+                order: gr.getValue("order"),
+                help_text: gr.getValue("help_text") || "",
+                placeholder: gr.getValue("placeholder") || ""
+            });
+        }
+    } catch (e) {
+        gs.error("IBAR Question Form widget error: " + e.message);
+    }
 })();
 ]]></script>
         <servicenow>false</servicenow>

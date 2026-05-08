@@ -4,8 +4,7 @@
         <client_script><![CDATA[api.controller = function() { var c = this; c.filter = ""; c.applyFilter = function() { c.server.get({ filter: c.filter }).then(function(r) { c.data.logs = r.data.logs; }); }; };
 ]]></client_script>
         <controller_as>c</controller_as>
-        <css>/* minimal */
-</css>
+        <css>/* minimal */</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>

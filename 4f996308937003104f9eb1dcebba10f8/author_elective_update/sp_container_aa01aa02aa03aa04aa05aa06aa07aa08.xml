@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_container">
+    <sp_container action="DELETE">
+        <aria_label/>
+        <background_color/>
+        <background_image/>
+        <background_style>default</background_style>
+        <bootstrap_alt>false</bootstrap_alt>
+        <class_name/>
+        <container_class_name/>
+        <name>Template Dashboard - Container 2</name>
+        <order>2</order>
+        <semantic_tag/>
+        <sp_page display_value="appready_template_dashboard">97ab6a4802084269a80cf368ce146da6</sp_page>
+        <subheader>false</subheader>
+        <sys_class_name>sp_container</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 16:43:55</sys_created_on>
+        <sys_id>aa01aa02aa03aa04aa05aa06aa07aa08</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>Template Dashboard - Container 2</sys_name>
+        <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
+        <sys_update_name>sp_container_aa01aa02aa03aa04aa05aa06aa07aa08</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 19:33:20</sys_updated_on>
+        <title/>
+        <width>container</width>
+    </sp_container>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</application>
+        <file_path/>
+        <instance_id>a550279a3b28879c16e44a8aa4e45a3d</instance_id>
+        <instance_name>dev396198</instance_name>
+        <name>sp_container_aa01aa02aa03aa04aa05aa06aa07aa08</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_container"><sp_container action="INSERT_OR_UPDATE"><aria_label/><background_color/><background_image/><background_style>default</background_style><bootstrap_alt>false</bootstrap_alt><class_name/><container_class_name/><name>Template Dashboard - Container 2</name><order>2</order><semantic_tag/><sp_page display_value="appready_template_dashboard">97ab6a4802084269a80cf368ce146da6</sp_page><subheader>false</subheader><sys_class_name>sp_container</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2026-05-07 16:43:55</sys_created_on><sys_id>aa01aa02aa03aa04aa05aa06aa07aa08</sys_id><sys_mod_count>1</sys_mod_count><sys_name>Template Dashboard - Container 2</sys_name><sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package><sys_policy/><sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope><sys_update_name>sp_container_aa01aa02aa03aa04aa05aa06aa07aa08</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2026-05-07 19:33:20</sys_updated_on><title/><width>container</width></sp_container></record_update>]]></payload>
+        <payload_hash>234459145</payload_hash>
+        <record_name>Template Dashboard - Container 2</record_name>
+        <reverted_from/>
+        <source>6886fcd893f803104f9eb1dcebba1070</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 19:33:20</sys_created_on>
+        <sys_id>90a3c5d4937c03104f9eb1dcebba10d6</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>19e03ee29760000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 19:33:20</sys_updated_on>
+        <type>Container</type>
+        <update_guid>80a3c5d4dd7c031059ae6c0425e4afd5</update_guid>
+        <update_guid_history>80a3c5d4dd7c031059ae6c0425e4afd5:234459145,aadc9c5451380310054f4d16e0d16631:-355953350</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="Template Dashboard - Container 2">12a309d4937c03104f9eb1dcebba10f6</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-05-07 19:33:28</sys_created_on>
+        <sys_db_object display_value="" name="sp_container">sp_container</sys_db_object>
+        <sys_id>23291f660d664a49ab7b64ddb4882129</sys_id>
+        <sys_metadata>aa01aa02aa03aa04aa05aa06aa07aa08</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Template Dashboard - Container 2</sys_name>
+        <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
+        <sys_scope_delete display_value="">27700895c6bf4da688a22f9013198449</sys_scope_delete>
+        <sys_update_name>sp_container_aa01aa02aa03aa04aa05aa06aa07aa08</sys_update_name>
+        <sys_update_version display_value="sp_container_aa01aa02aa03aa04aa05aa06aa07aa08">90a3c5d4937c03104f9eb1dcebba10d6</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-05-07 19:33:28</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

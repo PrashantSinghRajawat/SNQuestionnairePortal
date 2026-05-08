@@ -4,8 +4,7 @@
         <client_script><![CDATA[api.controller = function() { var c = this; c.templateName = ""; c.create = function() { if (!c.templateName) return; c.server.get({ action: "create", name: c.templateName }).then(function(r) { c.data.msg = r.data.msg; c.templateName = ""; }); }; };
 ]]></client_script>
         <controller_as>c</controller_as>
-        <css>/* minimal */
-</css>
+        <css>/* minimal */</css>
         <data_table>sp_instance</data_table>
         <demo_data/>
         <description/>
@@ -20,21 +19,70 @@
         <option_schema/>
         <public>false</public>
         <roles/>
-        <script><![CDATA[(function() { data.msg = ""; if (input && input.action === "create") { var gr = new GlideRecord("x_1433041_identi_0_template"); gr.initialize(); gr.setValue("name", input.name || "New Template"); gr.setValue("status", "draft"); gr.setValue("version", "1.0"); gr.insert(); data.msg = "Template created successfully."; } })();
+        <script><![CDATA[(function() { data.msg = ""; data.newTemplateId = "";
+  if (input && input.action === "create") {
+    try {
+      var gr = new GlideRecord("x_1433041_identi_0_questionnaire_template");
+      gr.initialize();
+      gr.setValue("name", input.name || "New Template");
+      gr.setValue("template_key", input.template_key || input.name.toLowerCase().replace(/[^a-z0-9]+/g, "_"));
+      gr.setValue("status", "draft");
+      gr.setValue("version", "1.0");
+      gr.setValue("active", true);
+      if (input.description) gr.setValue("description", input.description);
+      if (input.application_type) gr.setValue("application_type", input.application_type);
+      data.newTemplateId = gr.insert();
+      data.msg = "Template created successfully.";
+    } catch (e) { gs.error("IBAR Template Create widget error: " + e.message); data.msg = "Error creating template."; }
+  }
+  if (input && input.action === "clone") {
+    try {
+      var srcGr = new GlideRecord("x_1433041_identi_0_questionnaire_template");
+      if (input.source_id && srcGr.get(input.source_id)) {
+        var clGr = new GlideRecord("x_1433041_identi_0_questionnaire_template");
+        clGr.initialize();
+        clGr.setValue("name", (srcGr.getValue("name") || "") + " (Copy)");
+        clGr.setValue("template_key", (srcGr.getValue("template_key") || "") + "_copy_" + new GlideDateTime().getNumericValue());
+        clGr.setValue("description", srcGr.getValue("description") || "");
+        clGr.setValue("application_type", srcGr.getValue("application_type") || "");
+        clGr.setValue("status", "draft");
+        clGr.setValue("version", "1.0");
+        clGr.setValue("active", true);
+        clGr.setValue("parent_template", input.source_id);
+        var newId = clGr.insert();
+        // Clone template_section associations
+        var tsGr = new GlideRecord("x_1433041_identi_0_template_section");
+        tsGr.addQuery("template", input.source_id);
+        tsGr.query();
+        while (tsGr.next()) {
+          var nts = new GlideRecord("x_1433041_identi_0_template_section");
+          nts.initialize();
+          nts.setValue("template", newId);
+          nts.setValue("section", tsGr.getValue("section"));
+          nts.setValue("order", tsGr.getValue("order"));
+          nts.setValue("active", true);
+          nts.insert();
+        }
+        data.newTemplateId = newId;
+        data.msg = "Template cloned successfully.";
+      } else { data.msg = "Source template not found."; }
+    } catch (e) { gs.error("IBAR Template Create clone error: " + e.message); data.msg = "Error cloning template."; }
+  }
+})();
 ]]></script>
         <servicenow>false</servicenow>
         <sys_class_name>sp_widget</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-05-07 16:43:57</sys_created_on>
         <sys_id>50fe521125444dfcaa817945889ac23e</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_name>IBAR Template Create</sys_name>
         <sys_package display_value="IdentityBridge AppReady" source="x_1433041_identi_0">4f996308937003104f9eb1dcebba10f8</sys_package>
         <sys_policy/>
         <sys_scope display_value="IdentityBridge AppReady">4f996308937003104f9eb1dcebba10f8</sys_scope>
         <sys_update_name>sp_widget_50fe521125444dfcaa817945889ac23e</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-05-07 16:43:57</sys_updated_on>
+        <sys_updated_on>2026-05-07 19:27:32</sys_updated_on>
         <template><![CDATA[<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"><span class="glyphicon glyphicon-plus"></span> Create Template</h3></div><div class="panel-body">
   <div class="alert alert-success" ng-if="c.data.msg"><span class="glyphicon glyphicon-ok-sign"></span> {{c.data.msg}}</div>
   <div class="form-group"><label>Template Name</label><input type="text" class="form-control" ng-model="c.templateName" placeholder="Enter template name"></div>
